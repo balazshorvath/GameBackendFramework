@@ -1,7 +1,6 @@
 package hu.noroc.framework.service.base.config;
 
-import hu.noroc.framework.events.IConfigurationEvent;
-import hu.noroc.framework.service.IMasterService;
+import hu.noroc.framework.service.IService;
 
 /**
  * One of the most basic available services.
@@ -20,7 +19,6 @@ import hu.noroc.framework.service.IMasterService;
  *      Since the IServiceConfig is pretty flexible.
  * Created by Oryk on 2017. 01. 23..
  */
-public interface IServiceManager extends IMasterService {
+public interface IServiceManager extends IService {
     IServiceManager getInstance();
-    void onEvent(IConfigurationEvent event);
 }

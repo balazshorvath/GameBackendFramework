@@ -6,9 +6,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by Oryk on 2017. 01. 12..
+ * Created by Oryk on 2017. 01. 25..
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface MasterService {
+public @interface Service {
+    String[] methodNames() default {"onEvent"};
+    Priority priority() default Priority.LOW;
+    String defaultConfig();
+
+
+    enum Priority {
+        HIGH,
+        MEDIUM,
+        LOW
+    }
 }
