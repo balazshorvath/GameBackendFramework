@@ -6,6 +6,7 @@ import java.util.Set;
 /**
  * Created by Oryk on 2017. 01. 25..
  */
+@Deprecated
 public class ServiceConfig implements IServiceConfig {
     Set<IConfigParameter> parameters = new HashSet<>();
 

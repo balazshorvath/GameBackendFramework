@@ -11,14 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Service {
-    String[] methodNames() default {"onEvent"};
-    Priority priority() default Priority.LOW;
-    String defaultConfig();
+    Class<?> configurationClass();
+    boolean configNeedsRestart() default false;
 
-
-    enum Priority {
-        HIGH,
-        MEDIUM,
-        LOW
-    }
 }

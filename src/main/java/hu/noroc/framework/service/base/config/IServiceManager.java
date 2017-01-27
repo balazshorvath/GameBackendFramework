@@ -8,7 +8,7 @@ import hu.noroc.framework.service.IService;
  * Should be able to initialize and start a service via Framework.
  * Responsible for:
  *  a) Finding and starting the following services:
- *      1. IAuthenticationManager
+ *      1. AuthenticationManager
  *      2. ISessionManager
  *      3. INetworkManager
  *  b) Receive and handle configuration events for MainServices *

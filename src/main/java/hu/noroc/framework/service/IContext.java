@@ -1,7 +1,6 @@
 package hu.noroc.framework.service;
 
 import hu.noroc.framework.events.IFrameworkEvent;
-import hu.noroc.framework.events.config.IConfigurationEvent;
 
 
 /**
@@ -40,11 +39,11 @@ import hu.noroc.framework.events.config.IConfigurationEvent;
  *
  * Created by Oryk on 2017. 01. 24..
  */
-public interface IContext<E extends IFrameworkEvent, Config extends IConfigurationEvent> extends IConfigurableService<Config>{
-    void start();
+public interface IContext<E extends IFrameworkEvent, Config>{
+    void start(Config config);
     void stop();
 
-    String getConttextId();
+    String getContextId();
 
     void onEvent(E event);
 }

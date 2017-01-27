@@ -6,6 +6,7 @@ package hu.noroc.framework.service.base.config.model;
  *
  * Created by Oryk on 2017. 01. 23..
  */
+@Deprecated
 public interface IConfigParameter<T> {
     String getName();
     T getValue();

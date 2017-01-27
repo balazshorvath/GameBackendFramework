@@ -14,19 +14,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Context {
-    String[] methodNames() default {"onEvent"};
-    /**
-     * Based on this value, events will be passed first to HIGH priority listeners,
-     * then MEDIUM and lastly to LOW.
-     *
-     * @return priority of the Context
-     */
-    Priority priority() default Priority.LOW;
-    String defaultConfig();
 
-    enum Priority {
-        HIGH,
-        MEDIUM,
-        LOW
-    }
 }

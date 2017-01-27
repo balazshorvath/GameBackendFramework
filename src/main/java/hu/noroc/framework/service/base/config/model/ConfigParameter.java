@@ -5,6 +5,7 @@ import java.util.Objects;
 /**
  * Created by Oryk on 2017. 01. 25..
  */
+@Deprecated
 public class ConfigParameter<T> implements IConfigParameter<T> {
     private final String name;
     private T value;
