@@ -8,9 +8,9 @@ import hu.noroc.framework.service.IContext;
  * Created by Oryk on 2017. 01. 27..
  */
 @Context()
-public class FrameworkContext implements IContext<IFrameworkEvent> {
+public class FrameworkContext implements IContext<IFrameworkEvent, Object> {
     @Override
-    public void start() {
+    public void start(Object o) {
 
     }
 

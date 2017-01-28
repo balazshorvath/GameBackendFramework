@@ -5,7 +5,7 @@ package hu.noroc.framework.bus;
  */
 public interface IEventBus {
     void start();
-    void stop();
+    void stop(long forceTimeout);
 
     void subscribe(Class<?> type, Object instance);
 

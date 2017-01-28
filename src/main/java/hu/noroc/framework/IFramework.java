@@ -1,6 +1,7 @@
 package hu.noroc.framework;
 
-import hu.noroc.framework.service.IMasterService;
+
+import hu.noroc.framework.service.IContext;
 
 /**
  * Responsible for:
@@ -17,8 +18,8 @@ public interface IFramework {
 
     IFramework getInstance();
 
-    <T extends IMasterService> void registerMasterService(Class<T> c, T service);
-    <T extends IMasterService> T getMasterServiceById(String id);
+    <T extends IContext> void registerMasterService(Class<T> c, T service);
+    <T extends IContext> T getMasterServiceById(String id);
 
     String getStatusDescription();
     Double getWorkload();
