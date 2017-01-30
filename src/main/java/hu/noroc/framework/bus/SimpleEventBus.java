@@ -66,6 +66,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
             threadPool.shutdownNow();
             logger.severe(e.getMessage());
         }
+        messageQueue.clear();
         logger.info("Event bus successfully stopped.");
     }
 
