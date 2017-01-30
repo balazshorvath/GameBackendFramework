@@ -1,7 +1,21 @@
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
-version = '1.0'
+version = '0.0'
+
+task fullJar(type: Jar) {
+    manifest {
+        // Not really, but for now, it's ok
+        attributes 'Implementation-Title': 'Sovaroq Full Jar Build',
+                'Implementation-Version': version,
+                'Main-Class': 'hu.sovaroq.framework.database.DatabaseService'
+    }
+    baseName = project.name + '-full'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
 
 repositories {
     mavenCentral()
@@ -18,21 +32,12 @@ dependencies {
 
     //logging
     compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
-	
-	//database:
-	compile group: 'org.hsqldb', name: 'hsqldb', version: '2.0.0'
-	compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.2.6.Final'
-	
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8'
+
+    //database:
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.0.0'
+    compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.2.6.Final'
+
 
 }
 
-fullJar {
-    manifest {
-        // Not really, but for now, it's ok
-        attributes 'Main-Class': 'hu.sovaroq.framework.database.DatabaseService'
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}

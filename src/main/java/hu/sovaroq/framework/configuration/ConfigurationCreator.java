@@ -20,7 +20,6 @@ import java.util.Map;
  *
  * Created by Oryk on 2017. 01. 28..
  */
-@Log4j2
 public class ConfigurationCreator {
     public <C> C createConfig(Class<C> configType, String configFile) {
         Config config = configType.getAnnotation(Config.class);
@@ -32,7 +31,6 @@ public class ConfigurationCreator {
         try {
             values = config.fileParser().newInstance().getConfig(configFile);
         } catch (InstantiationException | IllegalAccessException | IOException e) {
-            ConfigurationCreator.log.error("Exception during initialization of a configuration.", e);
             e.printStackTrace();
             return null;
         }
