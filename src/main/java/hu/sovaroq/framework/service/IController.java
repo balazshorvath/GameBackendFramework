@@ -14,7 +14,7 @@ import hu.sovaroq.framework.events.IFrameworkEvent;
  * The E type parameter is the base event type, that the context and it's contents/services will need to sit on.
  *
  *
- * Why IContext exists?
+ * Why IController exists?
  *  First, the idea was to have services, which can be published inside the Framework, or inside other services
  *  to have the ability to separate the game services, scripts from chat, authentication.
  *  It is probably better to have the authentication in a different place, than the actual game.
@@ -32,14 +32,14 @@ import hu.sovaroq.framework.events.IFrameworkEvent;
  *
  *  Conclusion is Context instead of MasterService. Every service can only run in a Context.
  *  Services cannot have child services. A service communicates only through it's Context.
- *  There's a default FrameworkContext, which is subscribed to every message to be able to run any service, who
+ *  There's a default FrameworkController, which is subscribed to every message to be able to run any service, who
  *  shouldn't have a context on it's own. They fire events directly to the Framework.
  *  For example the ServiceManager, or one could create an event logger.
  *
  *
  * Created by Oryk on 2017. 01. 24..
  */
-public interface IContext<E extends IFrameworkEvent, Config>{
+public interface IController<E extends IFrameworkEvent, Config>{
     void start(Config config);
     void stop();
 

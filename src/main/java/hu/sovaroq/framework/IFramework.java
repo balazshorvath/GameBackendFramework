@@ -1,7 +1,7 @@
 package hu.sovaroq.framework;
 
 
-import hu.sovaroq.framework.service.IContext;
+import hu.sovaroq.framework.service.IController;
 
 /**
  * Responsible for:
@@ -18,8 +18,8 @@ public interface IFramework {
 
     IFramework getInstance();
 
-    <T extends IContext> void registerMasterService(Class<T> c, T service);
-    <T extends IContext> T getMasterServiceById(String id);
+    <T extends IController> void registerMasterService(Class<T> c, T service);
+    <T extends IController> T getMasterServiceById(String id);
 
     String getStatusDescription();
     Double getWorkload();

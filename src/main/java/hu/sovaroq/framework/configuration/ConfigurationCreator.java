@@ -2,6 +2,7 @@ package hu.sovaroq.framework.configuration;
 
 import hu.sovaroq.framework.configuration.annotation.Config;
 import hu.sovaroq.framework.configuration.annotation.ConfigValue;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -19,6 +20,7 @@ import java.util.Map;
  *
  * Created by Oryk on 2017. 01. 28..
  */
+@Log4j2
 public class ConfigurationCreator {
     public <C> C createConfig(Class<C> configType, String configFile) {
         Config config = configType.getAnnotation(Config.class);
@@ -30,7 +32,7 @@ public class ConfigurationCreator {
         try {
             values = config.fileParser().newInstance().getConfig(configFile);
         } catch (InstantiationException | IllegalAccessException | IOException e) {
-            //log
+            ConfigurationCreator.log.error("Exception during initialization of a configuration.", e);
             e.printStackTrace();
             return null;
         }

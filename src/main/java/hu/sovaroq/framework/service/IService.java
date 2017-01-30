@@ -9,7 +9,7 @@ public interface IService<Config> {
     void restart();
 
     String getServiceId();
-    IContext getParent();
+    IController getParent();
 
     Config getConfig();
     void setConfig(Config config);

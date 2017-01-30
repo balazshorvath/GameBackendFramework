@@ -4,11 +4,11 @@ package hu.sovaroq.framework.service;
  * Created by Oryk on 2017. 01. 27..
  */
 public abstract class Service<Config> implements IService<Config>  {
-    protected final IContext parent;
+    protected final IController parent;
     protected final String serviceId;
     protected Config config;
 
-    public Service(IContext parent, String serviceId) {
+    public Service(IController parent, String serviceId) {
         this.parent = parent;
         this.serviceId = serviceId;
     }
@@ -19,7 +19,7 @@ public abstract class Service<Config> implements IService<Config>  {
     }
 
     @Override
-    public IContext getParent() {
+    public IController getParent() {
         return parent;
     }
 

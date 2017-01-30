@@ -26,3 +26,13 @@ dependencies {
 	
 
 }
+
+fullJar {
+    manifest {
+        // Not really, but for now, it's ok
+        attributes 'Main-Class': 'hu.sovaroq.framework.database.DatabaseService'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
