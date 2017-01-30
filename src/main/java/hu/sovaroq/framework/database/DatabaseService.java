@@ -20,6 +20,8 @@ public class DatabaseService {
 				StandardServiceRegistryBuilder serviceRegistryBuilder = new StandardServiceRegistryBuilder();
 				serviceRegistryBuilder.applySettings(configuration.getProperties());
 				ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
+				// That was missing
+				configuration.addAnnotatedClass(Unit.class);
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			}
 			return sessionFactory;
@@ -38,8 +40,6 @@ public class DatabaseService {
 	}
 	
 	public static void main(String[] args){
-		System.out.println("test");
-		
 		Session session = DatabaseService.getSessionFactory().openSession();
 		session.beginTransaction();
 		
@@ -47,8 +47,13 @@ public class DatabaseService {
 		unit.setDescription("test");
 		unit.setName("testname");
 		
-		session.save(unit);
+		Long id = (Long) session.save(unit);
 		session.getTransaction().commit();
+
+		Unit saved = session.get(Unit.class, id);
+
+		System.out.println(saved);
+
 		DatabaseService.shutdown();
 		
 	}

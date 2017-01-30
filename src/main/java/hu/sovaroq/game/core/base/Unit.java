@@ -1,5 +1,8 @@
 package hu.sovaroq.game.core.base;
 
+import lombok.Data;
+import lombok.ToString;
+
 import static javax.persistence.GenerationType.AUTO;
 
 import javax.persistence.Column;
@@ -10,12 +13,14 @@ import javax.persistence.Table;
 
 @Entity
 @Table
+@Data
+@ToString
 public class Unit {
 	
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	@Column
-	private long id;
+	private Long id;
 	
 	@Column(length = 50, nullable = false, unique = true)
 	private String name;
@@ -24,31 +29,6 @@ public class Unit {
 	private String description;
 	
 	public Unit(){}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
 
 }
 
