@@ -1,16 +1,20 @@
 package hu.sovaroq.framework.database;
 
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import hu.sovaroq.game.core.base.Unit;
+import hu.sovaroq.framework.log.LogProvider;
+import hu.sovaroq.game.core.base.UnitBase;
 
 public class DatabaseService {
 
 	private static SessionFactory sessionFactory = buildSessionFactory();
+	
+	private static final Logger log = LogProvider.createLogger(DatabaseService.class);
 
 	private static SessionFactory buildSessionFactory() {
 		try {
@@ -21,7 +25,7 @@ public class DatabaseService {
 				serviceRegistryBuilder.applySettings(configuration.getProperties());
 				ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
 				// That was missing
-				configuration.addAnnotatedClass(Unit.class);
+				configuration.addAnnotatedClass(UnitBase.class);
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			}
 			return sessionFactory;
@@ -39,23 +43,4 @@ public class DatabaseService {
 		getSessionFactory().close();
 	}
 	
-	public static void main(String[] args){
-		Session session = DatabaseService.getSessionFactory().openSession();
-		session.beginTransaction();
-		
-		Unit unit = new Unit();
-		unit.setDescription("test");
-		unit.setName("testname");
-		
-		Long id = (Long) session.save(unit);
-		session.getTransaction().commit();
-
-		Unit saved = session.get(Unit.class, id);
-
-		System.out.println(saved);
-
-		DatabaseService.shutdown();
-		
-	}
-
 }
