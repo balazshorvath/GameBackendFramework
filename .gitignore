@@ -7,3 +7,4 @@ bin/
 build/
 .classpath
 .project
+.gradle

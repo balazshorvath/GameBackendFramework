@@ -9,39 +9,34 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.JoinColumn;
 
 import lombok.Data;
 import lombok.ToString;
 
+
 @Entity
-@Table(name = "BuildingBase")
+@Table(name = "CommanderBase")
 @Data
 @ToString
-public class BuildingBase {
+public class CommanderBase {
 	
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	@Column
-	private Long buildingid;
+	private Long commanderid;
 	
-	@Column(length = 50, nullable = false)
+	@Column(length = 50, nullable = false, unique = true)
 	private String name;
 	
-	@Column(length = 50, nullable = false)
+	@Column(length = 50, nullable = false, unique = true)
 	private String description;
 	
-	@Column(nullable = false)
-	private long baseHP;
-	
-	@Column(nullable = false)
-	private long baseAttackDamage;
-	
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "unitbase_buildingbase", joinColumns = { @JoinColumn(name = "buildingid") }, inverseJoinColumns = { @JoinColumn(name = "unitid") })
-	Set<UnitBase> availableUnits;
+	@JoinTable(name = "buildingbase_commanderbase", joinColumns = { @JoinColumn(name = "commanderid") }, inverseJoinColumns = { @JoinColumn(name = "buildingid") })
+	private Set<BuildingBase> availableBuildings;
 
 }

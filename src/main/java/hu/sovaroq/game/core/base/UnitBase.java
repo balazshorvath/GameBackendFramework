@@ -20,12 +20,12 @@ public class UnitBase {
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	@Column
-	private Long id;
+	private Long unitid;
 	
-	@Column(length = 50, nullable = false, unique = true)
+	@Column(length = 50, nullable = false)
 	private String name;
 	
-	@Column(length = 50, nullable = false, unique = true)
+	@Column(length = 50, nullable = false)
 	private String description;
 	
 	public UnitBase(){}

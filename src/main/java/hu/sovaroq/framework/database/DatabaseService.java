@@ -1,5 +1,8 @@
 package hu.sovaroq.framework.database;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,10 +10,16 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import hu.sovaroq.framework.configuration.annotation.Config;
 import hu.sovaroq.framework.log.LogProvider;
+import hu.sovaroq.framework.service.IController;
+import hu.sovaroq.framework.service.Service;
+import hu.sovaroq.game.core.base.BuildingBase;
+import hu.sovaroq.game.core.base.CommanderBase;
 import hu.sovaroq.game.core.base.UnitBase;
+import hu.sovaroq.game.core.config.DefaultFileParser;
 
-public class DatabaseService {
+public class DatabaseService extends Service<DatabaseService.DatabaseConfig>{
 
 	private static SessionFactory sessionFactory = buildSessionFactory();
 	
@@ -26,6 +35,8 @@ public class DatabaseService {
 				ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
 				// That was missing
 				configuration.addAnnotatedClass(UnitBase.class);
+				configuration.addAnnotatedClass(BuildingBase.class);
+				configuration.addAnnotatedClass(CommanderBase.class);
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			}
 			return sessionFactory;
@@ -34,6 +45,10 @@ public class DatabaseService {
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
+	
+	public DatabaseService(IController parent, String serviceId){
+		super(parent, serviceId);
+	}
 
 	public static SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -41,6 +56,78 @@ public class DatabaseService {
 
 	public static void shutdown() {
 		getSessionFactory().close();
+	}
+	
+	@Override
+	public void onCreate(DatabaseService.DatabaseConfig config) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void restart() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setConfig(DatabaseService.DatabaseConfig config) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Config(fileParser = DefaultFileParser.class)
+	public class DatabaseConfig{
+		
+	}
+	
+	public static void main(String[] args){
+		Session session = sessionFactory.openSession();
+		
+		UnitBase unit = new UnitBase();
+		unit.setBaseAttackDamage(1);
+		unit.setBaseHP(5);
+		unit.setBaseMovementSpeed(1);
+		unit.setDescription("test unit description");
+		unit.setName("test name unit");
+		
+		session.save(unit);
+		
+		UnitBase unit2 = new UnitBase();
+		unit2.setBaseAttackDamage(1);
+		unit2.setBaseHP(5);
+		unit2.setBaseMovementSpeed(1);
+		unit2.setDescription("test unit description2");
+		unit2.setName("test name unit2");
+		
+		session.save(unit2);
+		
+		BuildingBase building = new BuildingBase();
+		Set<UnitBase> units = new HashSet<UnitBase>();
+		units.add(unit);
+		units.add(unit2);
+		building.setAvailableUnits(units);
+		building.setBaseAttackDamage(10);
+		building.setBaseHP(30);
+		building.setDescription("building test description");
+		building.setName("name");
+		
+		Long i = (Long) session.save(building);
+		
+		log.info("Building saved, ID: " + i.toString());
+		
+		
+		BuildingBase testBuilding = session.get(BuildingBase.class, i);
+		
+		log.debug("building: " + testBuilding);
+		
+		session.close();
 	}
 	
 }
