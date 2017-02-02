@@ -11,7 +11,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import hu.sovaroq.framework.configuration.annotation.Config;
-import hu.sovaroq.framework.log.LogProvider;
+import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.IController;
 import hu.sovaroq.framework.service.Service;
 import hu.sovaroq.game.core.base.BuildingBase;
