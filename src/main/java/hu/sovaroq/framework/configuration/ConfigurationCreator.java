@@ -2,6 +2,8 @@ package hu.sovaroq.framework.configuration;
 
 import hu.sovaroq.framework.configuration.annotation.Config;
 import hu.sovaroq.framework.configuration.annotation.ConfigValue;
+import hu.sovaroq.framework.logger.LogProvider;
+
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
