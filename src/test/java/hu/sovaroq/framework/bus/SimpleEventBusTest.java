@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by Oryk on 2017. 01. 28..
  */
-public class SimpleeventBusTest {
+public class SimpleEventBusTest {
     IEventBus bus;
     TestEventReceiver1 service1;
     TestEventReceiver2 service2;
