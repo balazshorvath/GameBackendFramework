@@ -6,9 +6,13 @@ import hu.sovaroq.framework.logger.LogProvider;
 
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Configuration property keys can be separated with dots.
@@ -28,7 +32,7 @@ public class ConfigurationCreator {
     public <C> C createConfig(Class<C> configType, String configFile) {
         Config config = configType.getAnnotation(Config.class);
         if(config == null){
-            //log
+            log.error("Could not create config instance of class '" + configType.getName() + "', it's not a '@Config'.");
             return null;
         }
         Map<Object, Object> values = null;
@@ -44,32 +48,70 @@ public class ConfigurationCreator {
     }
 
     private <C> C createObject(Class<C> configType, Map<String, Object> values){
+        C result;
+        try {
+            result = configType.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error("Failed to create config class instance of '" + configType.getName() + "'. Exception: " + e.getMessage());
+            return null;
+        }
 
         ConfigValue configValue;
         for (Field field : configType.getFields()) {
             if((configValue = field.getAnnotation(ConfigValue.class)) != null){
+                String key = configValue.key();
                 Config config;
-                if((config = field.getType().getAnnotation(Config.class)) != null){
-                    // TODO if key exists exactly as annotated ( there's no something.something in the key set ), act as it's a new config file.
-
-                    // TODO if key exists as the beginning of multiple keys followed by a dot in the hash map ( "keyname.whatever" ),create "submap"
-                    // TODO with the new keys ( new key would be "whatever" )
+                if(key.isEmpty()){
+                    key = field.getName();
                 }
-
-                if(values.containsKey(configValue.key())){
-                    Object value = values.get(configValue.key());
+                if(values.containsKey(key)){
+                    Object value = values.get(key);
                     Object parsedValue = null;
-                    if(value instanceof String){
-                         parsedValue = parseKnownTypes(field.getType(), (String) value);
-                        //TODO try for @Config class, if yes, then
-                    }else if (value.getClass().equals(field.getType())){
-                        //TODO setter
+                    try {
+                        Method m;
+                        if(value instanceof String){
+                            parsedValue = parseKnownTypes(field.getType(), (String) value);
+                        }else if (value.getClass().equals(field.getType())){
+                            parsedValue = value;
+                        }
+                        m = setter(field);
+                        m.invoke(result, parsedValue);
+
+                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                        log.warn("No setter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
                     }
 
+                } else if((config = field.getType().getAnnotation(Config.class)) != null){
+                    try {
+                        Method getter = getter(field);
+                        Object fieldValue = getter.invoke(result);
+                        if(fieldValue == null){
+                            fieldValue = field.getType().newInstance();
+                        }
+                        final String finalKey = key;
+                        Map<String, Object> sublist = values.entrySet().stream().filter(entry ->
+                                        entry.getKey().startsWith(finalKey + ".")
+                        ).collect(Collectors.toMap(entry ->
+                                                entry.getKey().substring(entry.getKey().indexOf(".")),
+                                        Map.Entry::getValue)
+                        );
+                        fieldValue = createObject(field.getType(), sublist);
+
+                        Method setter = setter(field);
+                        setter.invoke(result, fieldValue);
+                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                        log.warn("No getter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
+                    } catch (InstantiationException e) {
+                        log.warn("Could not create instance of field '" + field.getName() + "'" +
+                                " (" + field.getType().getName() + ") in class '" + configType.getName() + "'.");
+                    }
+                } else {
+                    log.warn("Unable to set field '" + field.getName() + "' in class '" + field.getType() + "'.");
                 }
+
             }
         }
-        return null;
+        return result;
     }
 
     private Object parseKnownTypes(Class<?> type, String value) throws NumberFormatException {
@@ -106,5 +148,24 @@ public class ConfigurationCreator {
         }
 
         return o;
+    }
+
+    private Method getter(Field field) throws NoSuchMethodException {
+        String base;
+        //
+        // Lombok generates Boolean as getBoolean
+        //
+        if (field.getType().equals(boolean.class)){
+            base = "is";
+        }else {
+            base = "get";
+        }
+        return field.getDeclaringClass().getMethod(base + getFieldNameUpper(field), field.getType());
+    }
+    private Method setter(Field field) throws NoSuchMethodException {
+        return field.getDeclaringClass().getMethod("set" + getFieldNameUpper(field), field.getType());
+    }
+    private String getFieldNameUpper(Field field){
+        return field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
     }
 }
