@@ -9,6 +9,6 @@ import java.util.Map;
 public abstract class FileParser {
     public FileParser() {
     }
-    public abstract Map<Object, Object> getConfig(String file) throws IOException;
-    public abstract void saveConfig(String file, Map<Object, Object> config) throws IOException;
+    public abstract Map<String, Object> getConfig(String file) throws IOException;
+    public abstract void saveConfig(String file, Map<String, Object> config) throws IOException;
 }

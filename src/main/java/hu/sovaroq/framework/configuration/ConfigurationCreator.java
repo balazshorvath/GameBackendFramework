@@ -35,7 +35,7 @@ public class ConfigurationCreator {
             log.error("Could not create config instance of class '" + configType.getName() + "', it's not a '@Config'.");
             return null;
         }
-        Map<Object, Object> values = null;
+        Map<String, Object> values = null;
         try {
             values = config.fileParser().newInstance().getConfig(configFile);
         } catch (InstantiationException | IllegalAccessException | IOException e) {
@@ -44,7 +44,7 @@ public class ConfigurationCreator {
         }
 
 
-        return null;
+        return createObject(configType, values);
     }
 
     private <C> C createObject(Class<C> configType, Map<String, Object> values){

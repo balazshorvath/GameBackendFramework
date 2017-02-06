@@ -3,7 +3,6 @@ package hu.sovaroq.framework.configuration;
 import hu.sovaroq.framework.configuration.annotation.Config;
 import hu.sovaroq.framework.configuration.annotation.ConfigValue;
 import hu.sovaroq.game.core.config.DefaultFileParser;
-import junit.framework.Assert;
 import lombok.Data;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,13 +14,13 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.zip.InflaterInputStream;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by Oryk on 2017. 02. 04..
  */
 public class ConfigurationCreatorTest {
-    private final String testConfig1 = "testconfiguration1.properties";
+    private final String testConfig1 = "src/test/resources/configuration/testconfiguration1.properties";
     private ConfigurationCreator configurationCreator;
     
 
@@ -32,39 +31,39 @@ public class ConfigurationCreatorTest {
     
     @Test
     public void testParsing() throws IOException {
-        TestConfig config = configurationCreator.createConfig(TestConfig.class, testConfig1));
+        TestConfig config = configurationCreator.createConfig(TestConfig.class, testConfig1);
         Properties properties = new Properties();
         properties.load(Files.newInputStream(Paths.get(testConfig1)));
         
-        assertEquals(Byte.valueOf((String) properties.get("aByte")), config.getAByte());
-        assertEquals(properties.get("objectByte"), config.getOByte());
+        assertEquals(Byte.valueOf((String) properties.get("aByte")), new Byte(config.getAByte()));
+        assertEquals(Byte.valueOf((String) properties.get("objectByte")), config.getOByte());
         
-        assertEquals(properties.get("aChar"), config.getAChar());
-        assertEquals(properties.get("character"), config.getCharacter());
+        assertEquals(((String)properties.get("aChar")).charAt(0), config.getAChar());
+        assertEquals(new Character(((String)properties.get("character")).charAt(0)), config.getCharacter());
         
-        assertEquals(properties.get("aShort"), config.getAShort());
-        assertEquals(properties.get("oShort"), config.getOShort());
+        assertEquals(Short.valueOf((String)properties.get("aShort")), new Short(config.getAShort()));
+        assertEquals(Short.valueOf((String)properties.get("oShort")), config.getOShort());
         
-        assertEquals(properties.get("anInt"), config.getAnInt());
-        assertEquals(properties.get("integer"), config.getInteger());
+        assertEquals(Integer.valueOf((String)properties.get("anInt")), new Integer(config.getAnInt()));
+        assertEquals(Integer.valueOf((String)properties.get("integer")), config.getInteger());
         
-        assertEquals(properties.get("aLong"), config.getALong());
-        assertEquals(properties.get("oLong"), config.getOLong());
+        assertEquals(Long.valueOf((String)properties.get("aLong")), new Long(config.getALong()));
+        assertEquals(Long.valueOf((String)properties.get("oLong")), config.getOLong());
         
-        assertEquals(properties.get("aFloat"), config.getAFloat());
-        assertEquals(properties.get("oFloat"), config.getOFloat());
+        assertEquals(Float.valueOf((String)properties.get("aFloat")), new Float(config.getAFloat()));
+        assertEquals(Float.valueOf((String)properties.get("oFloat")), config.getOFloat());
         
-        assertEquals(properties.get("aDouble"), config.getADouble());
-        assertEquals(properties.get("oDouble"), config.getODouble());
+        assertEquals(Double.valueOf((String)properties.get("aDouble")), new Double(config.getADouble()));
+        assertEquals(Double.valueOf((String)properties.get("oDouble")), config.getODouble());
         
-        assertEquals(properties.get("aBoolean"), config.isABoolean());
-        assertEquals(properties.get("oBoolean"), config.getOBoolean());
+        assertEquals(Boolean.valueOf((String)properties.get("aBoolean")), new Boolean(config.isABoolean()));
+        assertEquals(Boolean.valueOf((String)properties.get("oBoolean")), config.getOBoolean());
         
         assertEquals(properties.get("string"), config.getString());
         
         assertEquals(properties.get("object"), config.getObject());
 
-        assertEquals(properties.get("notConfigured"), config.getNotConfigured());
+        assertNull(config.getNotConfigured());
     }
     
 
@@ -120,7 +119,7 @@ public class ConfigurationCreatorTest {
 
         private Integer notConfigured;
 
-        private TestConfig() {
+        public TestConfig() {
         }
     }
 }
