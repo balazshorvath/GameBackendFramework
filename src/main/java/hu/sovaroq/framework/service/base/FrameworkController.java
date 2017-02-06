@@ -1,13 +1,16 @@
 package hu.sovaroq.framework.service.base;
 
-import hu.sovaroq.framework.annotations.Context;
+import java.util.List;
+
+import hu.sovaroq.framework.annotations.Service;
 import hu.sovaroq.framework.events.FrameworkEvent;
 import hu.sovaroq.framework.service.IController;
+import hu.sovaroq.framework.service.IService;
 
 /**
  * Created by Oryk on 2017. 01. 27..
  */
-@Context()
+//@Service()
 public class FrameworkController implements IController<FrameworkEvent, Object> {
     @Override
     public void start(Object o) {
@@ -28,4 +31,22 @@ public class FrameworkController implements IController<FrameworkEvent, Object> 
     public void onEvent(FrameworkEvent event) {
 
     }
+
+	@Override
+	public String getStatusDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double getWorkload() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<IService> getServices() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

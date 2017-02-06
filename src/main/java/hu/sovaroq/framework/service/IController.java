@@ -1,5 +1,7 @@
 package hu.sovaroq.framework.service;
 
+import java.util.List;
+
 import hu.sovaroq.framework.events.FrameworkEvent;
 
 /**
@@ -45,4 +47,8 @@ public interface IController<E extends FrameworkEvent, Config>{
     String getControllerId();
 
     void onEvent(E event);
+
+    List<IService> getServices();
+    String getStatusDescription();
+    Double getWorkload();
 }

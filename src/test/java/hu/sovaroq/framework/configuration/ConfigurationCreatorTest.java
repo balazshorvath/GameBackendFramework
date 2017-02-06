@@ -1,9 +1,11 @@
 package hu.sovaroq.framework.configuration;
 
-import hu.sovaroq.framework.configuration.annotation.Config;
+import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.configuration.annotation.ConfigValue;
 import hu.sovaroq.game.core.config.DefaultFileParser;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -67,10 +69,9 @@ public class ConfigurationCreatorTest {
     }
     
 
-
-    @Config(fileParser = DefaultFileParser.class)
     @Data
-    private class TestConfig {
+    @NoArgsConstructor
+    public static class TestConfig {
         @ConfigValue
         private byte aByte;
         @ConfigValue(key = "objectByte")
@@ -118,8 +119,5 @@ public class ConfigurationCreatorTest {
         private Object object;
 
         private Integer notConfigured;
-
-        public TestConfig() {
-        }
     }
 }

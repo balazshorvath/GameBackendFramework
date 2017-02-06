@@ -1,17 +1,26 @@
 package hu.sovaroq.framework.configuration;
 
-import hu.sovaroq.framework.configuration.annotation.Config;
+import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.configuration.annotation.ConfigValue;
 import hu.sovaroq.framework.logger.LogProvider;
+import lombok.val;
 
 import org.apache.logging.log4j.Logger;
+import org.reflections.Reflections;
+
+import com.google.common.reflect.Reflection;
 
 import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -28,21 +37,48 @@ import java.util.stream.Collectors;
  */
 public class ConfigurationCreator {
     private static final Logger log = LogProvider.createLogger(ConfigurationCreator.class);
+    private static final Map<String, List<Class<? extends FileParser>>> fileParsers;
+    
+    static {
+    	fileParsers = new HashMap<>();
+    	Reflections reflections = new Reflections();
+    	Set<Class<?>> parsers = reflections.getTypesAnnotatedWith(ConfigFileParser.class);
+    	for (Class<?> parser : parsers) {
+			ConfigFileParser annot = parser.getAnnotation(ConfigFileParser.class);
+			if(!FileParser.class.isAssignableFrom(parser)){
+				log.warn(parser.getName() + " is annotated annotated with @ConfigFileParser, but does not implement FileParser.");
+				continue;
+			}
+			for (String type : annot.value()) {
+				if(!fileParsers.containsKey(type)){
+					fileParsers.put(type, new ArrayList<>());
+				}
+				fileParsers.get(type).add((Class<? extends FileParser>) parser);
+				log.debug("Added file association '" + type + "' with parser " + parser.getName() + ".");
+			}
+		}
+    }
+    
 
     public <C> C createConfig(Class<C> configType, String configFile) {
-        Config config = configType.getAnnotation(Config.class);
-        if(config == null){
-            log.error("Could not create config instance of class '" + configType.getName() + "', it's not a '@Config'.");
-            return null;
-        }
         Map<String, Object> values = null;
-        try {
-            values = config.fileParser().newInstance().getConfig(configFile);
-        } catch (InstantiationException | IllegalAccessException | IOException e) {
-            e.printStackTrace();
-            return null;
+        String type = configFile.substring(configFile.lastIndexOf('.'));
+        if(!fileParsers.containsKey(type)){
+        	log.error("No file association.");
+        	return null;
+        }
+        for(Class<? extends FileParser> parser : fileParsers.get(type)){
+	        try {
+	            values = parser.newInstance().getConfig(configFile);
+	            break;
+	        } catch (InstantiationException | IllegalAccessException | IOException e) {
+	            log.error(e);
+	        }
         }
 
+        if(values == null){
+        	log.error("Could not parse config file. Config type: " + configType.getName());
+        }
 
         return createObject(configType, values);
     }
@@ -52,15 +88,15 @@ public class ConfigurationCreator {
         try {
             result = configType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("Failed to create config class instance of '" + configType.getName() + "'. Exception: " + e.getMessage());
+            log.error("Failed to create config class instance of '" + configType.getName() + "'. Exception: " + e);
+            e.printStackTrace();
             return null;
         }
 
         ConfigValue configValue;
-        for (Field field : configType.getFields()) {
+        for (Field field : configType.getDeclaredFields()) {
             if((configValue = field.getAnnotation(ConfigValue.class)) != null){
                 String key = configValue.key();
-                Config config;
                 if(key.isEmpty()){
                     key = field.getName();
                 }
@@ -81,7 +117,7 @@ public class ConfigurationCreator {
                         log.warn("No setter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
                     }
 
-                } else if((config = field.getType().getAnnotation(Config.class)) != null){
+                } else {
                     try {
                         Method getter = getter(field);
                         Object fieldValue = getter.invoke(result);
@@ -105,8 +141,6 @@ public class ConfigurationCreator {
                         log.warn("Could not create instance of field '" + field.getName() + "'" +
                                 " (" + field.getType().getName() + ") in class '" + configType.getName() + "'.");
                     }
-                } else {
-                    log.warn("Unable to set field '" + field.getName() + "' in class '" + field.getType() + "'.");
                 }
 
             }
@@ -117,7 +151,7 @@ public class ConfigurationCreator {
     private Object parseKnownTypes(Class<?> type, String value) throws NumberFormatException {
         Object o = null;
 
-        if(type.isPrimitive() || type.isAssignableFrom(Number.class) || type.equals(Boolean.class) || type.equals(Character.class)){
+        if(type.isPrimitive() || Number.class.isAssignableFrom(type) || type.equals(Boolean.class) || type.equals(Character.class)){
             if(type.equals(float.class) || type.equals(Float.class)){
                 o = Float.parseFloat(value);
             }else if(type.equals(double.class) || type.equals(Double.class)){

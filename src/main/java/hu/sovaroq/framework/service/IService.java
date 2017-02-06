@@ -13,4 +13,7 @@ public interface IService<Config> {
 
     Config getConfig();
     void setConfig(Config config);
+    
+    String getStatusDescription();
+    Double getWorkload();
 }

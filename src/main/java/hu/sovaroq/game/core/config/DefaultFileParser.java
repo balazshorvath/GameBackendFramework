@@ -1,6 +1,7 @@
 package hu.sovaroq.game.core.config;
 
 import hu.sovaroq.framework.configuration.FileParser;
+import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -15,6 +16,7 @@ import java.util.Properties;
 /**
  * Created by Oryk on 2017. 01. 28..
  */
+@ConfigFileParser({".properties"})
 public class DefaultFileParser extends FileParser {
     public DefaultFileParser() {
         super();

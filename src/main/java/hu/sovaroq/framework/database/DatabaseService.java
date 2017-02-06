@@ -10,7 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
-import hu.sovaroq.framework.configuration.annotation.Config;
+import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.IController;
 import hu.sovaroq.framework.service.Service;
@@ -81,8 +81,7 @@ public class DatabaseService extends Service<DatabaseService.DatabaseConfig>{
 		// TODO Auto-generated method stub
 		
 	}
-	
-	@Config(fileParser = DefaultFileParser.class)
+
 	public class DatabaseConfig{
 		
 	}
@@ -128,6 +127,18 @@ public class DatabaseService extends Service<DatabaseService.DatabaseConfig>{
 		log.debug("building: " + testBuilding);
 		
 		session.close();
+	}
+
+	@Override
+	public String getStatusDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double getWorkload() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -12,7 +12,17 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface Config {
-    Class<? extends FileParser> fileParser();
-
+public @interface ConfigFileParser {
+	/**
+	 * Example:
+	 * 		<code>
+	 * 			@ConfigFileParser({"json", "JSON"})
+	 * 			public class JSONParser extends FileParser{
+	 * 				// Code
+	 * 			}
+	 * 
+	 * 		</code>
+	 * @return list of files, that can be parsed using this annotated parser.
+	 */
+	String[] value();
 }

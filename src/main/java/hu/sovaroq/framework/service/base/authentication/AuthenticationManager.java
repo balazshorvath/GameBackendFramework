@@ -50,4 +50,16 @@ public class AuthenticationManager extends Service<AuthenticationManager.Authent
     class AuthenticationConfig{
 
     }
+
+	@Override
+	public String getStatusDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double getWorkload() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
