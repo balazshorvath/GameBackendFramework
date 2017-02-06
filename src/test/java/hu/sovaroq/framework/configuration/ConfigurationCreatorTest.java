@@ -31,7 +31,6 @@ public class ConfigurationCreatorTest {
     
     @Test
     public void testParsing() throws IOException {
-    	// Git test
         TestConfig config = configurationCreator.createConfig(TestConfig.class, testConfig1);
         Properties properties = new Properties();
         properties.load(Files.newInputStream(Paths.get(testConfig1)));
