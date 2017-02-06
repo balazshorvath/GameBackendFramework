@@ -16,7 +16,7 @@ public @interface ConfigFileParser {
 	/**
 	 * Example:
 	 * 		<code>
-	 * 			@ConfigFileParser({"json", "JSON"})
+	 * 			@ConfigFileParser({".json", ".JSON"})
 	 * 			public class JSONParser extends FileParser{
 	 * 				// Code
 	 * 			}

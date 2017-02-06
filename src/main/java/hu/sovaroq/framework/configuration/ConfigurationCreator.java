@@ -38,7 +38,10 @@ import java.util.stream.Collectors;
 public class ConfigurationCreator {
     private static final Logger log = LogProvider.createLogger(ConfigurationCreator.class);
     private static final Map<String, List<Class<? extends FileParser>>> fileParsers;
-    
+    /**
+     * Static initializer for config loader.
+     * find file parsers based on annotation.
+     */
     static {
     	fileParsers = new HashMap<>();
     	Reflections reflections = new Reflections();
