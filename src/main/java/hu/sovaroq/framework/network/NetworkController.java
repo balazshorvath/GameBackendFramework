@@ -38,6 +38,9 @@ public class NetworkController extends Service<NetworkController.NetworkConfig>{
 						SSLSocket socket = (SSLSocket) serverSocket.accept();
 						ClientConnection connection = new ClientConnection();
 						connection.start(socket);
+						
+						
+						
 					} catch (IOException e) {						
 						e.printStackTrace();
 					}				
