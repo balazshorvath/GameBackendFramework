@@ -1,40 +1,61 @@
 package hu.sovaroq.framework.service;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
-import org.apache.logging.log4j.Logger;
-
 import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.bus.SimpleEventBus;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
 import hu.sovaroq.framework.service.extension.Ticker;
+import org.apache.logging.log4j.Logger;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ServiceManager {
+	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;
+
 	private final Logger log;
 	private final Map<String, IService> services = new ConcurrentHashMap<>();
-	
-	private final Queue<Runnable> runnables = new ConcurrentLinkedQueue<>();
+	private final ThreadPoolExecutor threadPool;
 
 	private final IEventBus bus;
 	private final Ticker ticker;
+
+	private ManagerState state = ManagerState.IDLE;
 	
 	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
-		bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
+		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+		this.bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
 		this.ticker = new Ticker(tickerSize);
 		this.log = log;
 	}
-	public ServiceManager(IEventBus bus, int tickerSize, Logger log){
-		this.ticker = new Ticker(tickerSize);
-		this.bus = bus;
-		this.log = log;
+
+	public void start(){
+		ticker.start();
+		state = ManagerState.STARTED;
+	}
+	public void stop(){
+		state = ManagerState.STOPPING;
+		ticker.stop();
+		services.values().stream().forEach(IService::stop);
+
+		threadPool.shutdown();
+
+		long start = System.currentTimeMillis();
+
+		while(!ticker.getState().equals(Ticker.TickerState.STOPPED)
+				&& !threadPool.isShutdown()){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		state = ManagerState.STOPPED;
 	}
 	
 	public <T extends IService> boolean manage(final Class<T> type, final T service){
@@ -51,9 +72,9 @@ public class ServiceManager {
 						+ "annotated with both Tick and Run, which is an invalide usage!");
 			}
 			if(run != null){
-				startRunnable(m, service);
+				registerRunnable(m, service);
 			}else if(tick != null){
-				startTick(m, service);
+				registerTick(m, service, tick.value());
 			}
 		}
 		
@@ -64,20 +85,25 @@ public class ServiceManager {
 	}
 	
 	
-	private void startTick(Method m, Object service) {
-		
+	private void registerTick(final Method m, final Object service, final long invocationTime) {
+		ticker.addTickerCall(invocationTime, m, service);
 	}
 
-	private void startRunnable(final Method m, final Object service){
-		Thread t = new Thread(() -> {
+	private void registerRunnable(final Method m, final Object service){
+		threadPool.execute(() -> {
 			try {
 				m.invoke(service);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
+				// impossible
 				e.printStackTrace();
 			}
 		});
-		t.start();
-		runnables.add(t);
+	}
+
+	public enum ManagerState{
+		IDLE,
+		STARTED,
+		STOPPING,
+		STOPPED
 	}
 }

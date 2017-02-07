@@ -13,5 +13,5 @@ public @interface Tick {
 	 * 
 	 * @return time between calls in milliseconds
 	 */
-	long interval();
+	long value();
 }

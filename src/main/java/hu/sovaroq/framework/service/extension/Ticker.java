@@ -9,12 +9,12 @@ import org.apache.logging.log4j.Logger;
 import hu.sovaroq.framework.logger.LogProvider;
 
 public class Ticker {
-	public static final long MINIMUM_TICK = 50;
-	
 	protected final PriorityQueue<TickCall> calls;
 	
 	protected Logger log;
 	protected boolean running = false;
+
+	protected TickerState state = TickerState.NOT_STARTED;
 
 	public Ticker(int capacity, Logger log){
 		calls = new PriorityQueue<>(capacity);
@@ -32,16 +32,18 @@ public class Ticker {
 			return null;
 		}
 		running = true;
-		
+		state = TickerState.IDLE;
 		return () -> {
+			state = TickerState.STARTED;
 			TickCall call;
 			long currentTime;
 			while(running){
 				if((call = calls.peek()) == null){
 					try {
-						Thread.sleep(MINIMUM_TICK);
+						Thread.sleep(20);
 					} catch (InterruptedException e) {
 						running = false;
+						state = TickerState.STOPPING;
 						continue;
 					}
 					continue;
@@ -64,23 +66,29 @@ public class Ticker {
 						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						running = false;
-						continue;
+						state = TickerState.STOPPING;
 					}
 				}
 				
 			}
+			state = TickerState.STOPPED;
 			calls.clear();
 		};
 	}
 	
 	public void stop(){
+		state = TickerState.STOPPING;
 		running = false;
 	}
 	
 	public void addTickerCall(final long callMs, final Method m, final Object o){
 		calls.add(new TickCall(callMs, m, o));
 	}
-	
+
+	public TickerState getState() {
+		return state;
+	}
+
 	protected class TickCall implements Comparable<TickCall>{
 		public long nextCall;
 		public final long callMs;
@@ -98,6 +106,13 @@ public class Ticker {
 		public int compareTo(TickCall o) {
 			return (int) (this.nextCall - o.nextCall);
 		}
+	}
+	public enum TickerState {
+		NOT_STARTED,
+		IDLE,
+		STARTED,
+		STOPPING,
+		STOPPED
 	}
 
 }

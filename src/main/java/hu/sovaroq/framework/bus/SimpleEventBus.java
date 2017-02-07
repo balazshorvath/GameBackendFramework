@@ -1,13 +1,14 @@
 package hu.sovaroq.framework.bus;
 
 import hu.sovaroq.framework.annotations.EventListener;
+import hu.sovaroq.framework.logger.LogProvider;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.logging.Logger;
 
 /**
  * Created by Oryk on 2017. 01. 27..
@@ -15,7 +16,7 @@ import java.util.logging.Logger;
 public class SimpleEventBus implements IEventBus, Runnable {
     public static final String LISTENER_METHOD_NAME = "onEvent";
 
-    private static final Logger logger = Logger.getLogger(SimpleEventBus.class.getName());
+    private static final Logger logger = LogProvider.createLogger(SimpleEventBus.class);
 
     private final List<ListenerConfig> listeners = new ArrayList<>();
     private final BlockingQueue<Object> messageQueue = new LinkedBlockingQueue<>();
@@ -49,7 +50,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
                 break;
             }
         }
@@ -64,7 +65,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
             }
         } catch (InterruptedException e) {
             threadPool.shutdownNow();
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
         messageQueue.clear();
         logger.info("Event bus successfully stopped.");
@@ -75,7 +76,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
         // Is it configured?
         EventListener conf = type.getAnnotation(EventListener.class);
         if(conf == null){
-            logger.warning("Could not add instance of class '" + type.getName() + "' to listeners, since it's not annotated with @EventListener.");
+            logger.warn("Could not add instance of class '" + type.getName() + "' to listeners, since it's not annotated with @EventListener.");
             return;
         }
 
@@ -89,7 +90,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
                 for (Method method : type.getMethods()) {
                     if (method.getName().equals(LISTENER_METHOD_NAME)) {
                         if (method.getParameterCount() != 1) {
-                            logger.warning("onEvent method of class '" + type.getName() + "' has invalid parameter set.");
+                            logger.warn("onEvent method of class '" + type.getName() + "' has invalid parameter set.");
                             continue;
                         }
                         config.events.put(method.getParameterTypes()[0], method);
@@ -97,7 +98,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
                 }
                 // Is there any actual methods?
                 if (config.events.size() < 1) {
-                    logger.warning("Could not add instance of class '" + type.getName() + "' to listeners, since it has no valid onEvent method.");
+                    logger.warn("Could not add instance of class '" + type.getName() + "' to listeners, since it has no valid onEvent method.");
                     return;
                 }
                 listeners.add(config);
@@ -156,7 +157,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
                 m.invoke(instance, event);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
-                logger.severe(e.getMessage());
+                logger.error(e.getMessage());
             }
         };
     }
