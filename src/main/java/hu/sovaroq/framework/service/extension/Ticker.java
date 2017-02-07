@@ -34,7 +34,7 @@ public class Ticker {
 			TickCall call;
 			long currentTime;
 			while(running){
-				if(calls.peek() == null){
+				if((call = calls.peek()) == null){
 					try {
 						Thread.sleep(MINIMUM_TICK);
 					} catch (InterruptedException e) {
@@ -42,10 +42,10 @@ public class Ticker {
 						continue;
 					}
 				}
-				call = calls.poll();
 				currentTime = System.currentTimeMillis();
 				if(call.nextCall <= currentTime){
 					try {
+						call = calls.poll();
 						call.m.invoke(call.o);
 						
 						call.nextCall = currentTime + call.callMs;
@@ -57,7 +57,7 @@ public class Ticker {
 					}
 				}else {
 					try {
-						Thread.sleep(currentTime - call.nextCall);
+						Thread.sleep(10);
 					} catch (InterruptedException e) {
 						running = false;
 						continue;
@@ -66,6 +66,10 @@ public class Ticker {
 				
 			}
 		};
+	}
+	
+	public void stop(){
+		running = false;
 	}
 	
 	public void addTickerCall(final long callMs, final Method m, final Object o){
