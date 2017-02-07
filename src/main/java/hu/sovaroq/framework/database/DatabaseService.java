@@ -13,13 +13,13 @@ import org.hibernate.service.ServiceRegistry;
 import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.Service;
+import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.game.core.base.BuildingBase;
 import hu.sovaroq.game.core.base.CommanderBase;
 import hu.sovaroq.game.core.base.UnitBase;
 import hu.sovaroq.game.core.config.DefaultFileParser;
 
-public class DatabaseService extends Service<DatabaseService.DatabaseConfig>{
+public class DatabaseService extends AbstractService<DatabaseService.DatabaseConfig>{
 
 	private static SessionFactory sessionFactory = buildSessionFactory();
 	

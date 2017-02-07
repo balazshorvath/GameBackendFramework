@@ -3,7 +3,7 @@ package hu.sovaroq.framework.service.base.authentication;
 import hu.sovaroq.framework.events.authentication.AuthenticateUserEvent;
 import hu.sovaroq.framework.events.authentication.RegisterUserEvent;
 import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.Service;
+import hu.sovaroq.framework.service.AbstractService;
 
 /**
  * Possible usage:
@@ -12,7 +12,7 @@ import hu.sovaroq.framework.service.Service;
  *
  * Created by Oryk on 2017. 01. 23..
  */
-public class AuthenticationManager extends Service<AuthenticationManager.AuthenticationConfig> {
+public class AuthenticationManager extends AbstractService<AuthenticationManager.AuthenticationConfig> {
     public AuthenticationManager(IController parent, String serviceId) {
         super(parent, serviceId);
     }
