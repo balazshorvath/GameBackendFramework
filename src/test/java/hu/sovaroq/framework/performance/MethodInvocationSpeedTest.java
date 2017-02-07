@@ -1,4 +1,4 @@
-package hu.sovaroq.framework;
+package hu.sovaroq.framework.performance;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

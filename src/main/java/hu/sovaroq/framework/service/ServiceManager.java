@@ -24,13 +24,15 @@ public class ServiceManager {
 	private final Queue<Runnable> runnables = new ConcurrentLinkedQueue<>();
 
 	private final IEventBus bus;
-	private final Ticker ticker = new Ticker();
+	private final Ticker ticker;
 	
 	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
 		bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
+		this.ticker = new Ticker(tickerSize);
 		this.log = log;
 	}
 	public ServiceManager(IEventBus bus, int tickerSize, Logger log){
+		this.ticker = new Ticker(tickerSize);
 		this.bus = bus;
 		this.log = log;
 	}

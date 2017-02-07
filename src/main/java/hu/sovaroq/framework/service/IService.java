@@ -4,8 +4,8 @@ package hu.sovaroq.framework.service;
  * Created by Oryk on 2017. 01. 23..
  */
 public interface IService<Config> {
-    void onCreate(Config config);
-    void onDestroy();
+    void start(Config config);
+    void stop();
     void restart();
 
     String getServiceId();

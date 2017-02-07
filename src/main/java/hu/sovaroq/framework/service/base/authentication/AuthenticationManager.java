@@ -1,9 +1,7 @@
 package hu.sovaroq.framework.service.base.authentication;
 
-import hu.sovaroq.framework.events.authentication.AuthenticateUserEvent;
-import hu.sovaroq.framework.events.authentication.RegisterUserEvent;
-import hu.sovaroq.framework.service.IController;
 import hu.sovaroq.framework.service.AbstractService;
+import hu.sovaroq.framework.service.IController;
 
 /**
  * Possible usage:
@@ -17,23 +15,13 @@ public class AuthenticationManager extends AbstractService<AuthenticationManager
         super(parent, serviceId);
     }
 
-    //TODO
-    <Event extends AuthenticateUserEvent> void onEvent(Event event) {
-
-    }
-
-    //TODO
-    <Event extends RegisterUserEvent> void onEvent(Event event) {
+    @Override
+    public void start(AuthenticationConfig authenticationConfig) {
 
     }
 
     @Override
-    public void onCreate(AuthenticationConfig authenticationConfig) {
-
-    }
-
-    @Override
-    public void onDestroy() {
+    public void stop() {
 
     }
 
@@ -47,19 +35,17 @@ public class AuthenticationManager extends AbstractService<AuthenticationManager
 
     }
 
+    @Override
+    public String getStatusDescription() {
+        return null;
+    }
+
+    @Override
+    public Double getWorkload() {
+        return null;
+    }
+
     class AuthenticationConfig{
 
     }
-
-	@Override
-	public String getStatusDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double getWorkload() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
