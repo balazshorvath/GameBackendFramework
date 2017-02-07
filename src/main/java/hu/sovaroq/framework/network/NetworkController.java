@@ -7,9 +7,9 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.SSLSocket;
 
 import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.Service;
+import hu.sovaroq.framework.service.AbstractService;
 
-public class NetworkController extends Service<NetworkController.NetworkConfig>{
+public class NetworkController extends AbstractService<NetworkController.NetworkConfig>{
 	
 	private boolean enabled;
 	

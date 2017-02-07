@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import hu.sovaroq.framework.network.INetworkControllerEvents;
 import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.Service;
+import hu.sovaroq.framework.service.AbstractService;
 
-public class SessionManager extends Service<SessionManager.SessionManagerConfig>{
+public class SessionManager extends AbstractService<SessionManager.SessionManagerConfig>{
 
 	private Map<UUID, Session> currentSessions;
 	
