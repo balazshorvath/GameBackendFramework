@@ -15,19 +15,22 @@ import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.bus.SimpleEventBus;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
+import hu.sovaroq.framework.service.extension.Ticker;
 
 public class ServiceManager {
 	private final Logger log;
 	private final Map<String, IService> services = new ConcurrentHashMap<>();
 	
-	private final IEventBus bus;
 	private final Queue<Runnable> runnables = new ConcurrentLinkedQueue<>();
 
-	public ServiceManager(int corePoolSize, int maximumPoolSize, Logger log){
+	private final IEventBus bus;
+	private final Ticker ticker = new Ticker();
+	
+	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
 		bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
 		this.log = log;
 	}
-	public ServiceManager(IEventBus bus, Logger log){
+	public ServiceManager(IEventBus bus, int tickerSize, Logger log){
 		this.bus = bus;
 		this.log = log;
 	}
@@ -46,7 +49,7 @@ public class ServiceManager {
 						+ "annotated with both Tick and Run, which is an invalide usage!");
 			}
 			if(run != null){
-				startRunanble(m, service);
+				startRunnable(m, service);
 			}else if(tick != null){
 				startTick(m, service);
 			}
@@ -60,11 +63,10 @@ public class ServiceManager {
 	
 	
 	private void startTick(Method m, Object service) {
-		// TODO Auto-generated method stub
 		
 	}
 
-	private void startRunanble(final Method m, final Object service){
+	private void startRunnable(final Method m, final Object service){
 		Thread t = new Thread(() -> {
 			try {
 				m.invoke(service);

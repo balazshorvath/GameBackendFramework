@@ -10,25 +10,28 @@ import hu.sovaroq.framework.logger.LogProvider;
 
 public class Ticker {
 	public static final long MINIMUM_TICK = 50;
+	
+	protected final PriorityQueue<TickCall> calls;
+	
 	protected Logger log;
 	protected boolean running = false;
-	protected PriorityQueue<TickCall> calls;
 
-	public Ticker(Logger log){
+	public Ticker(int capacity, Logger log){
+		calls = new PriorityQueue<>(capacity);
 		this.log = log;
 	}
 	
-	public Ticker(){
+	public Ticker(int capacity){
+		calls = new PriorityQueue<>(capacity);
 		this.log = LogProvider.createLogger(this.getClass());
 	}
 	
 	
-	public Runnable start(int capacity) {
+	public Runnable start() {
 		if(running){
 			return null;
 		}
 		running = true;
-		calls = new PriorityQueue<>(capacity);
 		
 		return () -> {
 			TickCall call;
@@ -41,6 +44,7 @@ public class Ticker {
 						running = false;
 						continue;
 					}
+					continue;
 				}
 				currentTime = System.currentTimeMillis();
 				if(call.nextCall <= currentTime){
@@ -65,6 +69,7 @@ public class Ticker {
 				}
 				
 			}
+			calls.clear();
 		};
 	}
 	
@@ -76,7 +81,7 @@ public class Ticker {
 		calls.add(new TickCall(callMs, m, o));
 	}
 	
-	private class TickCall implements Comparable<TickCall>{
+	protected class TickCall implements Comparable<TickCall>{
 		public long nextCall;
 		public final long callMs;
 		public final Method m;
