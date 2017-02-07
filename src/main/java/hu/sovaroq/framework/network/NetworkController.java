@@ -23,23 +23,29 @@ public class NetworkController extends Service<NetworkController.NetworkConfig>{
 
 	@Override
 	public void onCreate(NetworkConfig config) {
+		log.debug("onCreate");
 		connectionAccepting = new Thread(new Runnable(){
 			@Override
 			public void run() {
 				SSLServerSocket serverSocket = null;
 				try {
 					serverSocket = (SSLServerSocket) SSLServerSocketFactory.getDefault().createServerSocket(listenerPort);
+					log.info("SSLServerSocket opened on port: " + listenerPort);
 				} catch (IOException e1) {
 					enabled = false;
+					log.error("Could not open SSLServerSocket!" + e1);
 				}
+				
+				SSLSocket socket = null;
 				
 				while(enabled){
 					try {
-						SSLSocket socket = (SSLSocket) serverSocket.accept();
+						socket = (SSLSocket) serverSocket.accept();
+						log.info("Connection received from " + socket.getRemoteSocketAddress().toString());
 						ClientConnection connection = new ClientConnection();
 						connection.start(socket);
-						
-						
+						//bus post
+						new INetworkControllerEvents.NewClientConnectionRequest.NewClientConnectionRequestBuilder().connection(connection).build();						
 						
 					} catch (IOException e) {						
 						e.printStackTrace();

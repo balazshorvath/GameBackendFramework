@@ -23,15 +23,17 @@ public class SessionManager extends Service<SessionManager.SessionManagerConfig>
 	
 	public void onEvent(INetworkControllerEvents.NewClientConnectionRequest request){
 		if(currentSessions.containsKey(request.getSessionID())){
-			//post on bus
-			new INetworkControllerEvents.NewClientConnectionResponse(currentSessions.get(request.getSessionID()));
+			Session oldSession = currentSessions.get(request.getSessionID());
+			Session newSession = Session.builder().clientConnection(request.getConnection()).player(oldSession.getPlayer()).sessionID(oldSession.getSessionID()).user(oldSession.getUser()).build();
+			currentSessions.put(oldSession.getSessionID(), newSession);
+
 		}else{
 			UUID sessionUUID = UUID.randomUUID();
 			Session newSession = Session.builder().clientConnection(request.getConnection()).sessionID(sessionUUID).build();
-			//post on bus
-			new INetworkControllerEvents.NewClientConnectionResponse(newSession);
 			currentSessions.put(sessionUUID, newSession);
 		}
+		//bus post
+		INetworkControllerEvents.NewClientConnectionResponse.builder().clientSession(currentSessions.get(request.getSessionID())).build();
 	}
 
 	@Override
