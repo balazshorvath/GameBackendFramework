@@ -1,18 +1,20 @@
 package hu.sovaroq.framework.service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.Logger;
+
 import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.bus.SimpleEventBus;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
 import hu.sovaroq.framework.service.extension.Ticker;
-import org.apache.logging.log4j.Logger;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.*;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ServiceManager {
 	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;
@@ -34,27 +36,26 @@ public class ServiceManager {
 	}
 
 	public void start(){
-		ticker.start();
+		threadPool.execute(ticker.start());
 		state = ManagerState.STARTED;
 	}
 	public void stop(){
 		state = ManagerState.STOPPING;
+        log.info("ServiceManager stopping.");
 		ticker.stop();
 		services.values().stream().forEach(IService::stop);
 
 		threadPool.shutdown();
 
-		long start = System.currentTimeMillis();
-
-		while(!ticker.getState().equals(Ticker.TickerState.STOPPED)
-				&& !threadPool.isShutdown()){
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
+        try {
+            if(!threadPool.awaitTermination(5000, TimeUnit.MILLISECONDS)) {
+            	log.info("ThreadPool did not terminate, calling shutdownNow().");
+                threadPool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+        log.info("ServiceManager successfully stopped.");
 		state = ManagerState.STOPPED;
 	}
 	
