@@ -22,7 +22,7 @@ public class NetworkController extends AbstractService<NetworkController.Network
 	}
 
 	@Override
-	public void onCreate(NetworkConfig config) {
+	public void start(NetworkConfig config) {
 		log.debug("onCreate");
 		connectionAccepting = new Thread(new Runnable(){
 			@Override
@@ -59,7 +59,7 @@ public class NetworkController extends AbstractService<NetworkController.Network
 	}
 
 	@Override
-	public void onDestroy() {
+	public void stop() {
 		// TODO Auto-generated method stub
 		
 	}

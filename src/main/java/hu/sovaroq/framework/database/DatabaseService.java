@@ -59,13 +59,13 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 	}
 	
 	@Override
-	public void onCreate(DatabaseService.DatabaseConfig config) {
+	public void start(DatabaseService.DatabaseConfig config) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onDestroy() {
+	public void stop() {
 		// TODO Auto-generated method stub
 		
 	}

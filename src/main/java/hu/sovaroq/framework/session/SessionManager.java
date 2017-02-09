@@ -37,13 +37,13 @@ public class SessionManager extends AbstractService<SessionManager.SessionManage
 	}
 
 	@Override
-	public void onCreate(SessionManagerConfig config) {
+	public void start(SessionManagerConfig config) {
 		currentSessions = new HashMap<>();
 		
 	}
 
 	@Override
-	public void onDestroy() {
+	public void stop() {
 		// TODO Auto-generated method stub
 		
 	}
