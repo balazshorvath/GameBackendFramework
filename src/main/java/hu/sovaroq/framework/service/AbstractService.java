@@ -20,6 +20,34 @@ public abstract class AbstractService<Config> implements IService<Config>  {
     }
 
     @Override
+    public void start(Config config){
+    	this.config = config;
+    }
+    
+	@Override
+    public void stop(){
+    }
+	
+	@Override
+    public void restart(){
+    }
+	
+	@Override
+	public void setConfig(Config config) {
+    	this.config = config;
+	}
+
+	@Override
+	public String getStatusDescription() {
+		return null;
+	}
+	
+	@Override
+	public Double getWorkload() {
+		return null;
+	}
+	
+    @Override
     public String getServiceId() {
         return serviceId;
     }
