@@ -10,6 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
+import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.IController;
@@ -46,8 +47,8 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 		}
 	}
 	
-	public DatabaseService(IController parent, String serviceId){
-		super(parent, serviceId);
+	public DatabaseService(String serviceId, IEventBus bus){
+		super(serviceId, bus);
 	}
 
 	public static SessionFactory getSessionFactory() {
@@ -56,18 +57,6 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 
 	public static void shutdown() {
 		getSessionFactory().close();
-	}
-	
-	@Override
-	public void onCreate(DatabaseService.DatabaseConfig config) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -139,6 +128,18 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 	public Double getWorkload() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void start(DatabaseConfig config) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stop() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
