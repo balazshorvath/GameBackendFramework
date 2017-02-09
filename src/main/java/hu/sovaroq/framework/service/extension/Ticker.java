@@ -3,6 +3,9 @@ package hu.sovaroq.framework.service.extension;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.PriorityQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +13,7 @@ import hu.sovaroq.framework.logger.LogProvider;
 
 public class Ticker {
 	protected final PriorityQueue<TickCall> calls;
+	protected final ThreadPoolExecutor threadPool;
 	
 	protected Logger log;
 	protected boolean running = false;
@@ -17,12 +21,14 @@ public class Ticker {
 	protected TickerState state = TickerState.NOT_STARTED;
 
 	public Ticker(int capacity, Logger log){
-		calls = new PriorityQueue<>(capacity);
+		this.calls = new PriorityQueue<>(capacity);
+		this.threadPool = new ThreadPoolExecutor(capacity, capacity * 2, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.log = log;
 	}
 	
 	public Ticker(int capacity){
-		calls = new PriorityQueue<>(capacity);
+		this.calls = new PriorityQueue<>(capacity);
+		this.threadPool = new ThreadPoolExecutor(capacity, capacity * 2, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.log = LogProvider.createLogger(this.getClass());
 	}
 	
@@ -50,17 +56,21 @@ public class Ticker {
 				}
 				currentTime = System.currentTimeMillis();
 				if(call.nextCall <= currentTime){
-					try {
-						call = calls.poll();
-						call.m.invoke(call.o);
-						
-						call.nextCall = currentTime + call.callMs;
-						calls.add(call);
-					} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						// There's no way this will happen, still that call has to be removed
-						// Simply don't put it back
-						log.warn("Could not invoke ticker call.");
-					}
+					call = calls.poll();
+					final TickCall finalCall = call;
+					this.threadPool.execute(() -> {
+						try {
+							finalCall.m.invoke(finalCall.o);
+						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							// There's no way this will happen, still that call has to be removed
+							// Simply don't put it back
+							log.warn("Could not invoke ticker call.");
+						}
+					});
+					
+					call.nextCall = currentTime + call.callMs;
+					calls.add(call);
+					
 				}else {
 					try {
 						Thread.sleep(10);
@@ -71,14 +81,25 @@ public class Ticker {
 				}
 				
 			}
-			state = TickerState.STOPPED;
-			calls.clear();
 		};
 	}
 	
 	public void stop(){
 		state = TickerState.STOPPING;
 		running = false;
+		
+		threadPool.shutdown();
+
+        try {
+            if(!threadPool.awaitTermination(5000, TimeUnit.MILLISECONDS)) {
+            	log.info("ThreadPool did not terminate, calling shutdownNow().");
+                threadPool.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+        }
+        
+		calls.clear();
 	}
 	
 	public void addTickerCall(final long callMs, final Method m, final Object o){

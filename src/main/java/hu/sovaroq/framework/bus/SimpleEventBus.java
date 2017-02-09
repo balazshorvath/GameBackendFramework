@@ -56,7 +56,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
         }
         if(consumerState != ConsumerState.STOPPED){
             logger.info("The consumer did not stop, calling stop().");
-            consumer.stop();
+            consumer.interrupt();
         }
         try {
             if(!threadPool.awaitTermination(forceTimeout, TimeUnit.MILLISECONDS)) {
@@ -64,7 +64,6 @@ public class SimpleEventBus implements IEventBus, Runnable {
                 threadPool.shutdownNow();
             }
         } catch (InterruptedException e) {
-            threadPool.shutdownNow();
             logger.error(e.getMessage());
         }
         messageQueue.clear();
@@ -127,6 +126,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
             try {
                 event = messageQueue.poll(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
+				running = false;
                 continue;
             }
             if(event == null)
