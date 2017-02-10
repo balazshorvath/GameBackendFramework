@@ -4,24 +4,24 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import hu.sovaroq.framework.network.INetworkControllerEvents;
+import hu.sovaroq.framework.bus.IEventBus;
+import hu.sovaroq.framework.network.INetworkServiceEvents;
 import hu.sovaroq.framework.service.IController;
 import hu.sovaroq.framework.service.AbstractService;
 
-public class SessionManager extends AbstractService<SessionManager.SessionManagerConfig>{
+public class SessionService extends AbstractService<SessionService.SessionManagerConfig>{
 
 	private Map<UUID, Session> currentSessions;
 	
-	public SessionManager(IController parent, String serviceId) {
-		super(parent, serviceId);
-		// TODO Auto-generated constructor stub
+	public SessionService(String serviceId, IEventBus bus) {
+		super(serviceId, bus);
 	}
 
 	public class SessionManagerConfig{
 		
 	}
 	
-	public void onEvent(INetworkControllerEvents.NewClientConnectionRequest request){
+	public void onEvent(INetworkServiceEvents.NewClientConnectionRequest request){
 		if(currentSessions.containsKey(request.getSessionID())){
 			Session oldSession = currentSessions.get(request.getSessionID());
 			Session newSession = Session.builder().clientConnection(request.getConnection()).player(oldSession.getPlayer()).sessionID(oldSession.getSessionID()).user(oldSession.getUser()).build();
@@ -32,8 +32,7 @@ public class SessionManager extends AbstractService<SessionManager.SessionManage
 			Session newSession = Session.builder().clientConnection(request.getConnection()).sessionID(sessionUUID).build();
 			currentSessions.put(sessionUUID, newSession);
 		}
-		//bus post
-		INetworkControllerEvents.NewClientConnectionResponse.builder().clientSession(currentSessions.get(request.getSessionID())).build();
+		post(new INetworkServiceEvents.NewClientConnectionResponse(currentSessions.get(request.getSessionID())));
 	}
 
 	@Override

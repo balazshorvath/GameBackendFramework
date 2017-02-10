@@ -5,18 +5,17 @@ import java.util.UUID;
 import hu.sovaroq.framework.session.Session;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Value;
 
-public interface INetworkControllerEvents {
+public interface INetworkServiceEvents {
 
-	@Builder
-	@Data
+	@Value
 	public class NewClientConnectionRequest{
 		UUID sessionID;
 		ClientConnection connection;
 	}
 	
-	@Builder
-	@Data
+	@Value
 	public class NewClientConnectionResponse{
 		Session clientSession;
 	}

@@ -1,5 +1,6 @@
 package hu.sovaroq.framework.service.base.authentication;
 
+import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.IController;
 
@@ -10,9 +11,9 @@ import hu.sovaroq.framework.service.IController;
  *
  * Created by Oryk on 2017. 01. 23..
  */
-public class AuthenticationManager extends AbstractService<AuthenticationManager.AuthenticationConfig> {
-    public AuthenticationManager(IController parent, String serviceId) {
-        super(parent, serviceId);
+public class AuthenticationService extends AbstractService<AuthenticationService.AuthenticationConfig> {
+    public AuthenticationService(String serviceId, IEventBus bus) {
+        super(serviceId, bus);
     }
 
     @Override
@@ -48,4 +49,5 @@ public class AuthenticationManager extends AbstractService<AuthenticationManager
     class AuthenticationConfig{
 
     }
+
 }
