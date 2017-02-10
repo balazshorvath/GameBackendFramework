@@ -18,8 +18,9 @@ import org.mockito.Mockito;
 
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.extension.Tick;
 import hu.sovaroq.framework.service.extension.Ticker;
+import hu.sovaroq.framework.service.extension.Tick;
+import hu.sovaroq.framework.service.extension.TickerOld;
 
 public class TickerTest {
 	private final Logger log = LogManager.getLogger("console");
@@ -32,7 +33,7 @@ public class TickerTest {
 	
 	@Before
 	public void setup() throws NoSuchMethodException, SecurityException{
-		ticker = new Ticker(450, log);
+		ticker = new Ticker(30, log);
 		
 		m1 = TickingServiceExample.class.getMethod("tick30");
 		m2 = TickingServiceExample.class.getMethod("tick50");
@@ -40,7 +41,7 @@ public class TickerTest {
 	}
 	@Test
 	public void testTiming() throws InterruptedException{
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 5; i++) {
 			TickingServiceExample example = new TickingServiceExample(Mockito.mock(IController.class), "RandomString");
 			
 			ticker.addTickerCall(m1.getAnnotation(Tick.class).value(), m1, example);
@@ -50,9 +51,6 @@ public class TickerTest {
 			testServices.add(example);
 		}
 
-		Thread t = new Thread(ticker.start());
-		t.start();
-		
 		long finishAt = System.currentTimeMillis() + 5000;
 		Runtime rt = Runtime.getRuntime();
 		
@@ -63,9 +61,7 @@ public class TickerTest {
 		}
 		
 		ticker.stop();
-		if(t.isAlive()){
-			t.interrupt();
-		}
+		
 		double call30Avg = 0L;
 		int call30Times;
 		

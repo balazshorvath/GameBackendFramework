@@ -16,7 +16,7 @@ import hu.sovaroq.framework.bus.SimpleEventBus;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
-import hu.sovaroq.framework.service.extension.Ticker;
+import hu.sovaroq.framework.service.extension.TickerOld;
 
 public class ServiceManager {
 	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;
@@ -26,14 +26,14 @@ public class ServiceManager {
 	private final ThreadPoolExecutor threadPool;
 
 	private final IEventBus bus;
-	private final Ticker ticker;
+	private final TickerOld ticker;
 
 	private ManagerState state = ManagerState.IDLE;
 	
 	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
 		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
-		this.ticker = new Ticker(tickerSize, log);
+		this.ticker = new TickerOld(tickerSize, log);
 		this.log = log;
 	}
 
