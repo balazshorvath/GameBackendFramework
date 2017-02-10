@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.logger.LogProvider;
+import lombok.ToString;
 
 public class Ticker {
 	protected final PriorityQueue<TickCall> calls;
@@ -34,6 +35,7 @@ public class Ticker {
 	
 	
 	public Runnable start() {
+		log.info("Setting up Ticker");
 		if(running){
 			return null;
 		}
@@ -43,6 +45,7 @@ public class Ticker {
 			state = TickerState.STARTED;
 			TickCall call;
 			long currentTime;
+			log.info("Ticker thread has started");
 			while(running){
 				if((call = calls.peek()) == null){
 					try {
@@ -81,6 +84,7 @@ public class Ticker {
 				}
 				
 			}
+			log.info("Ticker thread has stopped.");
 		};
 	}
 	
@@ -110,6 +114,7 @@ public class Ticker {
 		return state;
 	}
 
+	@ToString
 	protected class TickCall implements Comparable<TickCall>{
 		public long nextCall;
 		public final long callMs;

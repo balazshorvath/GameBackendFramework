@@ -8,10 +8,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.bus.SimpleEventBus;
+import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
 import hu.sovaroq.framework.service.extension.Ticker;
@@ -31,7 +33,7 @@ public class ServiceManager {
 	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
 		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
-		this.ticker = new Ticker(tickerSize);
+		this.ticker = new Ticker(tickerSize, log);
 		this.log = log;
 	}
 
