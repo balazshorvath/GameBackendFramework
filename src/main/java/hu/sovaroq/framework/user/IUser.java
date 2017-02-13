@@ -3,9 +3,9 @@ package hu.sovaroq.framework.user;
 /**
  * Created by Oryk on 2017. 01. 23..
  */
-public interface IUser<ID> {
-    ID getId();
+public interface IUser {
+    int getId();
     String getLogin();
     String getPassword();
-    void setPassword(String password);
+    boolean isLocked();
 }

@@ -33,7 +33,7 @@ public class AuthenticationService extends AbstractService<AuthenticationService
 
     @Override
     public void setConfig(AuthenticationConfig authenticationConfig) {
-
+    	
     }
 
     @Override
