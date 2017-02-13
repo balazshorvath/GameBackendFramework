@@ -64,6 +64,11 @@ public class ConfigurationCreator {
     
 
     public <C> C createConfig(Class<C> configType, String configFile) {
+    	if(configFile == null || configFile.isEmpty()){
+        	log.error("No config file specified.");
+    		return null;
+    	}
+    	
         Map<String, Object> values = null;
         String type = configFile.substring(configFile.lastIndexOf('.'));
         if(!fileParsers.containsKey(type)){

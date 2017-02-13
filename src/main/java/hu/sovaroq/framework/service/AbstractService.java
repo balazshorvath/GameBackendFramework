@@ -9,15 +9,11 @@ import hu.sovaroq.framework.logger.LogProvider;
  * Created by Oryk on 2017. 01. 27..
  */
 public abstract class AbstractService<Config> implements IService<Config>  {
-    protected final String serviceId;
     protected Config config;
     protected Logger log;
     private IEventBus bus;
 
-    public AbstractService(String serviceId, IEventBus bus) {
-        this.serviceId = serviceId;
-        log = LogProvider.createLogger(this.getClass());
-        this.bus = bus;
+    public AbstractService() {
     }
     
     protected void post(Object o){
@@ -51,15 +47,21 @@ public abstract class AbstractService<Config> implements IService<Config>  {
 	public Double getWorkload() {
 		return null;
 	}
-	
-    @Override
-    public String getServiceId() {
-        return serviceId;
-    }
 
     @Override
     public Config getConfig() {
         return config;
     }
+
+	@Override
+	public void setBus(IEventBus bus) {
+		this.bus = bus;
+		
+	}
+
+	@Override
+	public void setLog(Logger log) {
+		this.log = log;
+	}
 
 }

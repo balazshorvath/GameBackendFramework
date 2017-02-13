@@ -43,7 +43,7 @@ public class TickerTest {
 	@Test
 	public void testTiming() throws InterruptedException{
 		for (int i = 0; i < 5; i++) {
-			TickingServiceExample example = new TickingServiceExample("RandomString", null);
+			TickingServiceExample example = new TickingServiceExample();
 			
 			ticker.addTickerCall(m1.getAnnotation(Tick.class).value(), m1, example);
 			ticker.addTickerCall(m2.getAnnotation(Tick.class).value(), m2, example);
@@ -131,8 +131,8 @@ public class TickerTest {
 	public class TickingServiceExample extends AbstractService<Object>{
 		public final Map<String, Queue<Long>> methodCallTimestamps = new ConcurrentHashMap<>();
 
-		public TickingServiceExample(String serviceId, IEventBus bus) {
-			super(serviceId, bus);
+		public TickingServiceExample() {
+			super();
 		}
 
 		@Tick(30)

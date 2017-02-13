@@ -47,8 +47,8 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 		}
 	}
 	
-	public DatabaseService(String serviceId, IEventBus bus){
-		super(serviceId, bus);
+	public DatabaseService(){
+		super();
 	}
 
 	public static SessionFactory getSessionFactory() {

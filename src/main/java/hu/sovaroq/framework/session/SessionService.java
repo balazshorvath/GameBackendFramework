@@ -13,8 +13,8 @@ public class SessionService extends AbstractService<SessionService.SessionManage
 
 	private Map<UUID, Session> currentSessions;
 	
-	public SessionService(String serviceId, IEventBus bus) {
-		super(serviceId, bus);
+	public SessionService() {
+		super();
 	}
 
 	public class SessionManagerConfig{
