@@ -1,4 +1,4 @@
-package hu.sovaroq.framework.database;
+package hu.sovaroq.game.core.service.database;
 
 import java.util.HashSet;
 import java.util.Set;

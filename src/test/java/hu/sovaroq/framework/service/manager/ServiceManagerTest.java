@@ -5,29 +5,45 @@ import static org.junit.Assert.*;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import hu.sovaroq.framework.annotations.Service;
-import hu.sovaroq.framework.logger.LogProvider;
-import hu.sovaroq.framework.service.AbstractService;
+import hu.sovaroq.framework.features.logger.LogProvider;
 import hu.sovaroq.framework.service.ServiceManager;
-import hu.sovaroq.framework.service.extension.Run;
-import hu.sovaroq.framework.service.extension.Tick;
+import hu.sovaroq.framework.service.base.AbstractService;
+import hu.sovaroq.framework.service.base.Service;
+import hu.sovaroq.framework.service.features.Run;
+import hu.sovaroq.framework.service.features.Tick;
 
 public class ServiceManagerTest {
+	ServiceManager manager;
+	
+	@Before
+	public void startup(){
+		manager = new ServiceManager(2, 20, 20, LogProvider.createLogger(ServiceManager.class));
+	}
 	
 	@Test
 	public void test() throws InterruptedException{
-		ServiceManager manager = new ServiceManager(2, 20, 20, LogProvider.createLogger(ServiceManager.class));
-
 		
 		manager.manage(TestService1.class);
 		manager.manage(TestService2.class);
 		
 		Thread.sleep(110);
 		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable2);
+		// 110 + 400 - 510
 		Thread.sleep(400);
-		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable2);
+		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable1);
+		// 510 + 500 - 1010 
+		Thread.sleep(500);
+		assertTrue(((TestService1)manager.getServices().get(TestService1.class)).runnable1);
+		
+	}
+	
+	@After
+	public void cleanup(){
+		manager.stop();
 	}
 
 

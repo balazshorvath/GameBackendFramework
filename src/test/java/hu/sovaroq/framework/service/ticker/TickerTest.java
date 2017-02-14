@@ -16,12 +16,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import hu.sovaroq.framework.bus.IEventBus;
-import hu.sovaroq.framework.service.AbstractService;
-import hu.sovaroq.framework.service.IController;
-import hu.sovaroq.framework.service.extension.Ticker;
-import hu.sovaroq.framework.service.extension.Tick;
-import hu.sovaroq.framework.service.extension.TickerOld;
+import hu.sovaroq.framework.controller.base.IController;
+import hu.sovaroq.framework.features.bus.IEventBus;
+import hu.sovaroq.framework.service.base.AbstractService;
+import hu.sovaroq.framework.service.features.Tick;
+import hu.sovaroq.framework.service.features.Ticker;
+import hu.sovaroq.framework.service.features.TickerOld;
 
 public class TickerTest {
 	private final Logger log = LogManager.getLogger("console");

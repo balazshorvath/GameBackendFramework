@@ -3,7 +3,7 @@ package hu.sovaroq.framework;
 
 import java.util.List;
 
-import hu.sovaroq.framework.service.IController;
+import hu.sovaroq.framework.controller.base.IController;
 
 /**
  * Responsible for:

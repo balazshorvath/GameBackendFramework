@@ -1,22 +1,20 @@
 package hu.sovaroq.framework.configuration;
 
-import hu.sovaroq.framework.configuration.annotation.ConfigFileParser;
-import hu.sovaroq.framework.configuration.annotation.ConfigValue;
-import hu.sovaroq.game.core.config.DefaultFileParser;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
-import java.util.zip.InflaterInputStream;
-
-import static org.junit.Assert.*;
+import hu.sovaroq.framework.features.configuration.ConfigurationCreator;
+import hu.sovaroq.framework.features.configuration.annotation.ConfigValue;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by Oryk on 2017. 02. 04..

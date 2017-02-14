@@ -6,19 +6,17 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.util.concurrent.Service;
 
-import hu.sovaroq.framework.configuration.ConfigurationCreator;
-import hu.sovaroq.framework.logger.LogProvider;
-import hu.sovaroq.framework.service.IController;
+import hu.sovaroq.framework.controller.FrameworkController;
+import hu.sovaroq.framework.controller.base.IController;
+import hu.sovaroq.framework.features.configuration.ConfigurationCreator;
+import hu.sovaroq.framework.features.logger.LogProvider;
 
 public class Framework implements IFramework {
-    private static final Logger log = LogProvider.createLogger(ConfigurationCreator.class);
-    private static String configFolder = "";
-	
-
+    private static final Logger log = LogProvider.createLogger(Framework.class);
+    
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -35,7 +33,7 @@ public class Framework implements IFramework {
 
 	@Override
 	public <T extends IController> void registerController(Class<T> c, T controller) {
-		hu.sovaroq.framework.annotations.Service config = c.getAnnotation(hu.sovaroq.framework.annotations.Service.class);
+		hu.sovaroq.framework.service.base.Service config = c.getAnnotation(hu.sovaroq.framework.service.base.Service.class);
 		
 		Object conf = null;
 		

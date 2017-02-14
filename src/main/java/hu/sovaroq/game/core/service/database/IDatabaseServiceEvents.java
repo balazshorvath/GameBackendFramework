@@ -1,4 +1,4 @@
-package hu.sovaroq.framework.database;
+package hu.sovaroq.game.core.service.database;
 
 import hu.sovaroq.framework.features.user.IUser;
 import lombok.Value;

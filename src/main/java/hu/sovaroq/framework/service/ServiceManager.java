@@ -14,14 +14,16 @@ import javax.enterprise.inject.New;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import hu.sovaroq.framework.annotations.Service;
-import hu.sovaroq.framework.bus.IEventBus;
-import hu.sovaroq.framework.bus.SimpleEventBus;
-import hu.sovaroq.framework.configuration.ConfigurationCreator;
-import hu.sovaroq.framework.logger.LogProvider;
-import hu.sovaroq.framework.service.extension.Run;
-import hu.sovaroq.framework.service.extension.Tick;
-import hu.sovaroq.framework.service.extension.Ticker;
+import hu.sovaroq.framework.features.bus.IEventBus;
+import hu.sovaroq.framework.features.bus.SimpleEventBus;
+import hu.sovaroq.framework.features.configuration.ConfigurationCreator;
+import hu.sovaroq.framework.features.logger.LogProvider;
+import hu.sovaroq.framework.service.base.AbstractService;
+import hu.sovaroq.framework.service.base.IService;
+import hu.sovaroq.framework.service.base.Service;
+import hu.sovaroq.framework.service.features.Run;
+import hu.sovaroq.framework.service.features.Tick;
+import hu.sovaroq.framework.service.features.Ticker;
 
 public class ServiceManager {
 	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;

@@ -1,8 +1,11 @@
 package hu.sovaroq.framework.bus;
 
-import hu.sovaroq.framework.annotations.EventListener;
 import hu.sovaroq.framework.events.FrameworkEvent;
-import hu.sovaroq.framework.service.IService;
+import hu.sovaroq.framework.features.bus.EventListener;
+import hu.sovaroq.framework.features.bus.IEventBus;
+import hu.sovaroq.framework.features.bus.SimpleEventBus;
+import hu.sovaroq.framework.service.base.IService;
+
 import org.junit.Before;
 import org.junit.Test;
 
