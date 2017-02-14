@@ -1,8 +1,13 @@
 package hu.sovaroq.framework.service.base.authentication;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import hu.sovaroq.framework.bus.IEventBus;
+import hu.sovaroq.framework.database.IDatabaseServiceEvents;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.IController;
+import hu.sovaroq.framework.service.base.authentication.IAuthenticationServiceEvents.AuthenticationRequest;
+import hu.sovaroq.framework.service.base.authentication.IAuthenticationServiceEvents.RegisterUserRequest;
 
 /**
  * Possible usage:
@@ -15,12 +20,22 @@ public class AuthenticationService extends AbstractService<AuthenticationService
     public AuthenticationService(String serviceId, IEventBus bus) {
         super(serviceId, bus);
     }
+    
+    public void onEvent(RegisterUserRequest request){
+    	String hashedPW = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
+    	
+    	post(new IDatabaseServiceEvents.CreateUserReqest(request.getLogon(), hashedPW));
+    }
+    
+    public void onEvent(AuthenticationRequest request){
+    	    	
+    }
 
     @Override
     public void start(AuthenticationConfig authenticationConfig) {
 
     }
-
+    
     @Override
     public void stop() {
 

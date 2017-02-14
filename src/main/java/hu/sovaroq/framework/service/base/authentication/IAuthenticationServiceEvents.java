@@ -35,15 +35,18 @@ public class IAuthenticationServiceEvents {
 		AuthenticationFaliureStatus status;
 	}
 	
+	@Value
 	public class RegisterUserRequest{
 		String logon;
 		String password;
 	}
 	
+	@Value
 	public class RegisterUserSuccessResponse{
 		IUser user;
 	}
 	
+	@Value
 	public class RegisterUserFailureResponse{
 		RegistrationFaliureStatus status;
 	}
