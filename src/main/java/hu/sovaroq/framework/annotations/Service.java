@@ -12,6 +12,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Service {
     Class<?> configurationClass();
+    String configurationFile();
     boolean configNeedsRestart() default false;
 
 }

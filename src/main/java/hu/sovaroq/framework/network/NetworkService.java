@@ -13,8 +13,8 @@ import hu.sovaroq.framework.service.AbstractService;
 
 public class NetworkService extends AbstractService<NetworkService.NetworkConfig> {
 
-	public NetworkService(String serviceId, IEventBus bus) {
-		super(serviceId, bus);
+	public NetworkService() {
+		super();
 	}
 
 	private boolean enabled;

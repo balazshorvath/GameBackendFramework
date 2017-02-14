@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class MethodInvocationSpeedTest {
 
-	@Test
+	//@Test
 	public void testInvocation() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		TestClass test = new TestClass();
 

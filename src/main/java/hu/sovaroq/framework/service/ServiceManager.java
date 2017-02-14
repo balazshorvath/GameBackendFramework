@@ -2,45 +2,67 @@ package hu.sovaroq.framework.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.inject.New;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import hu.sovaroq.framework.annotations.Service;
 import hu.sovaroq.framework.bus.IEventBus;
 import hu.sovaroq.framework.bus.SimpleEventBus;
+import hu.sovaroq.framework.configuration.ConfigurationCreator;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.extension.Run;
 import hu.sovaroq.framework.service.extension.Tick;
-import hu.sovaroq.framework.service.extension.TickerOld;
+import hu.sovaroq.framework.service.extension.Ticker;
 
 public class ServiceManager {
 	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;
 
+	private final ConfigurationCreator configCreator = new ConfigurationCreator();
+	
 	private final Logger log;
-	private final Map<String, IService> services = new ConcurrentHashMap<>();
+	private final Map<Class<? extends AbstractService>, AbstractService> services = new ConcurrentHashMap<>();
 	private final ThreadPoolExecutor threadPool;
 
 	private final IEventBus bus;
-	private final TickerOld ticker;
+	private final Ticker ticker;
 
 	private ManagerState state = ManagerState.IDLE;
-	
+
 	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
 		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
-		this.ticker = new TickerOld(tickerSize, log);
+		this.ticker = new Ticker(tickerSize, log);
+		this.log = log;
+	}
+	public ServiceManager(IEventBus bus, int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
+		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+		this.bus = bus;
+		this.ticker = new Ticker(tickerSize, log);
+		this.log = log;
+	}
+	public ServiceManager(IEventBus bus, Ticker ticker, ThreadPoolExecutor threadPool, Logger log){
+		this.threadPool = threadPool;
+		this.bus = bus;
+		this.ticker = ticker;
 		this.log = log;
 	}
 
+	/**
+	 * Does nothing atm.
+	 */
 	public void start(){
-		threadPool.execute(ticker.start());
 		state = ManagerState.STARTED;
 	}
+	
 	public void stop(){
 		state = ManagerState.STOPPING;
         log.info("ServiceManager stopping.");
@@ -61,9 +83,20 @@ public class ServiceManager {
 		state = ManagerState.STOPPED;
 	}
 	
-	public <T extends IService> boolean manage(final Class<T> type, final T service){
-		if(services.containsKey(service.getServiceId())){
-			log.error("Service with id " + service.getServiceId() + " already exists.");
+	public <T extends AbstractService> boolean manage(final Class<T> type){
+		T service;
+		try {
+			service = type.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			log.error("Could not instanciate service '" + type.getName() + "'. " + e.getMessage());
+			return false;
+		}
+		Service serviceAnnot = type.getAnnotation(Service.class);
+		service.setBus(bus);
+		service.setConfig(configCreator.createConfig(type, serviceAnnot.configurationFile()));
+		
+		if(services.containsKey(type)){
+			log.error("Service with type " + type.getName() + " already exists.");
 			return false;
 		}
 		
@@ -83,11 +116,15 @@ public class ServiceManager {
 		
 		bus.subscribe(type, service);
 		
-		services.put(service.getServiceId(), service);
+		services.put(type, service);
 		return true;
 	}
 	
 	
+	
+	public Map<Class<? extends AbstractService>, AbstractService> getServices() {
+		return services;
+	}
 	private void registerTick(final Method m, final Object service, final long invocationTime) {
 		ticker.addTickerCall(invocationTime, m, service);
 	}
