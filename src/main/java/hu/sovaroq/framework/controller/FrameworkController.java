@@ -3,14 +3,14 @@ package hu.sovaroq.framework.controller;
 import java.util.List;
 
 import hu.sovaroq.framework.controller.base.IController;
-import hu.sovaroq.framework.events.FrameworkEvent;
+import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
 import hu.sovaroq.framework.service.base.IService;
 
 /**
  * Created by Oryk on 2017. 01. 27..
  */
 //@Service()
-public class FrameworkController implements IController<FrameworkEvent, Object> {
+public class FrameworkController implements IController<IFrameworkEvent, Object> {
     @Override
     public void start(Object o) {
 
@@ -22,7 +22,7 @@ public class FrameworkController implements IController<FrameworkEvent, Object> 
     }
 
     @Override
-    public void onEvent(FrameworkEvent event) {
+    public void onEvent(IFrameworkEvent event) {
 
     }
 

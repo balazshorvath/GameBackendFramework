@@ -2,10 +2,10 @@ package hu.sovaroq.framework.controller.base;
 
 import org.apache.logging.log4j.Logger;
 
+import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
 import hu.sovaroq.framework.core.logger.LogProvider;
-import hu.sovaroq.framework.events.FrameworkEvent;
 
-public abstract class AbstractController<E extends FrameworkEvent, Config> implements IController<E, Config> {
+public abstract class AbstractController<E extends IFrameworkEvent, Config> implements IController<E, Config> {
 	protected Logger log = LogProvider.createLogger(this.getClass());
 	protected Config config;
 	

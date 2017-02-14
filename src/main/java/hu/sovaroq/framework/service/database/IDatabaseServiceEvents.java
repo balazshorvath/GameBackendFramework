@@ -1,44 +1,53 @@
 package hu.sovaroq.framework.service.database;
 
+import hu.sovaroq.framework.core.eventbase.FrameworkRequestEvent;
+import hu.sovaroq.framework.core.eventbase.FrameworkResponseEvent;
 import hu.sovaroq.framework.data.user.IUser;
+import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 public interface IDatabaseServiceEvents {
 	
 	public enum DatabaseFailiureStatus{
 		entity_not_found,
-		entity_exists,
+		entity_aready_exists,
 		generic_error;
 	}
 
 	@Value
-	public class GetUserReqest{
+	@EqualsAndHashCode(callSuper = true)
+	public class GetUserReqest extends FrameworkRequestEvent{
 		String logon;
 	}
 	
 	@Value
-	public class GetUserSuccessResponse{
+	@EqualsAndHashCode(callSuper = true)
+	public class GetUserSuccessResponse extends FrameworkResponseEvent{
 		IUser user;
 	}
 	
 	@Value
-	public class GetUserFailureResponse{
+	@EqualsAndHashCode(callSuper = true)
+	public class GetUserFailureResponse extends FrameworkResponseEvent{
 		DatabaseFailiureStatus status;
 	}
 	
 	@Value
-	public class CreateUserReqest{
+	@EqualsAndHashCode(callSuper = true)
+	public class CreateUserReqest extends FrameworkRequestEvent{
 		String logon;
 		String password;
 	}
 	
 	@Value
-	public class CreateUserSuccessResponse{
+	@EqualsAndHashCode(callSuper = true)
+	public class CreateUserSuccessResponse extends FrameworkResponseEvent{
 		IUser user;
 	}
 	
 	@Value
-	public class CreateUserFailureResponse{
+	@EqualsAndHashCode(callSuper = true)
+	public class CreateUserFailureResponse extends FrameworkResponseEvent{
 		DatabaseFailiureStatus user;
 	}
 	

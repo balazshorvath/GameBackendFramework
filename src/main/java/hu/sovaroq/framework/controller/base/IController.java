@@ -2,7 +2,7 @@ package hu.sovaroq.framework.controller.base;
 
 import java.util.List;
 
-import hu.sovaroq.framework.events.FrameworkEvent;
+import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
 import hu.sovaroq.framework.service.base.IService;
 
 /**
@@ -41,7 +41,7 @@ import hu.sovaroq.framework.service.base.IService;
  *
  * Created by Oryk on 2017. 01. 24..
  */
-public interface IController<E extends FrameworkEvent, Config>{
+public interface IController<E extends IFrameworkEvent, Config>{
     void start(Config config);
     void stop();
 
