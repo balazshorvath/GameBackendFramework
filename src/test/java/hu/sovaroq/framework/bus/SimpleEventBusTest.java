@@ -49,20 +49,20 @@ public class SimpleEventBusTest {
 
 
     @EventListener
-    interface TestEventReceiver1 extends IService<Object> {
+    public interface TestEventReceiver1 extends IService<Object> {
         void onEvent(TestEvent1 event);
         void onEvent(TestEvent2 event);
     }
     @EventListener
-    interface TestEventReceiver2 extends IService<Object> {
+    public interface TestEventReceiver2 extends IService<Object> {
         void onEvent(TestEvent3 event);
         void onEvent(TestEvent2 event);
     }
 
-    class TestEvent1 extends FrameworkEvent {
+    public class TestEvent1 extends FrameworkEvent {
     }
-    class TestEvent2 extends FrameworkEvent {
+    public class TestEvent2 extends FrameworkEvent {
     }
-    class TestEvent3 extends FrameworkEvent {
+    public class TestEvent3 extends FrameworkEvent {
     }
 }
