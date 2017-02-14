@@ -2,8 +2,7 @@ package hu.sovaroq.framework.service.base;
 
 import org.apache.logging.log4j.Logger;
 
-import hu.sovaroq.framework.features.bus.IEventBus;
-import hu.sovaroq.framework.features.logger.LogProvider;
+import hu.sovaroq.framework.core.bus.IEventBus;
 
 /**
  * Created by Oryk on 2017. 01. 27..

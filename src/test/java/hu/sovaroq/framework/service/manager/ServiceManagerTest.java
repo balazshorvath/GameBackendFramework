@@ -1,6 +1,6 @@
 package hu.sovaroq.framework.service.manager;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -9,8 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import hu.sovaroq.framework.features.logger.LogProvider;
-import hu.sovaroq.framework.service.ServiceManager;
+import hu.sovaroq.framework.core.ServiceManager;
+import hu.sovaroq.framework.core.logger.LogProvider;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.Service;
 import hu.sovaroq.framework.service.features.Run;

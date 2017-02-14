@@ -11,8 +11,8 @@ import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 
-import hu.sovaroq.framework.features.configuration.ConfigurationCreator;
-import hu.sovaroq.framework.features.configuration.annotation.ConfigValue;
+import hu.sovaroq.framework.core.configuration.ConfigurationCreator;
+import hu.sovaroq.framework.core.configuration.annotation.ConfigValue;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

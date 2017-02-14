@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 
-import hu.sovaroq.framework.features.logger.LogProvider;
+import hu.sovaroq.framework.core.logger.LogProvider;
 
 public class Ticker {
 	protected final ScheduledThreadPoolExecutor threadPool;

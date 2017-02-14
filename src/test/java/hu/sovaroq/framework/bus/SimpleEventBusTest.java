@@ -1,17 +1,22 @@
 package hu.sovaroq.framework.bus;
 
-import hu.sovaroq.framework.events.FrameworkEvent;
-import hu.sovaroq.framework.features.bus.EventListener;
-import hu.sovaroq.framework.features.bus.IEventBus;
-import hu.sovaroq.framework.features.bus.SimpleEventBus;
-import hu.sovaroq.framework.service.base.IService;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.after;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.concurrent.TimeUnit;
-
-import static org.mockito.Mockito.*;
+import hu.sovaroq.framework.core.bus.EventListener;
+import hu.sovaroq.framework.core.bus.IEventBus;
+import hu.sovaroq.framework.core.bus.SimpleEventBus;
+import hu.sovaroq.framework.events.FrameworkEvent;
+import hu.sovaroq.framework.service.base.IService;
 
 /**
  * Created by Oryk on 2017. 01. 28..

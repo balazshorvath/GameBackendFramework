@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.Logger;
 
-import hu.sovaroq.framework.features.logger.LogProvider;
+import hu.sovaroq.framework.core.logger.LogProvider;
 import lombok.ToString;
 
 public class TickerOld {

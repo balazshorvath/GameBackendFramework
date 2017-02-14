@@ -2,7 +2,6 @@ package hu.sovaroq.framework.service.ticker;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -14,14 +13,10 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import hu.sovaroq.framework.controller.base.IController;
-import hu.sovaroq.framework.features.bus.IEventBus;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.features.Tick;
 import hu.sovaroq.framework.service.features.Ticker;
-import hu.sovaroq.framework.service.features.TickerOld;
 
 public class TickerTest {
 	private final Logger log = LogManager.getLogger("console");
