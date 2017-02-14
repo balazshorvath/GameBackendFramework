@@ -15,7 +15,7 @@ import org.junit.Test;
 import hu.sovaroq.framework.core.bus.EventListener;
 import hu.sovaroq.framework.core.bus.IEventBus;
 import hu.sovaroq.framework.core.bus.SimpleEventBus;
-import hu.sovaroq.framework.events.FrameworkEvent;
+import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
 import hu.sovaroq.framework.service.base.IService;
 
 /**
@@ -64,10 +64,10 @@ public class SimpleEventBusTest {
         void onEvent(TestEvent2 event);
     }
 
-    public class TestEvent1 extends FrameworkEvent {
+    public class TestEvent1 implements IFrameworkEvent {
     }
-    public class TestEvent2 extends FrameworkEvent {
+    public class TestEvent2 implements IFrameworkEvent {
     }
-    public class TestEvent3 extends FrameworkEvent {
+    public class TestEvent3 implements IFrameworkEvent {
     }
 }

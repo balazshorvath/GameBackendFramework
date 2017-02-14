@@ -3,6 +3,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.8
 version = '0.0'
 
+
 task fullJar(type: Jar) {
     manifest {
         // Not really, but for now, it's ok
