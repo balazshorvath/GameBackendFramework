@@ -2,15 +2,16 @@ package hu.sovaroq.framework.controller.base;
 
 import org.apache.logging.log4j.Logger;
 
+import hu.sovaroq.framework.core.ServiceManager;
 import hu.sovaroq.framework.core.logger.LogProvider;
-import hu.sovaroq.framework.events.FrameworkEvent;
 
-public abstract class AbstractController<E extends FrameworkEvent, Config> implements IController<E, Config> {
+public abstract class AbstractController<Ctxt extends Context> implements IController<Ctxt> {
 	protected Logger log = LogProvider.createLogger(this.getClass());
-	protected Config config;
+	protected Ctxt config;
+	protected ServiceManager manager;
 	
 	@Override
-	public void start(Config config) {
+	public void start(Ctxt config) {
 		this.config = config;
 	}
 

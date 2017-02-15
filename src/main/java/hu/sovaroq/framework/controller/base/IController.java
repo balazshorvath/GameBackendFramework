@@ -2,7 +2,6 @@ package hu.sovaroq.framework.controller.base;
 
 import java.util.List;
 
-import hu.sovaroq.framework.events.FrameworkEvent;
 import hu.sovaroq.framework.service.base.IService;
 
 /**
@@ -41,11 +40,9 @@ import hu.sovaroq.framework.service.base.IService;
  *
  * Created by Oryk on 2017. 01. 24..
  */
-public interface IController<E extends FrameworkEvent, Config>{
-    void start(Config config);
+public interface IController<Ctxt extends Context>{
+    void start(Ctxt cotext);
     void stop();
-
-    void onEvent(E event);
 
     List<IService> getServices();
     String getStatusDescription();

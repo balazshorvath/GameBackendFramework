@@ -12,7 +12,7 @@ import hu.sovaroq.framework.core.logger.LogProvider;
 public class Ticker {
 	protected final ScheduledThreadPoolExecutor threadPool;
 	
-	protected Logger log;
+	protected final Logger log;
 
 	public Ticker(int capacity, Logger log){
 		this.threadPool = new ScheduledThreadPoolExecutor(capacity);

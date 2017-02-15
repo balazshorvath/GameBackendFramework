@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import hu.sovaroq.framework.core.bus.IEventBus;
 import hu.sovaroq.framework.core.bus.SimpleEventBus;
 import hu.sovaroq.framework.core.configuration.ConfigurationCreator;
+import hu.sovaroq.framework.core.logger.LogProvider;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.IService;
 import hu.sovaroq.framework.service.base.Service;
@@ -25,7 +26,7 @@ public class ServiceManager {
 
 	private final ConfigurationCreator configCreator = new ConfigurationCreator();
 	
-	private final Logger log;
+	private final Logger log = LogProvider.createLogger(this.getClass());
 	private final Map<Class<? extends AbstractService>, AbstractService> services = new ConcurrentHashMap<>();
 	private final ThreadPoolExecutor threadPool;
 
@@ -34,23 +35,20 @@ public class ServiceManager {
 
 	private ManagerState state = ManagerState.IDLE;
 
-	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
+	public ServiceManager(int corePoolSize, int maximumPoolSize, int tickerSize){
 		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.bus = new SimpleEventBus(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS);
-		this.ticker = new Ticker(tickerSize, log);
-		this.log = log;
+		this.ticker = new Ticker(tickerSize);
 	}
-	public ServiceManager(IEventBus bus, int corePoolSize, int maximumPoolSize, int tickerSize, Logger log){
+	public ServiceManager(IEventBus bus, int corePoolSize, int maximumPoolSize, int tickerSize){
 		this.threadPool = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 		this.bus = bus;
-		this.ticker = new Ticker(tickerSize, log);
-		this.log = log;
+		this.ticker = new Ticker(tickerSize);
 	}
-	public ServiceManager(IEventBus bus, Ticker ticker, ThreadPoolExecutor threadPool, Logger log){
+	public ServiceManager(IEventBus bus, Ticker ticker, ThreadPoolExecutor threadPool){
 		this.threadPool = threadPool;
 		this.bus = bus;
 		this.ticker = ticker;
-		this.log = log;
 	}
 
 	/**
@@ -59,7 +57,10 @@ public class ServiceManager {
 	public void start(){
 		state = ManagerState.STARTED;
 	}
-	
+	/**
+	 * Calls stop() on all the services.
+	 * Shuts down it's thread pool.
+	 */
 	public void stop(){
 		state = ManagerState.STOPPING;
         log.info("ServiceManager stopping.");
@@ -80,6 +81,16 @@ public class ServiceManager {
 		state = ManagerState.STOPPED;
 	}
 	
+	/**
+	 * 1. Instantiates an instance out of the type.
+	 * 2. Passes the bus to the service.
+	 * 3. Loads and passes the config to the service.
+	 * 
+	 * @param type
+	 * @return
+	 */
+	
+	@SuppressWarnings("unchecked")
 	public <T extends AbstractService> boolean manage(final Class<T> type){
 		T service;
 		try {

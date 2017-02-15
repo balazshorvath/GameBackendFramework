@@ -2,30 +2,31 @@ package hu.sovaroq.framework.controller;
 
 import java.util.List;
 
-import hu.sovaroq.framework.controller.base.IController;
-import hu.sovaroq.framework.events.FrameworkEvent;
+import hu.sovaroq.framework.controller.base.AbstractController;
+import hu.sovaroq.framework.controller.base.Context;
+import hu.sovaroq.framework.core.ServiceManager;
 import hu.sovaroq.framework.service.base.IService;
+import hu.sovaroq.framework.service.database.DatabaseService;
+import hu.sovaroq.framework.service.features.Ticker;
 
 /**
  * Created by Oryk on 2017. 01. 27..
  */
-//@Service()
-public class FrameworkController implements IController<FrameworkEvent, Object> {
+public class FrameworkController extends AbstractController<Context> {
+	
     @Override
-    public void start(Object o) {
-
+    public void start(Context context) {
+    	manager = new ServiceManager(context.getBus(), 5, 20, 20);
+    	
+    	
+    	manager.start();
     }
 
     @Override
     public void stop() {
-
+    	manager.stop();
     }
-
-    @Override
-    public void onEvent(FrameworkEvent event) {
-
-    }
-
+    
 	@Override
 	public String getStatusDescription() {
 		// TODO Auto-generated method stub
