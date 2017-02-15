@@ -6,6 +6,7 @@ import hu.sovaroq.framework.core.ServiceManager;
 import hu.sovaroq.framework.core.logger.LogProvider;
 
 public abstract class AbstractController<Ctxt extends Context> implements IController<Ctxt> {
+
 	protected Logger log = LogProvider.createLogger(this.getClass());
 	protected Ctxt config;
 	protected ServiceManager manager;
