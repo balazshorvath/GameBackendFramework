@@ -4,7 +4,8 @@ import java.util.List;
 
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
-import hu.sovaroq.framework.core.ServiceManager;
+import hu.sovaroq.framework.service.authentication.AuthenticationService;
+import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.IService;
 
 /**
@@ -14,15 +15,19 @@ public class FrameworkController extends AbstractController<Context> {
 
     @Override
     public void start(Context context) {
-    	manager = new ServiceManager(context.getBus(), 5, 20, 20);
+    	manager = context.getManager();
     	
+    	if(!manager.manage(AuthenticationService.class))
+    		log.error("Could not create AuthenticationServcie!");
     	
-    	manager.start();
     }
 
     @Override
     public void stop() {
-    	manager.stop();
+    	AbstractService auth = manager.getServices().get(AuthenticationService.class);
+    	if(auth != null){
+    		auth.stop();
+    	}
     }
 	@Override
 	public String getStatusDescription() {

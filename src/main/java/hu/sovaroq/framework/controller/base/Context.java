@@ -1,6 +1,6 @@
 package hu.sovaroq.framework.controller.base;
 
-import hu.sovaroq.framework.core.bus.IEventBus;
+import hu.sovaroq.framework.core.ServiceManager;
 
 public class Context {
 	private final ServiceManager manager;
@@ -9,7 +9,7 @@ public class Context {
 		this.manager = manager;
 	}
 
-	public IEventBus getManager() {
+	public ServiceManager getManager() {
 		return manager;
 	}
 	
