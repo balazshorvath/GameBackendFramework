@@ -96,7 +96,7 @@ public class ServiceManager {
 		try {
 			service = type.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			log.error("Could not instanciate service '" + type.getName() + "'. " + e.getMessage());
+			log.error("Could not instanciate service '" + type.getName() + "'. " + e);
 			return false;
 		}
 		Service serviceAnnot = type.getAnnotation(Service.class);

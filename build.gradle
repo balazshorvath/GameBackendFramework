@@ -1,6 +1,6 @@
-plugins {
-    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
-}
+//plugins {
+//    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
+//}
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
@@ -43,11 +43,11 @@ dependencies {
     compile group: 'org.hsqldb', name: 'hsqldb', version: '2.0.0'
     compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.2.6.Final'
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
-    compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '4.3.7.Final'
+    //compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '4.3.7.Final'
 
     // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
 
 }
-compileJava.options.compilerArgs += ["-proc:none"]
+//compileJava.options.compilerArgs += ["-proc:none"]

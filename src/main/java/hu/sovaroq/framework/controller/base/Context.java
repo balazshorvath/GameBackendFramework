@@ -3,14 +3,14 @@ package hu.sovaroq.framework.controller.base;
 import hu.sovaroq.framework.core.bus.IEventBus;
 
 public class Context {
-	private final IEventBus bus;
+	private final ServiceManager manager;
 	
-	public Context(IEventBus bus){
-		this.bus = bus;
+	public Context(ServiceManager manager){
+		this.manager = manager;
 	}
 
-	public IEventBus getBus() {
-		return bus;
+	public IEventBus getManager() {
+		return manager;
 	}
 	
 }
