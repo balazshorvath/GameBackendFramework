@@ -20,7 +20,7 @@ public class User implements IUser {
 	@Id
 	@GeneratedValue(strategy = AUTO)
 	@Column
-	Long id;
+	Long userId;
 	
 	@Column(length = 255, nullable = false, unique=true)
 	String login;
