@@ -2,6 +2,7 @@
 //    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
 //}
 apply plugin: 'java'
+apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 version = '0.0'
@@ -44,6 +45,11 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.2.6.Final'
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
     //compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '4.3.7.Final'
+    // MongoDB
+    // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
+	compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.4.2'
+	// https://mvnrepository.com/artifact/org.mongojack/mongojack
+	compile group: 'org.mongojack', name: 'mongojack', version: '2.6.0'
 
     // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
