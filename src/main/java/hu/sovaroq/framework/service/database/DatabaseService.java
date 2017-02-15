@@ -1,17 +1,26 @@
 package hu.sovaroq.framework.service.database;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 import hu.sovaroq.framework.core.logger.LogProvider;
+import hu.sovaroq.framework.data.user.User;
 import hu.sovaroq.framework.service.base.AbstractService;
+import hu.sovaroq.framework.service.chat.ChatMessage;
+import hu.sovaroq.framework.service.chat.Conversation;
 import hu.sovaroq.game.core.data.BuildingBase;
 import hu.sovaroq.game.core.data.CommanderBase;
 import hu.sovaroq.game.core.data.UnitBase;
@@ -34,6 +43,9 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 				configuration.addAnnotatedClass(UnitBase.class);
 				configuration.addAnnotatedClass(BuildingBase.class);
 				configuration.addAnnotatedClass(CommanderBase.class);
+				configuration.addAnnotatedClass(ChatMessage.class);
+				configuration.addAnnotatedClass(Conversation.class);
+				configuration.addAnnotatedClass(User.class);
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			}
 			return sessionFactory;
@@ -73,45 +85,71 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 	
 	public static void main(String[] args){
 		Session session = sessionFactory.openSession();
+		List<User> users = new ArrayList<>();
+		List<ChatMessage> messages = new ArrayList<>();
+		List<Conversation> conversations = new ArrayList<>();
+		SecureRandom random = new SecureRandom();
 		
-		UnitBase unit = new UnitBase();
-		unit.setBaseAttackDamage(1);
-		unit.setBaseHP(5);
-		unit.setBaseMovementSpeed(1);
-		unit.setDescription("test unit description");
-		unit.setName("test name unit");
+		Random randomGenerator = new Random();
 		
-		session.save(unit);
+		Transaction transaction = session.beginTransaction();
 		
-		UnitBase unit2 = new UnitBase();
-		unit2.setBaseAttackDamage(1);
-		unit2.setBaseHP(5);
-		unit2.setBaseMovementSpeed(1);
-		unit2.setDescription("test unit description2");
-		unit2.setName("test name unit2");
+		long startLoading = System.currentTimeMillis();
 		
-		session.save(unit2);
+		for(int i=0; i <= 10; i++){
+			User user = new User();
+			user.setLogin("User" + i);
+			user.setPassword("pass");
+			session.save(user);
+			users.add(user);
+		}
 		
-		BuildingBase building = new BuildingBase();
-		Set<UnitBase> units = new HashSet<UnitBase>();
-		units.add(unit);
-		units.add(unit2);
-		building.setAvailableUnits(units);
-		building.setBaseAttackDamage(10);
-		building.setBaseHP(30);
-		building.setDescription("building test description");
-		building.setName("name");
+		for(int i = 0; i <= 5; i++){
+			Conversation conversation = new Conversation();
+			conversation.setName("TestConversation" + i);
+			Set<User> convUsers = new HashSet<>();
+			for(int j=0; j <= i % 2; j++){
+				convUsers.add(users.get(randomGenerator.nextInt(users.size())));
+			}
+			conversation.setParticipants(convUsers);			
+			session.save(conversation);
+			conversations.add(conversation);
+		}
 		
-		Long i = (Long) session.save(building);
+		for(int i = 0; i <= 100000; i++){
+			ChatMessage message = new ChatMessage();
+			message.setConversation(conversations.get(randomGenerator.nextInt(conversations.size())));
+			message.setMessage(getRandomString(random));
+			message.setUser(users.get(randomGenerator.nextInt(users.size())));
+			message.setTimestamp(random.nextLong());
+			session.save(message);
+			messages.add(message);
+		}
 		
-		log.info("Building saved, ID: " + i.toString());
+		transaction.commit();
+		
+		long stoploading = System.currentTimeMillis();
+		
+		System.out.println("Elapsed time from start until write ready is " + (stoploading - startLoading) + " ms.");
+
 		
 		
-		BuildingBase testBuilding = session.get(BuildingBase.class, i);
+//		Long i = (Long) session.save(building);
 		
-		log.debug("building: " + testBuilding);
+//		log.info("Building saved, ID: " + i.toString());
+		
+		
+//		BuildingBase testBuilding = session.get(BuildingBase.class, i);
+		
+//		log.debug("building: " + testBuilding);
 		
 		session.close();
+		
+		sessionFactory.close();
+	}
+	
+	private static String getRandomString(SecureRandom random){
+		return new BigInteger(130, random).toString(32);
 	}
 
 	@Override
