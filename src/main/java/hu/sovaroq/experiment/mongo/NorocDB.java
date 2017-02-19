@@ -1,17 +1,19 @@
 package hu.sovaroq.experiment.mongo;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.*;
 
+import hu.sovaroq.experiment.mongo.data.*;
+import hu.sovaroq.experiment.mongo.repositories.ChatMessageRepository;
+import hu.sovaroq.experiment.mongo.repositories.ConversationRepository;
+import hu.sovaroq.experiment.mongo.repositories.UserRepository;
 import org.bson.types.ObjectId;
 import org.mongojack.DBRef;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-
-import hu.sovaroq.experiment.mongo.data.BlogPost;
-import hu.sovaroq.experiment.mongo.data.Comment;
-import hu.sovaroq.experiment.mongo.data.User;
 
 /**
  * Created by Oryk on 12/24/2015.
@@ -72,48 +74,57 @@ public class NorocDB {
 
     public static void main(String[] args) throws IOException{
     	NorocDB db = NorocDB.getInstance();
-    	MongoDBRepo<User, ObjectId> userRepo = new MongoDBRepo<>(db.database);
-    	MongoDBRepo<BlogPost, ObjectId> blogRepo = new MongoDBRepo<>(db.database);
-    	MongoDBRepo<Comment, ObjectId> commentRepo = new MongoDBRepo<>(db.database);
 
-    	User user1 = new User(null, "User1");
-    	User user2 = new User(null, "User2");
-    	User user3 = new User(null, "User3");
-    	User user4 = new User(null, "User4");
-    	ObjectId uid1 = userRepo.save(user1);
-    	userRepo.save(user2);
-    	userRepo.save(user3);
-    	userRepo.save(user4);
 
-    	BlogPost post = new BlogPost(null, uid1);
-    	post.comments = new ArrayList<>();
-    	//blogRepo.save(new BlogPost(new ObjectId(), new DBRef<User, ObjectId>(user2.getId(), User.class)));
-    	//blogRepo.save(new BlogPost(new ObjectId(), new DBRef<User, ObjectId>(user2.getId(), User.class)));
-    	//blogRepo.save(new BlogPost(new ObjectId(), new DBRef<User, ObjectId>(user3.getId(), User.class)));
+        UserRepository userRepository = new UserRepository(db.database);
+        ChatMessageRepository chatMessageRepository = new ChatMessageRepository(db.database);
+        ConversationRepository conversationRepository = new ConversationRepository(db.database);
 
-    	for(int i = 0; i < 100; i++){
-    		Comment c = new Comment(null, uid1);
-    		commentRepo.save(c);
-    		post.comments.add(c.getId());
-    	}
+        Random randomGenerator = new Random();
+        SecureRandom random = new SecureRandom();
 
-    	blogRepo.save(post);
-    	User test1 = userRepo.findById(uid1);
-    	
-    	BlogPost blogtest1 = blogRepo.findBy("owner", test1.getId()).get(0);
-    	
-    	int counter = 0;
-    	for(ObjectId ref : blogtest1.comments){
-    		Comment c = commentRepo.findById(ref);
-    		if (c != null){
-    			counter++;
-    		}
-    	}
-    	if(counter == 100){
-    		System.out.println("Success.");
-    	}else {
-    		System.out.println("Failure.");
-    	}
-    	
+        List<MongoUser> users = new ArrayList<>(10);
+        List<Conversation> conversations = new ArrayList<>(5);
+        List<ChatMessage> messages = new ArrayList<>();
+
+
+        long startLoading = System.currentTimeMillis();
+
+        for(int i=0; i <= 10; i++){
+            MongoUser user = new MongoUser();
+            user.setLogin("User" + i);
+            user.setPassword("pass");
+            userRepository.save(user);
+            users.add(user);
+        }
+
+        for(int i = 0; i <= 5; i++){
+            Conversation conversation = new Conversation();
+            conversation.setName("TestConversation" + i);
+            Set<DBRef<MongoUser, String>> convUsers = new HashSet<>();
+            for(int j=0; j <= i % 2; j++){
+                convUsers.add(users.get(randomGenerator.nextInt(users.size())).makeRef());
+            }
+            conversation.setParticipants(convUsers);
+            conversationRepository.save(conversation);
+            conversations.add(conversation);
+        }
+
+        for(int i = 0; i <= 100000; i++){
+            ChatMessage message = new ChatMessage();
+            message.setConversation(conversations.get(randomGenerator.nextInt(conversations.size())).makeRef());
+            message.setMessage(getRandomString(random));
+            message.setUser(users.get(randomGenerator.nextInt(users.size())).makeRef());
+            message.setTimestamp(random.nextLong());
+            chatMessageRepository.save(message);
+            messages.add(message);
+        }
+
+        long stoploading = System.currentTimeMillis();
+
+        System.out.println("Elapsed time from start until write ready is " + (stoploading - startLoading) + " ms.");
+    }
+    private static String getRandomString(SecureRandom random){
+        return new BigInteger(130, random).toString(32);
     }
 }
