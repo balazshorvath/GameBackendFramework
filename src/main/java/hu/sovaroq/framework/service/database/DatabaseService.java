@@ -3,8 +3,10 @@ package hu.sovaroq.framework.service.database;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -21,14 +23,18 @@ import hu.sovaroq.framework.data.user.User;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.chat.ChatMessage;
 import hu.sovaroq.framework.service.chat.Conversation;
+import hu.sovaroq.framework.service.database.repository.HibernateRepository;
 import hu.sovaroq.game.core.data.BuildingBase;
 import hu.sovaroq.game.core.data.CommanderBase;
 import hu.sovaroq.game.core.data.UnitBase;
 
-public class DatabaseService extends AbstractService<DatabaseService.DatabaseConfig>{
+public class DatabaseService extends AbstractService<DatabaseService.DatabaseConfig> {
 
 	private static SessionFactory sessionFactory = buildSessionFactory();
-	
+
+	@SuppressWarnings("rawtypes")
+	private Map<Class, HibernateRepository> repositories = new HashMap<>();
+
 	private static final Logger log = LogProvider.createLogger(DatabaseService.class);
 
 	private static SessionFactory buildSessionFactory() {
@@ -54,8 +60,8 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 			throw new ExceptionInInitializerError(ex);
 		}
 	}
-	
-	public DatabaseService(){
+
+	public DatabaseService() {
 		super();
 	}
 
@@ -70,53 +76,61 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 	@Override
 	public void restart() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setConfig(DatabaseService.DatabaseConfig config) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public class DatabaseConfig{
-		
+	public <T> HibernateRepository<T> getRepository(Class<T> clazz) {
+		if (repositories.containsKey(clazz)) {
+			return repositories.get(clazz);
+		}else{
+			return null;
+		}
 	}
-	
-	public static void main(String[] args){
+
+	public class DatabaseConfig {
+
+	}
+
+	public static void main(String[] args) {
 		Session session = sessionFactory.openSession();
 		List<User> users = new ArrayList<>();
 		List<ChatMessage> messages = new ArrayList<>();
 		List<Conversation> conversations = new ArrayList<>();
 		SecureRandom random = new SecureRandom();
-		
+
 		Random randomGenerator = new Random();
-		
+
 		Transaction transaction = session.beginTransaction();
-		
+
 		long startLoading = System.currentTimeMillis();
-		
-		for(int i=0; i <= 10; i++){
+
+		for (int i = 0; i <= 10; i++) {
 			User user = new User();
 			user.setLogin("User" + i);
 			user.setPassword("pass");
 			session.save(user);
 			users.add(user);
 		}
-		
-		for(int i = 0; i <= 5; i++){
+
+		for (int i = 0; i <= 5; i++) {
 			Conversation conversation = new Conversation();
 			conversation.setName("TestConversation" + i);
 			Set<User> convUsers = new HashSet<>();
-			for(int j=0; j <= i % 2; j++){
+			for (int j = 0; j <= i % 2; j++) {
 				convUsers.add(users.get(randomGenerator.nextInt(users.size())));
 			}
-			conversation.setParticipants(convUsers);			
+			conversation.setParticipants(convUsers);
 			session.save(conversation);
 			conversations.add(conversation);
 		}
-		
-		for(int i = 0; i <= 100000; i++){
+
+		for (int i = 0; i <= 100000; i++) {
 			ChatMessage message = new ChatMessage();
 			message.setConversation(conversations.get(randomGenerator.nextInt(conversations.size())));
 			message.setMessage(getRandomString(random));
@@ -125,30 +139,27 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 			session.save(message);
 			messages.add(message);
 		}
-		
+
 		transaction.commit();
-		
+
 		long stoploading = System.currentTimeMillis();
-		
+
 		System.out.println("Elapsed time from start until write ready is " + (stoploading - startLoading) + " ms.");
 
-		
-		
-//		Long i = (Long) session.save(building);
-		
-//		log.info("Building saved, ID: " + i.toString());
-		
-		
-//		BuildingBase testBuilding = session.get(BuildingBase.class, i);
-		
-//		log.debug("building: " + testBuilding);
-		
+		// Long i = (Long) session.save(building);
+
+		// log.info("Building saved, ID: " + i.toString());
+
+		// BuildingBase testBuilding = session.get(BuildingBase.class, i);
+
+		// log.debug("building: " + testBuilding);
+
 		session.close();
-		
+
 		sessionFactory.close();
 	}
-	
-	private static String getRandomString(SecureRandom random){
+
+	private static String getRandomString(SecureRandom random) {
 		return new BigInteger(130, random).toString(32);
 	}
 
@@ -167,13 +178,13 @@ public class DatabaseService extends AbstractService<DatabaseService.DatabaseCon
 	@Override
 	public void start(DatabaseConfig config) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

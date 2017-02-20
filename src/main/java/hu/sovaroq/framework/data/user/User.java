@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.NaturalId;
+
 import lombok.Data;
 import lombok.ToString;
 
@@ -22,7 +24,7 @@ public class User implements IUser {
 	@Column
 	Long userId;
 	
-	@Column(length = 255, nullable = false, unique=true)
+	@NaturalId
 	String login;
 	
 	@Column(length = 255, nullable = false)
