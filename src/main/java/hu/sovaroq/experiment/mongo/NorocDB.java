@@ -3,17 +3,23 @@ package hu.sovaroq.experiment.mongo;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
-import hu.sovaroq.experiment.mongo.data.*;
-import hu.sovaroq.experiment.mongo.repositories.ChatMessageRepository;
-import hu.sovaroq.experiment.mongo.repositories.ConversationRepository;
-import hu.sovaroq.experiment.mongo.repositories.UserRepository;
-import org.bson.types.ObjectId;
 import org.mongojack.DBRef;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+
+import hu.sovaroq.experiment.mongo.data.ChatMessage;
+import hu.sovaroq.experiment.mongo.data.Conversation;
+import hu.sovaroq.experiment.mongo.data.MongoUser;
+import hu.sovaroq.experiment.mongo.repositories.ChatMessageRepository;
+import hu.sovaroq.experiment.mongo.repositories.ConversationRepository;
+import hu.sovaroq.experiment.mongo.repositories.UserRepository;
 
 /**
  * Created by Oryk on 12/24/2015.
