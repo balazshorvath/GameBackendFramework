@@ -1,17 +1,17 @@
 package hu.sovaroq.framework.service.database.repository;
 
-import hu.sovaroq.framework.exception.FrameworkException;
-import hu.sovaroq.framework.exception.database.DatabaseException;
-import hu.sovaroq.framework.service.database.DatabaseService;
-import net.jodah.typetools.TypeResolver;
+import java.util.List;
+
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
-import java.util.List;
+import hu.sovaroq.framework.core.logger.LogProvider;
+import hu.sovaroq.framework.exception.FrameworkException;
+import hu.sovaroq.framework.exception.database.DatabaseException;
+import hu.sovaroq.framework.service.database.DatabaseService;
+import net.jodah.typetools.TypeResolver;
 
 /**
  * Created by Oryk on 2017. 02. 14..
@@ -19,6 +19,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class HibernateRepository<T> implements CRUDRepository<T> {
     protected final Class<T> entityType;
+    
+    protected Logger log = LogProvider.createLogger(this.getClass());
 
     public HibernateRepository(){
         Class<?>[] typeArguments = TypeResolver.resolveRawArguments(HibernateRepository.class, getClass());
