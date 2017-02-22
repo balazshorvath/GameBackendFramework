@@ -1,9 +1,10 @@
-package hu.sovaroq.framework.service.database.repository;
+package hu.sovaroq.framework.database;
 
+import hu.sovaroq.framework.core.logger.LogProvider;
 import hu.sovaroq.framework.exception.FrameworkException;
-import hu.sovaroq.framework.exception.database.DatabaseException;
-import hu.sovaroq.framework.service.database.DatabaseService;
+import hu.sovaroq.framework.service.database.IHibernateSessionProvider;
 import net.jodah.typetools.TypeResolver;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -15,17 +16,27 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
+ * In case you want to initialize this class on it's own (not a subclass of this),
+ * use the <code>HibernateRepository(IHibernateSessionProvider provider, Class<T> entityType)<code/>
+ * constructor, otherwise the type parameter will be incorrect
+ *
  * Created by Oryk on 2017. 02. 14..
  */
 @SuppressWarnings("unchecked")
-public abstract class HibernateRepository<T> implements CRUDRepository<T> {
+public class HibernateRepository<T> implements CRUDRepository<T, Long> {
     protected final Class<T> entityType;
+    protected final IHibernateSessionProvider provider;
     
     protected Logger log = LogProvider.createLogger(this.getClass());
 
-    public HibernateRepository(){
+    public HibernateRepository(IHibernateSessionProvider provider){
+        this.provider = provider;
         Class<?>[] typeArguments = TypeResolver.resolveRawArguments(HibernateRepository.class, getClass());
         this.entityType = (Class<T>) typeArguments[0];
+    }
+    public HibernateRepository(IHibernateSessionProvider provider, Class<T> entityType){
+        this.provider = provider;
+        this.entityType = entityType;
     }
 
     @Override
@@ -39,7 +50,8 @@ public abstract class HibernateRepository<T> implements CRUDRepository<T> {
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
-            e.printStackTrace();
+            log.error(e);
+            throw new FrameworkException(e);
         }
         return entity;
     }
@@ -65,7 +77,8 @@ public abstract class HibernateRepository<T> implements CRUDRepository<T> {
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
-            e.printStackTrace();
+            log.error(e);
+            throw new FrameworkException(e);
         }
         return entities;
     }
@@ -87,7 +100,8 @@ public abstract class HibernateRepository<T> implements CRUDRepository<T> {
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
-            e.printStackTrace();
+            log.error(e);
+            throw new FrameworkException(e);
         }
         return entities;
     }
@@ -103,8 +117,10 @@ public abstract class HibernateRepository<T> implements CRUDRepository<T> {
     }
 
     protected Session openSession() throws FrameworkException {
-        if(DatabaseService.getSessionFactory().isClosed())
-            throw new DatabaseException("DatabaseFactory is closed.");
-        return DatabaseService.getSessionFactory().openSession();
+        Session session = provider.openSession();
+        if(session == null){
+            throw new FrameworkException("Database is not present.");
+        }
+        return session;
     }
 }

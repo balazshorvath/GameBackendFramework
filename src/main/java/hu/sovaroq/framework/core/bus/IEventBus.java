@@ -7,7 +7,7 @@ public interface IEventBus {
     void start();
     void stop(long forceTimeout);
 
-    void subscribe(Class<?> type, Object instance);
+    void subscribe(Object instance);
 
     void pushEvent(Object event);
 

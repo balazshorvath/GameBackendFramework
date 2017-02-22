@@ -92,14 +92,18 @@ public class ServiceManager {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractService> boolean manage(final Class<T> type){
+		Service serviceAnnot = type.getAnnotation(Service.class);
+		if(serviceAnnot == null){
+			log.error("Class is not annotated with @Service '" + type.getName() + "'.");
+			return false;
+		}
 		T service;
 		try {
 			service = type.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
-			log.error("Could not instanciate service '" + type.getName() + "'. " + e);
+			log.error("Could not instantiate service '" + type.getName() + "'. " + e);
 			return false;
 		}
-		Service serviceAnnot = type.getAnnotation(Service.class);
 		service.setBus(bus);
 		service.setConfig(configCreator.createConfig(type, serviceAnnot.configurationFile()));
 		
@@ -122,7 +126,7 @@ public class ServiceManager {
 			}
 		}
 		
-		bus.subscribe(type, service);
+		bus.subscribe(service);
 		
 		services.put(type, service);
 		return true;
@@ -130,9 +134,10 @@ public class ServiceManager {
 	
 	
 	
-	public Map<Class<? extends AbstractService>, AbstractService> getServices() {
-		return services;
+	public AbstractService getService(Class<? extends AbstractService> service) {
+		return services.get(service);
 	}
+
 	private void registerTick(final Method m, final Object service, final long invocationTime) {
 		ticker.addTickerCall(invocationTime, m, service);
 	}

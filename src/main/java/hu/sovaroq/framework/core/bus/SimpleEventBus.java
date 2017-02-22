@@ -79,8 +79,9 @@ public class SimpleEventBus implements IEventBus, Runnable {
     }
 
     @Override
-    public void subscribe(Class<?> type, Object instance) {
+    public void subscribe(Object instance) {
         // Is it configured?
+        Class<?> type = instance.getClass();
         EventListener conf = type.getAnnotation(EventListener.class);
         if(conf == null){
             logger.warn("Could not add instance of class '" + type.getName() + "' to listeners, since it's not annotated with @EventListener.");

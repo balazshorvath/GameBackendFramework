@@ -22,7 +22,7 @@ task fullJar(type: Jar) {
         // Not really, but for now, it's ok
         attributes 'Implementation-Title': 'Sovaroq Full Jar Build',
                 'Implementation-Version': version,
-                'Main-Class': 'hu.sovaroq.framework.database.DatabaseService'
+                'Main-Class': 'hu.sovaroq.framework.database.HibernateDatabaseService'
     }
     baseName = project.name + '-full'
     from {

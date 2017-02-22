@@ -24,10 +24,7 @@ public class FrameworkController extends AbstractController<Context> {
 
     @Override
     public void stop() {
-    	AbstractService auth = manager.getServices().get(AuthenticationService.class);
-    	if(auth != null){
-    		auth.stop();
-    	}
+		manager.stop();
     }
 	@Override
 	public String getStatusDescription() {
