@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface CRUDRepository<T> {
     T findById(Long id) throws FrameworkException;
-//    List<T> findBy(String key, String value) throws FrameworkException;
+    List<T> findBy(String key, String value) throws FrameworkException;
     List<T> findAll() throws FrameworkException;
 
     Long save(T t) throws FrameworkException;

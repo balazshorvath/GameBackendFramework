@@ -7,9 +7,10 @@ import net.jodah.typetools.TypeResolver;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -41,22 +42,52 @@ public class HibernateRepository<T> implements CRUDRepository<T> {
         return entity;
     }
 
-
-
     @Override
-    public List<T> findAll() throws FrameworkException {
+    public List<T> findBy(String key, String value) throws FrameworkException {
         Transaction tx = null;
-        T entity = null;
+        List<T> entities = null;
         // Auto-closeable
         try (Session session = openSession()) {
             tx = session.beginTransaction();
-//            entity = session.get(entityType, id);
+
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+
+            CriteriaQuery<T> query = builder.createQuery(entityType);
+            Root<T> root = query.from(entityType);
+            query.where(builder.equal(root.get(key), value));
+
+            Query q = session.createQuery(query);
+
+            entities = q.list();
+
             tx.commit();
         } catch (HibernateException e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-        return null;
+        return entities;
+    }
+
+
+    @Override
+    public List<T> findAll() throws FrameworkException {
+        Transaction tx = null;
+        List<T> entities = null;
+        // Auto-closeable
+        try (Session session = openSession()) {
+            tx = session.beginTransaction();
+
+            CriteriaQuery<T> query = session.getCriteriaBuilder().createQuery(entityType);
+            Query q = session.createQuery(query);
+
+            entities = q.list();
+
+            tx.commit();
+        } catch (HibernateException e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+        return entities;
     }
 
     @Override
