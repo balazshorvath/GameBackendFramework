@@ -29,27 +29,22 @@ public class ServiceManagerTest {
 		manager.manage(TestService1.class);
 		manager.manage(TestService2.class);
 		
-		Thread.sleep(110);
+		Thread.sleep(100);
+
+		manager.stop();
+		
 		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable2);
-		// 110 + 400 - 510
-		Thread.sleep(400);
 		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable1);
-		// 510 + 500 - 1010 
-		Thread.sleep(500);
 		assertTrue(((TestService1)manager.getServices().get(TestService1.class)).runnable1);
 		
 	}
 	
-	@After
-	public void cleanup(){
-		manager.stop();
-	}
 
 
 	@Service(configNeedsRestart = false, configurationClass = Object.class, configurationFile = "")
 	public static class TestService1 extends AbstractService<Object>{
 		boolean runnable1 = false;
-		Queue<Long> callTimes = new ConcurrentLinkedQueue<>(); 
+		boolean running = false;
 		
 		public TestService1() {
 			super();
@@ -57,27 +52,29 @@ public class ServiceManagerTest {
 
 		@Tick(100)
 		public void tick100(){
-			callTimes.add(System.currentTimeMillis());
+			System.out.println("Inside: tick100(), TestService1");
 		}
 		
 		@Run
 		public void runnableMethod(){
-			for(int i = 0; i < 100; i++){
+			System.out.println("Inside: runnableMethod(), TestService1 - start");
+			while(running){
 				try {
-					System.out.println("Inside: runnableMethod(), TestService1");
-					Thread.sleep(10);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}				
+				}
 			}
 			runnable1 = true;
+			System.out.println("Inside: runnableMethod(), TestService1 - stop");
 		}
 		
 	}
 	@Service(configNeedsRestart = false, configurationClass = Object.class, configurationFile = "")
 	public static class TestService2 extends AbstractService<Object>{
 		boolean runnable1 = false, runnable2 = false;
+		boolean running = false;
 
 		public TestService2() {
 			super();
@@ -85,29 +82,31 @@ public class ServiceManagerTest {
 
 		@Run
 		public void runnableMethod1(){
-			for(int i = 0; i < 50; i++){
+			System.out.println("Inside: runnableMethod1(), TestService2 - start");
+			while(running){
 				try {
-					System.out.println("Inside: runnableMethod1(), TestService2");
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}				
+				}
 			}
 			runnable1 = true;
+			System.out.println("Inside: runnableMethod1(), TestService2 - stop");
 		}
 		@Run
 		public void runnableMethod2(){
-			for(int i = 0; i < 10; i++){
+			System.out.println("Inside: runnableMethod2(), TestService2 - start");
+			while(running){
 				try {
-					System.out.println("Inside: runnableMethod2(), TestService2");
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}				
+				}
 			}
 			runnable2 = true;
+			System.out.println("Inside: runnableMethod2(), TestService2 - stop");
 		}
 	}
 }

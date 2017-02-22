@@ -1,5 +1,17 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath "gradle.plugin.at.comm_unity.gradle.plugins:jpamodelgen-plugin:1.1.2"
+  }
+}
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'at.comm_unity.gradle.plugins.jpamodelgen'
 
 sourceCompatibility = 1.8
 version = '0.0'
@@ -41,7 +53,7 @@ dependencies {
     compile group: 'org.hsqldb', name: 'hsqldb', version: '2.0.0'
     compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: '5.2.6.Final'
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen
-    //compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '4.3.7.Final'
+    // compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '4.3.7.Final'
     // MongoDB
     // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
 	compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.4.2'
@@ -50,8 +62,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
-	
-
 
 }
 
@@ -74,4 +84,4 @@ task delombok {
         ant.delombok(from:srcJava, to:srcDelomboked, classpath: sumTree.asPath)
     }
 }
-//compileJava.options.compilerArgs += ["-proc:none"]
+compileJava.options.compilerArgs += ["-proc:none"]

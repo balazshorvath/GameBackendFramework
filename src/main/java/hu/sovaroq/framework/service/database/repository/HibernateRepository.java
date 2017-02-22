@@ -18,8 +18,10 @@ import java.util.List;
  * Created by Oryk on 2017. 02. 14..
  */
 @SuppressWarnings("unchecked")
-public class HibernateRepository<T> implements CRUDRepository<T> {
+public abstract class HibernateRepository<T> implements CRUDRepository<T> {
     protected final Class<T> entityType;
+    
+    protected Logger log = LogProvider.createLogger(this.getClass());
 
     public HibernateRepository(){
         Class<?>[] typeArguments = TypeResolver.resolveRawArguments(HibernateRepository.class, getClass());
