@@ -3,26 +3,17 @@ package hu.sovaroq.framework.core;
 
 import java.util.List;
 
+import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.IController;
 
 /**
- * Responsible for:
- *  a) On start, register IServiceManager.
- *  b) Register MasterServices through <code>registerMasterService();<code/>
- *  c) Manage the main event bus.
- *
- *
  * Created by Oryk on 2017. 01. 23..
  */
 public interface IFramework {
-    void start();
+    void start(List<Class<?>> features);
     void stop();
 
-    IFramework getInstance();
-
-    <T extends IController> void registerController(Class<T> c, T controller);
-    IController getControllerById(String id);
-    List<IController> getControllers();
+    List<AbstractController> getControllers();
 
     String getStatusDescription();
     Double getWorkload();

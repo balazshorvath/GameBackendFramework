@@ -1,7 +1,11 @@
 package hu.sovaroq.framework.core;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import hu.sovaroq.framework.controller.base.AbstractController;
+import hu.sovaroq.framework.controller.base.Context;
+import hu.sovaroq.framework.service.base.AbstractService;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.controller.base.IController;
@@ -10,53 +14,36 @@ import hu.sovaroq.framework.core.logger.LogProvider;
 
 public class Framework implements IFramework {
     private static final Logger log = LogProvider.createLogger(Framework.class);
+
+    List<AbstractController> controllers = new ArrayList<>();
+    private ServiceManager manager;
     
 	@Override
-	public void start() {
-		
+	public void start(List<Class<?>> features) {
+		manager = new ServiceManager(20, 100, 100);
+
+		features.forEach(this::registerController);
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-
+		controllers.forEach(AbstractController::stop);
+		manager.stop();
 	}
 
-	@Override
-	public IFramework getInstance() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T extends IController> void registerController(Class<T> c, T controller) {
-		hu.sovaroq.framework.service.base.Service config = c.getAnnotation(hu.sovaroq.framework.service.base.Service.class);
-		
-		Object conf = null;
-		
-		if(config != null && config.configurationClass() != null){
-			conf = new ConfigurationCreator().createConfig(config.configurationClass(), findConfigurationFile(c));
-		}else {
-			log.info("Controller has no configuration type. Starting it with null.");
+	private void registerController(Class<?> c) {
+		try {
+			AbstractController controller = (AbstractController) c.newInstance();
+			// TODO should fine for the most part, but this is crap. Somehow need to create a proper context.
+			controller.start(new Context(manager));
+			controllers.add(controller);
+		} catch (Exception e) {
+			log.error(e);
+			e.printStackTrace();
 		}
-		
-		
 	}
-
-	private String findConfigurationFile(Class<?> c) {
-		c.getName();
-		return null;
-	}
-
 	@Override
-	public IController getControllerById(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<IController> getControllers() {
-		// TODO Auto-generated method stub
+	public List<AbstractController> getControllers() {
 		return null;
 	}
 

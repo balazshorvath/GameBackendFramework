@@ -8,12 +8,12 @@ import hu.sovaroq.framework.core.logger.LogProvider;
 public abstract class AbstractController<Ctxt extends Context> implements IController<Ctxt> {
 
 	protected Logger log = LogProvider.createLogger(this.getClass());
-	protected Ctxt config;
+	protected Ctxt context;
 	protected ServiceManager manager;
 	
 	@Override
-	public void start(Ctxt config) {
-		this.config = config;
+	public void start(Ctxt context) {
+		this.context = context;
 	}
 
 	@Override

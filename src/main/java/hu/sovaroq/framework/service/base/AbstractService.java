@@ -1,20 +1,17 @@
 package hu.sovaroq.framework.service.base;
 
-import org.apache.logging.log4j.Logger;
-
 import hu.sovaroq.framework.core.bus.IEventBus;
+import hu.sovaroq.framework.core.logger.LogProvider;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Created by Oryk on 2017. 01. 27..
  */
-public abstract class AbstractService<Config> implements IService<Config>  {
+public class AbstractService<Config> implements IService<Config>  {
     protected Config config;
-    protected Logger log;
+    protected Logger log = LogProvider.createLogger(getClass());
     private IEventBus bus;
 
-    public AbstractService() {
-    }
-    
     protected void post(Object o){
     	this.bus.pushEvent(o);
     }

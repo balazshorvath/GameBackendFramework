@@ -123,4 +123,8 @@ public class HibernateRepository<T> implements CRUDRepository<T, Long> {
         }
         return session;
     }
+
+    public Class<T> getEntityType() {
+        return entityType;
+    }
 }

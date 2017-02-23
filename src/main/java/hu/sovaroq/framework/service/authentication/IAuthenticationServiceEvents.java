@@ -8,11 +8,11 @@ import lombok.Value;
 
 public class IAuthenticationServiceEvents {
 
-	public enum AuthenticationFaliureStatus {
+	public enum AuthenticationFailureStatus {
 		wrong_password, not_found, locked, system_failure, unknowk;
 	}
 
-	public enum RegistrationFaliureStatus {
+	public enum RegistrationFailureStatus {
 		login_already_registered, system_failure, unknown;
 	}
 
@@ -32,7 +32,7 @@ public class IAuthenticationServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class AuthenticationFailureResponse extends FrameworkResponseEvent{
-		AuthenticationFaliureStatus status;
+		AuthenticationFailureStatus status;
 	}
 
 	@Value
@@ -51,7 +51,7 @@ public class IAuthenticationServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class RegisterUserFailureResponse extends FrameworkResponseEvent{
-		RegistrationFaliureStatus status;
+		RegistrationFailureStatus status;
 	}
 
 }

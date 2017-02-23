@@ -1,46 +1,56 @@
 package hu.sovaroq.framework.controller;
 
-import java.util.List;
-
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
 import hu.sovaroq.framework.service.authentication.AuthenticationService;
 import hu.sovaroq.framework.service.base.AbstractService;
-import hu.sovaroq.framework.service.base.IService;
+import hu.sovaroq.framework.service.database.HibernateDatabaseService;
+import hu.sovaroq.framework.service.useless.CompletelyUselessService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Oryk on 2017. 01. 27..
  */
 public class FrameworkController extends AbstractController<Context> {
+	List<AbstractService> services = new ArrayList<>();
 
     @Override
     public void start(Context context) {
     	manager = context.getManager();
-    	
-    	if(!manager.manage(AuthenticationService.class))
-    		log.error("Could not create AuthenticationServcie!");
-    	
+
+		register(HibernateDatabaseService.class);
+		register(CompletelyUselessService.class);
     }
 
     @Override
     public void stop() {
-		manager.stop();
+        services.forEach(AbstractService::stop);
     }
-	@Override
+
+    @Override
 	public String getStatusDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "FrameworkController";
 	}
 
 	@Override
 	public Double getWorkload() {
-		// TODO Auto-generated method stub
-		return null;
+		return 0.0;
 	}
 
 	@Override
-	public List<IService> getServices() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<AbstractService> getServices() {
+		return services;
+	}
+
+	private boolean register(Class<? extends AbstractService> type){
+		AbstractService service = manager.manage(type);
+		if(service == null) {
+			log.error("Could not create service " + type.getName() + "!");
+			return false;
+		}
+		services.add(service);
+		return true;
 	}
 }

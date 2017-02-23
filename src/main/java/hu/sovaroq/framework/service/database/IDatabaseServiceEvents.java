@@ -8,7 +8,7 @@ import lombok.Value;
 
 public interface IDatabaseServiceEvents {
 	
-	public enum DatabaseFailiureStatus{
+	public enum DatabaseFailureStatus {
 		entity_not_found,
 		entity_aready_exists,
 		generic_error;
@@ -16,7 +16,17 @@ public interface IDatabaseServiceEvents {
 
 	@Value
 	@EqualsAndHashCode(callSuper = true)
-	public class GetUserReqest extends FrameworkRequestEvent{
+	public class DatabaseServiceRestarted extends FrameworkRequestEvent{
+	}
+
+	@Value
+	@EqualsAndHashCode(callSuper = true)
+	public class DatabaseServiceStopped extends FrameworkRequestEvent{
+	}
+
+	@Value
+	@EqualsAndHashCode(callSuper = true)
+	public class GetUserRequest extends FrameworkRequestEvent{
 		String logon;
 	}
 	
@@ -29,7 +39,7 @@ public interface IDatabaseServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class GetUserFailureResponse extends FrameworkResponseEvent{
-		DatabaseFailiureStatus status;
+		DatabaseFailureStatus status;
 	}
 	
 	@Value
@@ -48,7 +58,7 @@ public interface IDatabaseServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class CreateUserFailureResponse extends FrameworkResponseEvent{
-		DatabaseFailiureStatus user;
+		DatabaseFailureStatus user;
 	}
 	
 }

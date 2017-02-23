@@ -3,6 +3,7 @@ package hu.sovaroq.framework.service.database;
 import hu.sovaroq.framework.core.logger.LogProvider;
 import hu.sovaroq.framework.data.user.User;
 import hu.sovaroq.framework.database.HibernateRepository;
+import hu.sovaroq.framework.database.Repository;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.Service;
 import hu.sovaroq.framework.service.chat.ChatMessage;
@@ -11,6 +12,7 @@ import hu.sovaroq.game.core.data.BuildingBase;
 import hu.sovaroq.game.core.data.CommanderBase;
 import hu.sovaroq.game.core.data.UnitBase;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
@@ -18,14 +20,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.reflections.Reflections;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service(
-		configNeedsRestart = true,
 		configurationClass = HibernateDatabaseService.DatabaseConfig.class,
-		configurationFile = "HibernateDatabaseService.properties"
+		configurationFile = "database/HibernateDatabaseService.properties"
 )
 public class HibernateDatabaseService extends AbstractService<HibernateDatabaseService.DatabaseConfig> implements IHibernateSessionProvider {
 	private SessionFactory sessionFactory;
@@ -35,29 +39,38 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	private static final Logger log = LogProvider.createLogger(HibernateDatabaseService.class);
 
-
 	public HibernateDatabaseService() {
 		super();
 	}
 
 	@Override
-	public void restart() {
-		// TODO Auto-generated method stub
+	public void start(DatabaseConfig config) {
+		super.start(config);
+		initSessionFactory();
+	}
 
+	@Override
+	public void stop() {
+		if(sessionFactory != null && !sessionFactory.isClosed()) {
+			sessionFactory.close();
+			sessionFactory = null;
+			post(new IDatabaseServiceEvents.DatabaseServiceStopped());
+		}
+	}
+	@Override
+	public void restart() {
+		stop();
+		initSessionFactory();
+		post(new IDatabaseServiceEvents.DatabaseServiceRestarted());
 	}
 
 	@Override
 	public void setConfig(HibernateDatabaseService.DatabaseConfig config) {
 		this.config = config;
-
 	}
 
-	public <T> HibernateRepository<T> getRepository(Class<T> clazz) {
-		if (repositories.containsKey(clazz)) {
-			return repositories.get(clazz);
-		}else{
-			return null;
-		}
+	public HibernateRepository getRepository(Class<?> clazz) {
+		return repositories.get(clazz);
 	}
 
 	@Override
@@ -68,37 +81,19 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 		return null;
 	}
 
-	@Data
-	@ToString
-	public class DatabaseConfig {
-		// "/hibernate.cfg.xml"
-		String hibernateConfig;
-	}
-
 	@Override
 	public String getStatusDescription() {
 		return "HibernateDatabaseService is currently "
 				+ ((sessionFactory == null || sessionFactory.isClosed()) ? "connected" : "not connected")
-				+ ",\nwith config " + this.config + ".";
+				+ ",\nwith context " + this.config + ".";
 	}
 
 	@Override
 	public Double getWorkload() {
-		// TODO Auto-generated method stub
-		return null;
+		return 0.0;
 	}
 
-	@Override
-	public void start(DatabaseConfig config) {
-		this.config = config;
-		initSessionFactory();
-	}
-
-	@Override
-	public void stop() {
-		sessionFactory.close();
-	}
-
+	@SuppressWarnings("unchecked")
 	private void initSessionFactory() {
 		try {
 			if (sessionFactory == null) {
@@ -108,13 +103,24 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 				serviceRegistryBuilder.applySettings(configuration.getProperties());
 				ServiceRegistry serviceRegistry = serviceRegistryBuilder.build();
 				// That was missing
-				// TODO this should be in config somehow. Probably hibernate xml.
-				configuration.addAnnotatedClass(UnitBase.class);
-				configuration.addAnnotatedClass(BuildingBase.class);
-				configuration.addAnnotatedClass(CommanderBase.class);
-				configuration.addAnnotatedClass(ChatMessage.class);
-				configuration.addAnnotatedClass(Conversation.class);
-				configuration.addAnnotatedClass(User.class);
+				Reflections reflections = new Reflections();
+				Set<Class<?>> repositories = reflections.getTypesAnnotatedWith(Repository.class);
+
+				for (Class<?> repository : repositories) {
+					if(!HibernateRepository.class.isAssignableFrom(repository))
+						continue;
+					try {
+						Constructor<? extends HibernateRepository> c = (Constructor<? extends HibernateRepository>) repository.getConstructor(IHibernateSessionProvider.class);
+
+						HibernateRepository repo = c.newInstance(this);
+
+						configuration.addAnnotatedClass(repo.getEntityType());
+						this.repositories.put(repo.getEntityType(), repo);
+					}catch (Exception e){
+						log.error("An exception was thrown while working on repositories.", e);
+					}
+				}
+
 
 				sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			} else {
@@ -125,6 +131,15 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 			System.err.println("Initial SessionFactory creation failed." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
+	}
+
+
+	@Data
+	@ToString
+	@NoArgsConstructor
+	public static class DatabaseConfig {
+		// "/hibernate.cfg.xml"
+		String hibernateConfig;
 	}
 
 }

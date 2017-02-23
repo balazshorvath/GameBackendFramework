@@ -11,8 +11,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Service {
-    Class<?> configurationClass();
-    String configurationFile();
+    Class<?> configurationClass() default Object.class;
+    String configurationFile() default "";
     boolean configNeedsRestart() default false;
 
 }

@@ -13,7 +13,7 @@ import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserFa
 import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserReqest;
 import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserSuccessResponse;
 import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserFailureResponse;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserReqest;
+import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserRequest;
 import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserSuccessResponse;
 
 /**
@@ -46,7 +46,7 @@ public class AuthenticationService extends AbstractService<AuthenticationService
 	}
 
 	public void onEvent(AuthenticationRequest request) {
-		post(new GetUserReqest(request.getLogon()));
+		post(new GetUserRequest(request.getLogon()));
 	}
 
 	public void onEvent(GetUserSuccessResponse response) {

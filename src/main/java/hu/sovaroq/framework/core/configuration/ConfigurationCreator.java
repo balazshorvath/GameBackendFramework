@@ -25,7 +25,7 @@ import hu.sovaroq.framework.core.logger.LogProvider;
  *     database.host
  * If the property "database" is present (field marked as @ConfigValue),
  * and the "database" property is also a type with @Config,
- * the database.name property key means config.getDatabase().setName(asdasd);
+ * the database.name property key means context.getDatabase().setName(asdasd);
  *
  *
  * Created by Oryk on 2017. 01. 28..
@@ -35,7 +35,7 @@ public class ConfigurationCreator {
     private static final Logger log = LogProvider.createLogger(ConfigurationCreator.class);
     private static final Map<String, List<Class<? extends FileParser>>> fileParsers;
     /**
-     * Static initializer for config loader.
+     * Static initializer for context loader.
      * find file parsers based on annotation.
      */
     static {
@@ -60,8 +60,8 @@ public class ConfigurationCreator {
     
 
     public <C> C createConfig(Class<C> configType, String configFile) {
-    	if(configFile == null || configFile.isEmpty()){
-        	log.error("No config file specified.");
+    	if(configFile == null || configFile.isEmpty() || Object.class.equals(configType)){
+        	log.error("No context file specified.");
     		return null;
     	}
     	
@@ -81,7 +81,7 @@ public class ConfigurationCreator {
         }
 
         if(values == null){
-        	log.error("Could not parse config file. Config type: " + configType.getName());
+        	log.error("Could not parse context file. Config type: " + configType.getName());
         }
 
         return createObject(configType, values);
@@ -92,7 +92,7 @@ public class ConfigurationCreator {
         try {
             result = configType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            log.error("Failed to create config class instance of '" + configType.getName() + "'. Exception: " + e);
+            log.error("Failed to create context class instance of '" + configType.getName() + "'. Exception: " + e);
             e.printStackTrace();
             return null;
         }

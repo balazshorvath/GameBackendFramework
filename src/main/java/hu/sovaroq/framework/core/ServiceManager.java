@@ -84,32 +84,32 @@ public class ServiceManager {
 	/**
 	 * 1. Instantiates an instance out of the type.
 	 * 2. Passes the bus to the service.
-	 * 3. Loads and passes the config to the service.
+	 * 3. Loads and passes the context to the service.
 	 * 
 	 * @param type
 	 * @return
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractService> boolean manage(final Class<T> type){
+	public <T extends AbstractService> T manage(final Class<T> type){
 		Service serviceAnnot = type.getAnnotation(Service.class);
 		if(serviceAnnot == null){
 			log.error("Class is not annotated with @Service '" + type.getName() + "'.");
-			return false;
+			return null;
 		}
 		T service;
 		try {
 			service = type.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			log.error("Could not instantiate service '" + type.getName() + "'. " + e);
-			return false;
+			return null;
 		}
 		service.setBus(bus);
-		service.setConfig(configCreator.createConfig(type, serviceAnnot.configurationFile()));
+		service.setConfig(configCreator.createConfig(serviceAnnot.configurationClass(), serviceAnnot.configurationFile()));
 		
 		if(services.containsKey(type)){
 			log.error("Service with type " + type.getName() + " already exists.");
-			return false;
+			return null;
 		}
 		
 		for(Method m : type.getMethods()){
@@ -129,7 +129,7 @@ public class ServiceManager {
 		bus.subscribe(service);
 		
 		services.put(type, service);
-		return true;
+		return service;
 	}
 	
 	
