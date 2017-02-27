@@ -42,23 +42,29 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@Override
 	public void start(DatabaseConfig config) {
+		log.info(">HibernateDatabaseService - start()");
 		super.start(config);
 		initEntityManager();
+		log.info("<HibernateDatabaseService - start()");
+
 	}
 
 	@Override
 	public void stop() {
 		if (em != null && em.isOpen()) {
 			em.close();
+			log.info(">HibernateDatabaseService - stop()");
 			post(new IDatabaseServiceEvents.DatabaseServiceStopped());
 		}
 	}
 
 	@Override
 	public void restart() {
+		log.info(">HibernateDatabaseService - restart()");
 		stop();
 		initEntityManager();
 		post(new IDatabaseServiceEvents.DatabaseServiceRestarted());
+		log.info("<HibernateDatabaseService - restart()");
 	}
 
 	@Override
@@ -72,13 +78,13 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@Override
 	public EntityManager getEntityManager() {
-			return em;
+		log.info(">HibernateDatabaseService - getEntityManager()");
+		return em;
 	}
 
 	@Override
 	public String getStatusDescription() {
-		return "HibernateDatabaseService is currently "
-				+ ((em == null || !em.isOpen()) ? "connected" : "not connected")
+		return "HibernateDatabaseService is currently " + ((em == null || !em.isOpen()) ? "connected" : "not connected")
 				+ ",\nwith context " + this.config + ".";
 	}
 
@@ -89,10 +95,11 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@SuppressWarnings("unchecked")
 	private void initEntityManager() {
+		log.info(">HibernateDatabaseService - initEntityManager()");
 		try {
 			entityManagerFactory = Persistence.createEntityManagerFactory("HsqldbWithTDD");
 			em = entityManagerFactory.createEntityManager();
-						
+
 			// That was missing
 			Reflections reflections = new Reflections();
 			Set<Class<?>> repositories = reflections.getTypesAnnotatedWith(Repository.class);
@@ -116,9 +123,10 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 			System.err.println("Initial SessionFactory creation failed." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
+		log.info("<HibernateDatabaseService - initSessionFactory()");
 	}
-	
-	public CriteriaBuilder getCriteriaBuilder(){		
+
+	public CriteriaBuilder getCriteriaBuilder() {
 		return entityManagerFactory.getCriteriaBuilder();
 	}
 

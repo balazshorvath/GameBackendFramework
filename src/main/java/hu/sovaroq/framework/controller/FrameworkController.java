@@ -18,15 +18,19 @@ public class FrameworkController extends AbstractController<Context> {
 
     @Override
     public void start(Context context) {
+        log.info(">FrameworkController - start()");
     	manager = context.getManager();
 
 		register(HibernateDatabaseService.class);
 		register(CompletelyUselessService.class);
+        log.info("<FrameworkController - start()");
     }
 
     @Override
     public void stop() {
+        log.info(">FrameworkController - stop()");
         services.forEach(AbstractService::stop);
+        log.info("<FrameworkController - stop()");
     }
 
     @Override
@@ -45,6 +49,7 @@ public class FrameworkController extends AbstractController<Context> {
 	}
 
 	private boolean register(Class<? extends AbstractService> type){
+        log.info("FrameworkController - register(" + type.getName() + ")");
 		AbstractService service = manager.manage(type);
 		if(service == null) {
 			log.error("Could not create service " + type.getName() + "!");
