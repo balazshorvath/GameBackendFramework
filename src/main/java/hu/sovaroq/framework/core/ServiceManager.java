@@ -55,7 +55,9 @@ public class ServiceManager {
 	 * Does nothing atm.
 	 */
 	public void start(){
+		log.info(">FrameworkController - start()");
 		state = ManagerState.STARTED;
+		log.info("<FrameworkController - start()");
 	}
 	/**
 	 * Calls stop() on all the services.

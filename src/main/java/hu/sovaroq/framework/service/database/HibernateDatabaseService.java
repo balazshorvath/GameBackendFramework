@@ -45,23 +45,29 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@Override
 	public void start(DatabaseConfig config) {
+		log.info(">HibernateDatabaseService - start()");
 		super.start(config);
 		initSessionFactory();
+		log.info("<HibernateDatabaseService - start()");
 	}
 
 	@Override
 	public void stop() {
+		log.info(">HibernateDatabaseService - stop()");
 		if(sessionFactory != null && !sessionFactory.isClosed()) {
 			sessionFactory.close();
 			sessionFactory = null;
 			post(new IDatabaseServiceEvents.DatabaseServiceStopped());
 		}
+		log.info("<HibernateDatabaseService - stop()");
 	}
 	@Override
 	public void restart() {
+		log.info(">HibernateDatabaseService - restart()");
 		stop();
 		initSessionFactory();
 		post(new IDatabaseServiceEvents.DatabaseServiceRestarted());
+		log.info("<HibernateDatabaseService - restart()");
 	}
 
 	@Override
@@ -75,6 +81,7 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@Override
 	public Session openSession() {
+		log.info(">HibernateDatabaseService - openSession()");
 		if(sessionFactory != null && !sessionFactory.isClosed()){
 			return sessionFactory.openSession();
 		}
@@ -95,6 +102,7 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	@SuppressWarnings("unchecked")
 	private void initSessionFactory() {
+		log.info(">HibernateDatabaseService - initSessionFactory()");
 		try {
 			if (sessionFactory == null) {
 				Configuration configuration = new Configuration()
@@ -131,6 +139,7 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 			System.err.println("Initial SessionFactory creation failed." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
+		log.info("<HibernateDatabaseService - initSessionFactory()");
 	}
 
 
