@@ -22,8 +22,6 @@ import hu.sovaroq.framework.service.features.Tick;
 import hu.sovaroq.framework.service.features.Ticker;
 
 public class ServiceManager {
-	public static final long WAIT_BEFORE_FORCE_SHUTDOWN = 10000;
-
 	private final ConfigurationCreator configCreator = new ConfigurationCreator();
 	
 	private final Logger log = LogProvider.createLogger(this.getClass());
