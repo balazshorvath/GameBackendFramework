@@ -6,15 +6,13 @@ import java.util.Map;
 import org.mindrot.jbcrypt.BCrypt;
 
 import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
+import hu.sovaroq.framework.data.user.User;
+import hu.sovaroq.framework.database.UserRepository;
+import hu.sovaroq.framework.exception.FrameworkException;
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.AuthenticationRequest;
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.RegisterUserRequest;
+import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.RegistrationFailureStatus;
 import hu.sovaroq.framework.service.base.AbstractService;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserFailureResponse;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserReqest;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.CreateUserSuccessResponse;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserFailureResponse;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserRequest;
-import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserSuccessResponse;
 
 /**
  * Possible usage: WebAuthenticationManager used for administration site, uses
@@ -25,36 +23,31 @@ import hu.sovaroq.framework.service.database.IDatabaseServiceEvents.GetUserSucce
  */
 public class AuthenticationService extends AbstractService<AuthenticationService.AuthenticationConfig> {
 
-	private Map<Long, IFrameworkEvent> authRequests = new HashMap<>();
-
 	public AuthenticationService() {
 		super();
 	}
 
 	public void onEvent(RegisterUserRequest request) {
-		authRequests.put(request.getRequestId(), request);
 		String hashedPW = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
-		post(new CreateUserReqest(request.getLogon(), hashedPW));
-	}
-
-	public void onEvent(CreateUserFailureResponse response) {
-
-	}
-
-	public void onEvent(CreateUserSuccessResponse response) {
-
+		UserRepository repository = (UserRepository) databaseService.getRepository(User.class);		
+		User user = repository.findByLogon(request.getLogon());
+		if(user != null){
+			post(new IAuthenticationServiceEvents.RegisterUserFailureResponse(request.getRequestId(), RegistrationFailureStatus.login_already_registered));
+		}else{
+			user = new User();
+			user.setLogin(request.getLogon());
+			user.setPassword(hashedPW);
+			try {
+				repository.save(user);
+				post(new IAuthenticationServiceEvents.RegisterUserSuccessResponse(request.getRequestId(), user));
+			} catch (FrameworkException e) {
+				post(new IAuthenticationServiceEvents.RegisterUserFailureResponse(request.getRequestId(), RegistrationFailureStatus.system_failure));
+			}			
+		}		
 	}
 
 	public void onEvent(AuthenticationRequest request) {
-		post(new GetUserRequest(request.getLogon()));
-	}
-
-	public void onEvent(GetUserSuccessResponse response) {
-
-	}
-
-	public void onEvent(GetUserFailureResponse response) {
-
+		
 	}
 
 	@Override

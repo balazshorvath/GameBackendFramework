@@ -45,8 +45,10 @@ public class HibernateRepository<T> implements CRUDRepository<T, Long> {
 
     @Override
     public T findById(Long id) throws FrameworkException {
-        Transaction tx = null;
         T entity = null;
+        
+        EntityManager entityManager = provider.getEntityManager();
+        entity = entityManager.find(entityType, id);
 
         return entity;
     }
@@ -59,23 +61,42 @@ public class HibernateRepository<T> implements CRUDRepository<T, Long> {
         return entities;
     }
 
-
     @Override
     public List<T> findAll() throws FrameworkException {
-        EntityTransaction tx = null;
-        List<T> entities = null;
+    	EntityManager entityManager = provider.getEntityManager();
+    	CriteriaBuilder criteriaBuilder = provider.getCriteriaBuilder();
+        List<T> entities = null;        
+        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
+        Root<T> rootElement = criteriaQuery.from(entityType);
+        criteriaQuery.select(rootElement);
 
+        entities = entityManager.createQuery(criteriaQuery).getResultList();
+        
         return entities;
     }
 
     @Override
-    public Long save(T t) throws FrameworkException {
-        return null;
+    public void save(T t) throws FrameworkException {
+    	EntityManager entityManager = provider.getEntityManager();
+    	EntityTransaction transaction = entityManager.getTransaction();
+    	transaction.begin();
+        if(t != null){
+        	entityManager.persist(t);
+        }
+        transaction.commit();
     }
 
     @Override
     public void delete(Long id) throws FrameworkException {
-
+    	T entity = null;
+    	EntityManager entityManager = provider.getEntityManager();
+    	EntityTransaction transaction = entityManager.getTransaction();
+    	transaction.begin();
+        entity = entityManager.find(entityType, id);
+        if(entity != null){
+        	entityManager.remove(entity);
+        }
+        transaction.commit();
     }
 
     protected EntityManager getEntityManager() throws FrameworkException {

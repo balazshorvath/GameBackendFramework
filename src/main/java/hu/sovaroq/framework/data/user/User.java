@@ -18,10 +18,12 @@ import lombok.ToString;
 @Data
 @ToString
 public class User implements IUser {
+	
+	public static final String USERID = "userId";
 
 	@Id
 	@GeneratedValue(strategy = AUTO)
-	@Column
+	@Column(name = USERID)
 	Long userId;
 	
 	@NaturalId

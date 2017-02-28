@@ -9,7 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
@@ -32,7 +31,7 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 
 	private DatabaseConfig config;
 
-	private Map<Class<?>, HibernateRepository> repositories = new HashMap<>();
+	private Map<Class<?>, HibernateRepository<?>> repositories = new HashMap<>();
 
 	private static final Logger log = LogProvider.createLogger(HibernateDatabaseService.class);
 
@@ -72,7 +71,7 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 		this.config = config;
 	}
 
-	public HibernateRepository getRepository(Class<?> clazz) {
+	public HibernateRepository<?> getRepository(Class<?> clazz) {
 		return repositories.get(clazz);
 	}
 
@@ -108,10 +107,10 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
 				if (!HibernateRepository.class.isAssignableFrom(repository))
 					continue;
 				try {
-					Constructor<? extends HibernateRepository> c = (Constructor<? extends HibernateRepository>) repository
+					Constructor<? extends HibernateRepository<?>> c = (Constructor<? extends HibernateRepository<?>>) repository
 							.getConstructor(IHibernateSessionProvider.class);
 
-					HibernateRepository repo = c.newInstance(this);
+					HibernateRepository<?> repo = c.newInstance(this);
 
 					this.repositories.put(repo.getEntityType(), repo);
 				} catch (Exception e) {

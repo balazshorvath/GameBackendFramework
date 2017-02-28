@@ -24,41 +24,5 @@ public interface IDatabaseServiceEvents {
 	public class DatabaseServiceStopped extends FrameworkRequestEvent{
 	}
 
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class GetUserRequest extends FrameworkRequestEvent{
-		String logon;
-	}
-	
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class GetUserSuccessResponse extends FrameworkResponseEvent{
-		IUser user;
-	}
-	
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class GetUserFailureResponse extends FrameworkResponseEvent{
-		DatabaseFailureStatus status;
-	}
-	
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class CreateUserReqest extends FrameworkRequestEvent{
-		String logon;
-		String password;
-	}
-	
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class CreateUserSuccessResponse extends FrameworkResponseEvent{
-		IUser user;
-	}
-	
-	@Value
-	@EqualsAndHashCode(callSuper = true)
-	public class CreateUserFailureResponse extends FrameworkResponseEvent{
-		DatabaseFailureStatus user;
-	}
 	
 }

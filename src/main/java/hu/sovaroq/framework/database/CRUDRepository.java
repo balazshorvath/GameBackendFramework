@@ -12,6 +12,6 @@ public interface CRUDRepository<T, ID> {
     List<T> findBy(String key, String value) throws FrameworkException;
     List<T> findAll() throws FrameworkException;
 
-    Long save(T t) throws FrameworkException;
+    void save(T t) throws FrameworkException;
     void delete(ID id) throws FrameworkException;
 }
