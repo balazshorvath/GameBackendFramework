@@ -5,7 +5,12 @@
 -- Time: 21:42
 -- To change this template use File | Settings | File Templates.
 --
+local context = (...)
 
-local buildingActivity = luajava.bindClass("SomeClass")
+function idle()
+
+end
+
+
 
 
