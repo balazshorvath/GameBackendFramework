@@ -43,7 +43,23 @@ doObjective = function(dt, entities)
         self.state = 2
         self.attacking = entities[0]
     else
-        api.
+        -- moveMe will assume, that 'self' has:
+        --  - x
+        --  - y
+        --  - speed
+        --  - path (containing the path the entity will go through it's lifetime)
+        --
+        -- Additional info:
+        -- The function will use a global movement calculating algorithm and set the
+        -- 'self' x, y to the proper value based on speed and dt.
+        --
+        -- The path's first element has to be the next x, y to reach.
+        -- The function will also take care of reaching these points and setting
+        -- the new direction.
+        --
+        --
+        --
+        helpers.moveMe(self, dt)
     end
 end
 
