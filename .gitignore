@@ -10,4 +10,4 @@ build/
 .gradle
 .metadata
 .settings
-jpaModelgen
+jpaModelgen/

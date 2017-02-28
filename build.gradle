@@ -54,16 +54,10 @@ dependencies {
     
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager
 	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.8.Final'
-    
-    // MongoDB
-    // https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
-	//compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.4.2'
-	// https://mvnrepository.com/artifact/org.mongojack/mongojack
-	//compile group: 'org.mongojack', name: 'mongojack', version: '2.6.0'
-
-    // https://mvnrepository.com/artifact/org.mindrot/jbcrypt
+    // BCrypt
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
+    compile 'org.luaj:luaj-jse:3.0.1'
 }
 
 task delombok {
