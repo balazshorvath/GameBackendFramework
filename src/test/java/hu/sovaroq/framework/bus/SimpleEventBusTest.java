@@ -38,8 +38,8 @@ public class SimpleEventBusTest {
     @Test
     public void testProperUsage() {
         bus.start();
-        bus.subscribe(TestEventReceiver1.class, service1);
-        bus.subscribe(TestEventReceiver2.class, service2);
+        bus.subscribe(service1);
+        bus.subscribe(service2);
 
         bus.pushEvent(new TestEvent1());
 

@@ -33,9 +33,9 @@ public class ServiceManagerTest {
 
 		manager.stop();
 		
-		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable2);
-		assertTrue(((TestService2)manager.getServices().get(TestService2.class)).runnable1);
-		assertTrue(((TestService1)manager.getServices().get(TestService1.class)).runnable1);
+		assertTrue(((TestService2)manager.getService(TestService2.class)).runnable2);
+		assertTrue(((TestService2)manager.getService(TestService2.class)).runnable1);
+		assertTrue(((TestService1)manager.getService(TestService1.class)).runnable1);
 		
 	}
 	
