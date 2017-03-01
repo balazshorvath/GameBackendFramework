@@ -2,6 +2,8 @@ package hu.sovaroq.framework.controller;
 
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
+import hu.sovaroq.framework.core.command.FrameworkCommand;
+import hu.sovaroq.framework.core.command.ServiceCommand;
 import hu.sovaroq.framework.service.authentication.AuthenticationService;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.database.HibernateDatabaseService;
@@ -29,11 +31,33 @@ public class FrameworkController extends AbstractController<Context> {
     @Override
     public void stop() {
         log.info(">FrameworkController - stop()");
-        services.forEach(AbstractService::stop);
+        services.forEach(abstractService -> manager.stopService(abstractService.getClass()));
+        services.clear();
         log.info("<FrameworkController - stop()");
     }
 
-    @Override
+	@Override
+	public Object execute(FrameworkCommand command) {
+        Object result = null;
+    	if(command instanceof ServiceCommand){
+    		switch (((ServiceCommand) command).getServiceCommandType()){
+				case CREATE:
+				    result = manager.manage(((ServiceCommand) command).getService());
+				    break;
+				case RESTART:
+				    manager.restartService(((ServiceCommand) command).getService());
+				    result = true;
+					break;
+				case STOP:
+                    manager.stopService(((ServiceCommand) command).getService());
+                    result = true;
+					break;
+			}
+		}
+		return result;
+	}
+
+	@Override
 	public String getStatusDescription() {
 		return "FrameworkController";
 	}

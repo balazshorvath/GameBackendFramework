@@ -138,6 +138,15 @@ public class ServiceManager {
 		return services.get(service);
 	}
 
+	public void restartService(Class<? extends AbstractService> service) {
+		if(services.containsKey(service))
+			services.get(service).restart();
+	}
+	public void stopService(Class<? extends AbstractService> service) {
+		if(services.containsKey(service))
+			services.get(service).stop();
+	}
+
 	private void registerTick(final Method m, final Object service, final long invocationTime) {
 		ticker.addTickerCall(invocationTime, m, service);
 	}
