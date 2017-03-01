@@ -39,9 +39,9 @@ doObjective = function(dt, entities)
     -- LUA array start from 1 (as IntelliJ told me).
     -- It's interesting, since arrays are tables with
     -- integer keys.
-    if entities[0] ~= nil then
+    if entities[1] ~= nil then
         self.state = 2
-        self.attacking = entities[0]
+        self.attacking = entities[1]
     else
         -- moveMe will assume, that 'self' has:
         --  - x
