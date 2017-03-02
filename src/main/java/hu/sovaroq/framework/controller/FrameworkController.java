@@ -37,27 +37,6 @@ public class FrameworkController extends AbstractController<Context> {
     }
 
 	@Override
-	public Object execute(FrameworkCommand command) {
-        Object result = null;
-    	if(command instanceof ServiceCommand){
-    		switch (((ServiceCommand) command).getServiceCommandType()){
-				case CREATE:
-				    result = manager.manage(((ServiceCommand) command).getService());
-				    break;
-				case RESTART:
-				    manager.restartService(((ServiceCommand) command).getService());
-				    result = true;
-					break;
-				case STOP:
-                    manager.stopService(((ServiceCommand) command).getService());
-                    result = true;
-					break;
-			}
-		}
-		return result;
-	}
-
-	@Override
 	public String getStatusDescription() {
 		return "FrameworkController";
 	}

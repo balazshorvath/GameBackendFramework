@@ -2,6 +2,7 @@ package hu.sovaroq.game.core.controller;
 
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
+import hu.sovaroq.framework.core.command.FrameworkCommand;
 import hu.sovaroq.framework.service.base.AbstractService;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;

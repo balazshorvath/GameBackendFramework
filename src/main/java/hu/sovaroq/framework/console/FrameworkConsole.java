@@ -1,12 +1,11 @@
 package hu.sovaroq.framework.console;
 
 import hu.sovaroq.framework.core.Framework;
-import hu.sovaroq.framework.service.base.Service;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 /**
  * Created by balazs_horvath on 2/23/2017.
@@ -14,18 +13,24 @@ import java.io.InputStreamReader;
 public class FrameworkConsole {
     private final Framework framework;
     private final InputStream inputStream;
+    private final OutputStream outputStream;
     private boolean running = false;
 
 
-    public FrameworkConsole(Framework framework, InputStream inputStream) {
+    public FrameworkConsole(Framework framework, InputStream inputStream, OutputStream outputStream) {
         this.framework = framework;
         this.inputStream = inputStream;
+        this.outputStream = outputStream;
     }
 
     public void open() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream));
         String command;
         running = true;
+
+        Globals globals = JsePlatform.standardGlobals();
+        globals.set("api", new FrameworkAPI(framework));
 
         while (running){
             try {
@@ -38,11 +43,14 @@ public class FrameworkConsole {
                 running = false;
                 continue;
             }
-            switch (command){
-                case "stop":
-                    framework.stop();
-                    running = false;
-                    break;
+            LuaValue chunk = globals.load(command);
+
+            LuaValue res = chunk.call();
+
+            try {
+                writer.write(res.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
