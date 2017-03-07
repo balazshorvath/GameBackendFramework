@@ -1,5 +1,6 @@
 package hu.sovaroq.framework.service.base;
 
+import hu.sovaroq.framework.service.features.AutoSetService;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.core.bus.IEventBus;
@@ -15,7 +16,7 @@ public class AbstractService<Config> implements IService<Config>  {
     protected Logger log = LogProvider.createLogger(getClass());
     private IEventBus bus;
     
-    @Setter
+    @AutoSetService
     protected HibernateDatabaseService databaseService;
 
     protected void post(Object o){

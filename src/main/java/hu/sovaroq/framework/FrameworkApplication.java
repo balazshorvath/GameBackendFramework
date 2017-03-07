@@ -1,6 +1,7 @@
 package hu.sovaroq.framework;
 
 import hu.sovaroq.framework.console.FrameworkConsole;
+import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.core.Framework;
 
 import java.io.BufferedReader;
@@ -37,8 +38,8 @@ public class FrameworkApplication {
         }
         Framework framework = new Framework();
 
-        framework.start(features);
-        FrameworkConsole console = new FrameworkConsole(framework, System.in);
+        framework.start((List<Class<? extends AbstractController>>) features);
+        FrameworkConsole console = new FrameworkConsole(framework, System.in, System.out);
 
         console.open();
     }

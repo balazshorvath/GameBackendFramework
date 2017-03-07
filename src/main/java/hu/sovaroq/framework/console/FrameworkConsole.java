@@ -3,6 +3,7 @@ package hu.sovaroq.framework.console;
 import hu.sovaroq.framework.core.Framework;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import java.io.*;
@@ -30,7 +31,7 @@ public class FrameworkConsole {
         running = true;
 
         Globals globals = JsePlatform.standardGlobals();
-        globals.set("api", new FrameworkAPI(framework));
+        globals.set("api", CoerceJavaToLua.coerce(new FrameworkAPI(framework)));
 
         while (running){
             try {

@@ -40,6 +40,7 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.6.9'
     // Lombok
     compile "org.projectlombok:lombok:1.16.12"
+
     // https://mvnrepository.com/artifact/org.reflections/reflections
     compile group: 'org.reflections', name: 'reflections', version: '0.9.10'
     // For getting type parameters
@@ -51,13 +52,15 @@ dependencies {
 
     //database:
     compile group: 'org.hsqldb', name: 'hsqldb', version: '2.2.8'
-    
     // https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager
 	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.8.Final'
+
     // BCrypt
 	compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
     compile 'org.luaj:luaj-jse:3.0.1'
+
+    compile 'org.eclipse.jetty:jetty-server:9.4.0.RC3'
 }
 
 task delombok {
