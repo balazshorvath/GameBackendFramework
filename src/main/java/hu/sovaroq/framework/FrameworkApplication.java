@@ -7,6 +7,9 @@ import hu.sovaroq.framework.core.Framework;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.StandardSocketOptions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ import static java.lang.System.exit;
 public class FrameworkApplication {
     public static void main(String[] args){
         String frameworkConfig = "src/main/resources/Framework.features";
-        List<Class<?>> features = new ArrayList<>();
+        List<Class<? extends AbstractController>> features = new ArrayList<>();
         if(args.length > 0){
             frameworkConfig = args[0];
         }
@@ -29,7 +32,7 @@ public class FrameworkApplication {
             String line;
             while((line = bufferedReader.readLine()) != null){
                 Class c = Class.forName(line);
-                if(c != null)
+                if(c != null && AbstractController.class.isAssignableFrom(c))
                     features.add(c);
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -38,7 +41,7 @@ public class FrameworkApplication {
         }
         Framework framework = new Framework();
 
-        framework.start((List<Class<? extends AbstractController>>) features);
+        framework.start(features);
         FrameworkConsole console = new FrameworkConsole(framework, System.in, System.out);
 
         console.open();

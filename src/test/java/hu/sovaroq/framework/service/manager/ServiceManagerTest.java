@@ -1,10 +1,12 @@
 package hu.sovaroq.framework.service.manager;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import hu.sovaroq.framework.service.features.AutoSetService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +38,7 @@ public class ServiceManagerTest {
 		assertTrue(((TestService2)manager.getService(TestService2.class)).runnable2);
 		assertTrue(((TestService2)manager.getService(TestService2.class)).runnable1);
 		assertTrue(((TestService1)manager.getService(TestService1.class)).runnable1);
+		assertNotNull(((TestService2)manager.getService(TestService2.class)).service1);
 		
 	}
 	
@@ -45,6 +48,7 @@ public class ServiceManagerTest {
 	public static class TestService1 extends AbstractService<Object>{
 		boolean runnable1 = false;
 		boolean running = false;
+
 		
 		public TestService1() {
 			super();
@@ -75,6 +79,9 @@ public class ServiceManagerTest {
 	public static class TestService2 extends AbstractService<Object>{
 		boolean runnable1 = false, runnable2 = false;
 		boolean running = false;
+
+		@AutoSetService
+		TestService1 service1;
 
 		public TestService2() {
 			super();

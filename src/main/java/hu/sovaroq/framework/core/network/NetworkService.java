@@ -39,7 +39,7 @@ public class NetworkService extends AbstractService<NetworkService.NetworkConfig
 				socket = (SSLSocket) serverSocket.accept();
 				log.info("Connection received from " + socket.getRemoteSocketAddress().toString());
 				ClientConnection connection = new ClientConnection();
-				connection.start(socket);
+//				connection.start(socket);
 				post(new INetworkServiceEvents.NewClientConnectionRequest(null, connection));
 
 			} catch (IOException e) {
