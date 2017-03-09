@@ -1,7 +1,6 @@
 package hu.sovaroq.framework;
 
-import hu.sovaroq.framework.console.FrameworkConsole;
-import hu.sovaroq.framework.core.Framework;
+import static java.lang.System.exit;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,7 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.System.exit;
+import hu.sovaroq.framework.console.FrameworkConsole;
+import hu.sovaroq.framework.core.Framework;
 
 /**
  * The entry-point.

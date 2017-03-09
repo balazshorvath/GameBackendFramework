@@ -12,6 +12,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: "org.hibernate.gradle.tools"
+apply plugin: 'jetty'
 
 sourceCompatibility = 1.8
 version = '0.0'

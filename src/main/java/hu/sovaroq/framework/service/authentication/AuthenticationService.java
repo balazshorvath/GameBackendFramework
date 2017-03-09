@@ -1,11 +1,7 @@
 package hu.sovaroq.framework.service.authentication;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mindrot.jbcrypt.BCrypt;
 
-import hu.sovaroq.framework.core.eventbase.IFrameworkEvent;
 import hu.sovaroq.framework.data.user.User;
 import hu.sovaroq.framework.database.UserRepository;
 import hu.sovaroq.framework.exception.FrameworkException;
