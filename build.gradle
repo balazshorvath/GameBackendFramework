@@ -61,7 +61,8 @@ dependencies {
 
     compile 'org.luaj:luaj-jse:3.0.1'
 
-    compile 'org.eclipse.jetty:jetty-server:9.4.0.RC3'
+	compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.2.v20170220'
+	compile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.2.v20170220'
 }
 
 task delombok {
