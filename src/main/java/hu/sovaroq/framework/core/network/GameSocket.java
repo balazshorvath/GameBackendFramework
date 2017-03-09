@@ -26,8 +26,7 @@ public class GameSocket {
 
     private SecretKey secretKey;
  
-    public void generateKey() 
-    {
+    public void generateKey() {
 		try {
 			KeyGenerator keyGen;
 			keyGen = KeyGenerator.getInstance("AES");
@@ -39,9 +38,9 @@ public class GameSocket {
 		}
     }
     
-    public void start(Socket socket) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException{
+    public void start(Socket socket) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IOException {
     	generateKey();
-    	
+
         Cipher cipherEncode = Cipher.getInstance("AES/ECB/PKCS5PADDING");
         cipherEncode.init(Cipher.ENCRYPT_MODE, secretKey);
         

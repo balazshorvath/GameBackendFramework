@@ -1,5 +1,6 @@
 package hu.sovaroq.framework.core;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import hu.sovaroq.framework.service.features.AutoSetService;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.core.bus.IEventBus;
@@ -104,7 +106,20 @@ public class ServiceManager {
 			log.error("Could not instantiate service '" + type.getName() + "'. " + e);
 			return null;
 		}
-		service.setBus(bus);
+
+        for (Field field : type.getDeclaredFields()) {
+            if(field.getAnnotation(AutoSetService.class) == null){
+                continue;
+            }
+            field.setAccessible(true);
+            try {
+                field.set(service, getService((Class<? extends AbstractService>) field.getType()));
+            } catch (Exception e) {
+                log.error("Could not set service '" + field.getType() + "' to field '" + field.getName() + "' in '" + type + "'");
+            }
+        }
+
+        service.setBus(bus);
 		service.setConfig(configCreator.createConfig(serviceAnnot.configurationClass(), serviceAnnot.configurationFile()));
 		
 		if(services.containsKey(type)){

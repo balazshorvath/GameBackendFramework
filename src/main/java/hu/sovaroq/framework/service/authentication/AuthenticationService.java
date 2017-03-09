@@ -1,7 +1,5 @@
 package hu.sovaroq.framework.service.authentication;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import hu.sovaroq.framework.data.user.User;
 import hu.sovaroq.framework.database.UserRepository;
 import hu.sovaroq.framework.exception.FrameworkException;
@@ -9,6 +7,7 @@ import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.RegisterUserRequest;
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents.RegistrationFailureStatus;
 import hu.sovaroq.framework.service.base.AbstractService;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Possible usage: WebAuthenticationManager used for administration site, uses
