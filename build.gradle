@@ -61,6 +61,8 @@ dependencies {
 
     compile 'org.luaj:luaj-jse:3.0.1'
 
+	// https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+	compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.2.v20170220'
 	compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.4.2.v20170220'
 	compile group: 'org.eclipse.jetty.websocket', name: 'websocket-api', version: '9.4.2.v20170220'
 }
