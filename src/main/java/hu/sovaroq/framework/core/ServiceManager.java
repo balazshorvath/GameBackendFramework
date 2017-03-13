@@ -123,11 +123,10 @@ public class ServiceManager {
                 log.error("Could not set service '" + field.getType() + "' to field '" + field.getName() + "' in '" + type + "'");
             }
         }
-
-		bus.subscribe(service);
-
         service.setBus(bus);
 		service.start(configCreator.createConfig(serviceAnnot.configurationClass(), serviceAnnot.configurationFile()));
+
+		bus.subscribe(service);
 		
 		for(Method m : type.getMethods()) {
 			Run run = m.getAnnotation(Run.class);
