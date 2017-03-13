@@ -2,8 +2,6 @@ package hu.sovaroq.framework.core.network.webservices;
 
 import javax.servlet.AsyncContext;
 
-import org.eclipse.jetty.server.AsyncContextEvent;
-
 /**
  * This interface helps to manage async http servlets.
  * 

@@ -1,17 +1,14 @@
 package hu.sovaroq.framework;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.StandardSocketOptions;
-import java.util.ArrayList;
-import java.util.List;
-
 import hu.sovaroq.framework.console.FrameworkConsole;
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.core.Framework;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The entry-point.
