@@ -5,12 +5,22 @@
 -- Time: 21:42
 -- To change this template use File | Settings | File Templates.
 --
+
+
+--
+-- Every "tick", the file is called.
+--  context:
+--      self        - the unit with x,y targetX, targetY, hp etc...
+--      dt          - delta time, now - lastCall
+--      entities    - Ordered list of entities closest is the first
+--
 local context = (...)
 
-local objective = context.objective
-local self = context.self
+--local self = context.self
+--local dt = context.dt
+--local entities = context.entities
 
-local attack, doObjective
+local attack, doObjective, update
 
 -- A table for the actions to take based on the state of the entity
 local action = {
@@ -18,15 +28,17 @@ local action = {
     [2] = attack
 }
 
---
--- Every "tick", uptade is called.
---  Params:
---      dt          - delta time, now - lastCall
---      entities    - Ordered list of entities closest is the first
---
-function update(dt, entities)
-    action[self.state](dt, entities)
-end
+-- "Main"
+local luajshit = luajshit.newInstance("hu.sovaroq.game.core.service.game.LUAJSHIT")
+luajshit.printPreviousShit()
+luajshit.printShit("IM FROM DA SKRIPTZ")
+luajshit.printPreviousShit()
+luajshit.printShit("HERZ SOMTIN CONTETX: " + context.self.x)
+
+ --action[self.state](dt, entities)
+
+-- End "Main"
+
 
 --
 -- State behaviours

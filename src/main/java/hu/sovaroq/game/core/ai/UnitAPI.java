@@ -7,47 +7,52 @@ import org.luaj.vm2.LuaValue;
  * Created by Oryk on 2017. 02. 28..
  */
 public class UnitAPI {
-    protected final UnitBase base;
-    protected final long unitId;
-    protected final long objective;
+//    protected final UnitBase base;
+//    protected final long unitId;
 
-    protected double x, y;
-    protected int tileX, tileY;
-    protected UnitState state;
+    public double x, y;
+    public int tileX, tileY;
+    public UnitState state;
 
-    public UnitAPI(UnitBase base, long unitId, long objective) {
-        this.base = base;
-        this.unitId = unitId;
-        this.objective = objective;
+    public UnitAPI(double x, double y) {
+        this.x = x;
+        this.y = y;
+        this.state = UnitState.MOVING;
     }
 
-    public LuaValue id() {
-        return LuaValue.valueOf(unitId);
-    }
-
-    public LuaValue x() {
-        return LuaValue.valueOf(x);
-    }
-
-    public LuaValue y() {
-        return LuaValue.valueOf(y);
-    }
-
-    public LuaValue tx() {
-        return LuaValue.valueOf(tileX);
-    }
-
-    public LuaValue ty() {
-        return LuaValue.valueOf(tileY);
-    }
-
-    public LuaValue state() {
-        return LuaValue.valueOf(state.val());
-    }
-
-    public LuaValue objective() {
-        return LuaValue.valueOf(objective);
-    }
+//    public UnitAPI(UnitBase base, long unitId, long objective) {
+//        this.base = base;
+//        this.unitId = unitId;
+//        this.objective = objective;
+//    }
+//
+//    public LuaValue id() {
+//        return LuaValue.valueOf(unitId);
+//    }
+//
+//    public LuaValue x() {
+//        return LuaValue.valueOf(x);
+//    }
+//
+//    public LuaValue y() {
+//        return LuaValue.valueOf(y);
+//    }
+//
+//    public LuaValue tx() {
+//        return LuaValue.valueOf(tileX);
+//    }
+//
+//    public LuaValue ty() {
+//        return LuaValue.valueOf(tileY);
+//    }
+//
+//    public LuaValue state() {
+//        return LuaValue.valueOf(state.val());
+//    }
+//
+//    public LuaValue objective() {
+//        return LuaValue.valueOf(objective);
+//    }
 
     public enum UnitState {
         NO_OBJECTIVE(0),
