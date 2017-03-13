@@ -17,8 +17,6 @@ public class Framework implements IFramework {
     Map<Class<? extends AbstractController>, AbstractController> controllers = new HashMap<>();
     private ServiceManager manager;
 
-
-
     @Override
 	public void start(List<Class<? extends AbstractController>> features) {
 		manager = new ServiceManager(20, 100, 100);
@@ -75,4 +73,7 @@ public class Framework implements IFramework {
 		return null;
 	}
 
+    public ServiceManager getManager() {
+        return manager;
+    }
 }

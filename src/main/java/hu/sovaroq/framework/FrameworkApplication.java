@@ -3,6 +3,7 @@ package hu.sovaroq.framework;
 import hu.sovaroq.framework.console.FrameworkConsole;
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.core.Framework;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

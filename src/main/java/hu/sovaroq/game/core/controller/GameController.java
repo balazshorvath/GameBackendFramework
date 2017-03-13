@@ -23,7 +23,6 @@ public class GameController extends AbstractController<Context> {
     @Override
     public void start(Context context) {
         super.start(context);
-
         services.add(manager.manage(UnitService.class));
     }
 

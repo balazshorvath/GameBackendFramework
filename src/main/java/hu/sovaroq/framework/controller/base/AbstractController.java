@@ -17,6 +17,7 @@ public abstract class AbstractController<Ctxt extends Context> implements IContr
 	@Override
 	public void start(Ctxt context) {
 		this.context = context;
+		this.manager = context.getManager();
 	}
 
 	@Override

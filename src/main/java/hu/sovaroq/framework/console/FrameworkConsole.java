@@ -31,7 +31,7 @@ public class FrameworkConsole {
         running = true;
 
         Globals globals = JsePlatform.standardGlobals();
-        globals.set("api", CoerceJavaToLua.coerce(new FrameworkAPI(framework)));
+        LuaValue api = globals.load(new StringReader("api=(...)"), "api.lua").call(CoerceJavaToLua.coerce(new FrameworkAPI(framework)));
 
         while (running){
             try {
@@ -44,13 +44,12 @@ public class FrameworkConsole {
                 running = false;
                 continue;
             }
-            LuaValue chunk = globals.load(command);
-
-            LuaValue res = chunk.call();
-
             try {
+                LuaValue chunk = globals.load(new StringReader(command), "main.lua");
+
+                LuaValue res = chunk.call();
                 writer.write(res.toString());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
