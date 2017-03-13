@@ -2,6 +2,7 @@ package hu.sovaroq.framework.controller.base;
 
 import hu.sovaroq.framework.core.command.FrameworkCommand;
 import hu.sovaroq.framework.core.command.ServiceCommand;
+import hu.sovaroq.framework.service.base.AbstractService;
 import org.apache.logging.log4j.Logger;
 
 import hu.sovaroq.framework.core.ServiceManager;
@@ -41,6 +42,7 @@ public abstract class AbstractController<Ctxt extends Context> implements IContr
 
 	@Override
 	public void stop() {
+		getServices().forEach(AbstractService::stop);
 	}
 
 	@Override

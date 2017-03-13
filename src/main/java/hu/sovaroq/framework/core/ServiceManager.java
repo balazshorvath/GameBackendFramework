@@ -94,6 +94,11 @@ public class ServiceManager {
 	
 	@SuppressWarnings("unchecked")
 	public <T extends AbstractService> T manage(final Class<T> type){
+		if(services.containsKey(type)){
+			log.error("Service with type " + type.getName() + " already exists.");
+			return null;
+		}
+
 		Service serviceAnnot = type.getAnnotation(Service.class);
 		if(serviceAnnot == null){
 			log.error("Class is not annotated with @Service '" + type.getName() + "'.");
@@ -119,29 +124,24 @@ public class ServiceManager {
             }
         }
 
+		bus.subscribe(service);
+
         service.setBus(bus);
-		service.setConfig(configCreator.createConfig(serviceAnnot.configurationClass(), serviceAnnot.configurationFile()));
+		service.start(configCreator.createConfig(serviceAnnot.configurationClass(), serviceAnnot.configurationFile()));
 		
-		if(services.containsKey(type)){
-			log.error("Service with type " + type.getName() + " already exists.");
-			return null;
-		}
-		
-		for(Method m : type.getMethods()){
+		for(Method m : type.getMethods()) {
 			Run run = m.getAnnotation(Run.class);
 			Tick tick = m.getAnnotation(Tick.class);
-			if(run != null && tick != null){
+			if (run != null && tick != null) {
 				log.warn("The service '" + type.getName() + "' has it's method '" + m.getName() + "' "
 						+ "annotated with both Tick and Run, which is an invalide usage!");
 			}
-			if(run != null){
+			if (run != null) {
 				registerRunnable(m, service);
-			}else if(tick != null){
+			} else if (tick != null) {
 				registerTick(m, service, tick.value());
 			}
 		}
-		
-		bus.subscribe(service);
 		
 		services.put(type, service);
 		return service;
