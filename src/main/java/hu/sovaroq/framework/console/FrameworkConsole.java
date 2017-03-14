@@ -2,9 +2,11 @@ package hu.sovaroq.framework.console;
 
 import hu.sovaroq.framework.core.Framework;
 import org.luaj.vm2.Globals;
+import org.luaj.vm2.LoadState;
 import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
-import org.luaj.vm2.lib.jse.JsePlatform;
+import org.luaj.vm2.compiler.LuaC;
+import org.luaj.vm2.lib.*;
+import org.luaj.vm2.lib.jse.*;
 
 import java.io.*;
 
@@ -30,8 +32,22 @@ public class FrameworkConsole {
         String command;
         running = true;
 
-        Globals globals = JsePlatform.standardGlobals();
-        LuaValue api = globals.load(new StringReader("api=(...)"), "api.lua").call(CoerceJavaToLua.coerce(new FrameworkAPI(framework)));
+        Globals globals = new Globals();
+        globals.load(new JseBaseLib());
+        globals.load(new PackageLib());
+        globals.load(new Bit32Lib());
+        globals.load(new TableLib());
+        globals.load(new StringLib());
+        globals.load(new CoroutineLib());
+        globals.load(new JseMathLib());
+        globals.load(new JseIoLib());
+        globals.load(new JseOsLib());
+        globals.load(new framework.ConsoleLuajavaLib());
+
+        globals.set("framework", CoerceJavaToLua.coerce(framework));
+
+        LoadState.install(globals);
+        LuaC.install(globals);
 
         while (running){
             try {

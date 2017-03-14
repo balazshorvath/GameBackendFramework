@@ -2,6 +2,7 @@ package hu.sovaroq.game.core.service.game;
 
 import hu.sovaroq.framework.core.eventbase.FrameworkRequestEvent;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.Value;
 
 /**
@@ -11,7 +12,8 @@ public interface IUnitService {
 
     @Value
     @EqualsAndHashCode(callSuper = true)
-    class SpawnUnit extends FrameworkRequestEvent {
+    @ToString
+    static class SpawnUnit extends FrameworkRequestEvent {
         private String luaScript;
         private double x, y;
         private double targetX, targetY;

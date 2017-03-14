@@ -101,6 +101,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
                             logger.warn("onEvent method of class '" + type.getName() + "' has invalid parameter set.");
                             continue;
                         }
+                        logger.debug("New listener method added: " + method.getName() + " with event " + method.getParameterTypes()[0].getName());
                         config.events.put(method.getParameterTypes()[0], method);
                     }
                 }
@@ -150,6 +151,8 @@ public class SimpleEventBus implements IEventBus, Runnable {
                         listener.instances.forEach(o ->
                                 threadPool.execute(createInvokingThread(m, o, e))
                         );
+                    }else {
+                        logger.debug("No listener for this event: " + event);
                     }
                 }
             } finally {

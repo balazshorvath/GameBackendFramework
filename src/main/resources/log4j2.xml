@@ -2,7 +2,10 @@
 <Configuration status="warn">
  
     <Appenders>
-        <File name="filelogger" fileName="log/sovaroq.log" immediateFlush="false" append="true">
+        <File name="filelogger" fileName="log/sovaroq.log" immediateFlush="true" append="true">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+        <File name="hibernate" fileName="log/hibernate.log" immediateFlush="false" append="true">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
  
@@ -16,5 +19,8 @@
 <!--             <AppenderRef  ref="console" /> -->
             <AppenderRef  ref="filelogger" />
         </Root>
+        <logger name="org.hibernate" level="error">
+            <AppenderRef  ref="hibernate" />
+        </logger>
     </Loggers>
 </Configuration>

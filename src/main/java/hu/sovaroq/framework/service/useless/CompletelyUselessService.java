@@ -34,7 +34,7 @@ public class CompletelyUselessService extends AbstractService<Object>{
         post(new IUselessEvents.HereIsNothing("This is not an information."));
     }
 
-    @Tick(1000)
+//    @Tick(1000)
     public void doNothing(){
         log.info("I'm consuming resources for nothing.");
     }

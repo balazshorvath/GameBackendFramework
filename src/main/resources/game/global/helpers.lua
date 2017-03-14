@@ -8,6 +8,10 @@
 
 
 helpers = {
+    -- testFunction
+    testFunction = function()
+        print("helpers.testFunction")
+    end,
     -- moveMe will assume, that 'entity' has:
     --  - x
     --  - y
@@ -30,7 +34,8 @@ helpers = {
         end
         local time = helpers.calcTime(entity.x, entity.y, entity.path[1].x, entity.path[1].y, entity.speed)
         if time <= 1 then
-            entity.x, entity.y = entity.path[1].x, entity.path[1].y
+            entity.x(entity.path[1].x)
+            entity.y(entity.path[1].y)
             table.remove(entity.path, 1)
         end
         -- return nil, or the next waypoint, indicating if the

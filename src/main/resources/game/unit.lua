@@ -7,18 +7,9 @@
 --
 
 
---
--- Every "tick", the file is called.
---  context:
---      self        - the unit with x,y targetX, targetY, hp etc...
---      dt          - delta time, now - lastCall
---      entities    - Ordered list of entities closest is the first
---
 local context = (...)
 
---local self = context.self
---local dt = context.dt
---local entities = context.entities
+local self = context.self
 
 local attack, doObjective, update
 
@@ -28,12 +19,18 @@ local action = {
     [2] = attack
 }
 
--- "Main"
-local luajshit = luajshit.newInstance("hu.sovaroq.game.core.service.game.LUAJSHIT")
-luajshit.printPreviousShit()
-luajshit.printShit("IM FROM DA SKRIPTZ")
-luajshit.printPreviousShit()
-luajshit.printShit("HERZ SOMTIN CONTETX: " + context.self.x)
+--
+-- Every "tick", the file is called.
+--  context:
+--      dt          - delta time, now - lastCall
+--      entities    - Ordered list of entities closest is the first
+--
+update = function(dt, entities)
+    print("doObjective")
+    print(self)
+    doObjective(dt, entities)
+    print(self)
+end
 
  --action[self.state](dt, entities)
 
@@ -51,7 +48,7 @@ doObjective = function(dt, entities)
     -- LUA array start from 1 (as IntelliJ told me).
     -- It's interesting, since arrays are tables with
     -- integer keys.
-    if entities[1] ~= nil then
+    if entities and entities[1] then
         self.state = 2
         self.attacking = entities[1]
     else

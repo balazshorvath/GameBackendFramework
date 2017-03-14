@@ -55,9 +55,10 @@ public class ServiceManager {
 	 * Does nothing atm.
 	 */
 	public void start(){
-		log.info(">FrameworkController - start()");
+		log.info(">ServiceManager - start()");
+		bus.start();
 		state = ManagerState.STARTED;
-		log.info("<FrameworkController - start()");
+		log.info("<ServiceManager - start()");
 	}
 	/**
 	 * Calls stop() on all the services.
@@ -175,8 +176,10 @@ public class ServiceManager {
 			}
 		});
 	}
-	
 
+	public IEventBus getBus() {
+		return bus;
+	}
 
 	public enum ManagerState{
 		IDLE,
