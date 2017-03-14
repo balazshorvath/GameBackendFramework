@@ -144,6 +144,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
 
             try {
                 listenersLock.readLock().lock();
+                boolean found = false;
                 for (ListenerConfig listener : listeners) {
                     Method m = listener.events.get(event.getClass());
                     if(m != null){
@@ -151,10 +152,11 @@ public class SimpleEventBus implements IEventBus, Runnable {
                         listener.instances.forEach(o ->
                                 threadPool.execute(createInvokingThread(m, o, e))
                         );
-                    }else {
-                        logger.debug("No listener for this event: " + event);
+                        found = true;
                     }
                 }
+                if(!found)
+                    logger.debug("No listener for this event: " + event);
             } finally {
                 listenersLock.readLock().unlock();
             }
