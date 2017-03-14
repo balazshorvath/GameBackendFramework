@@ -11,15 +11,18 @@ import javax.persistence.Table;
 import org.hibernate.annotations.NaturalId;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
 @Table(name = "User")
 @Data
 @ToString
+@EqualsAndHashCode
 public class User implements IUser {
 	
 	public static final String USERID = "userId";
+	public static final String LOGIN = "login";
 
 	@Id
 	@GeneratedValue(strategy = AUTO)
@@ -27,6 +30,7 @@ public class User implements IUser {
 	Long userId;
 	
 	@NaturalId
+	@Column(name = LOGIN)
 	String login;
 	
 	@Column(length = 255, nullable = false)

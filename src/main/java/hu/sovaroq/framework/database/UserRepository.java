@@ -1,6 +1,7 @@
 package hu.sovaroq.framework.database;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -29,9 +30,13 @@ public class UserRepository extends HibernateRepository<User> {
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(entityType);
         Root<User> rootElement = criteriaQuery.from(entityType);
         criteriaQuery.select(rootElement);
-        criteriaQuery.where(criteriaBuilder.equal(rootElement.get(User.USERID), logon));
+        criteriaQuery.where(criteriaBuilder.equal(rootElement.get(User.LOGIN), logon));
 
-        entity = entityManager.createQuery(criteriaQuery).getSingleResult();
+        try{
+        	entity = entityManager.createQuery(criteriaQuery).getSingleResult();
+        }catch(NoResultException ex){
+        	entity = null;
+        }
         
         return entity;
     }

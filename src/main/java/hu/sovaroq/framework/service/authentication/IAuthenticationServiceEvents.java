@@ -2,19 +2,19 @@ package hu.sovaroq.framework.service.authentication;
 
 import hu.sovaroq.framework.core.eventbase.FrameworkRequestEvent;
 import hu.sovaroq.framework.core.eventbase.FrameworkResponseEvent;
+import hu.sovaroq.framework.data.session.Session;
 import hu.sovaroq.framework.data.user.IUser;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 public interface IAuthenticationServiceEvents {
 
-	public enum AuthenticationFailureStatus {
-		wrong_password, not_found, locked, system_failure, unknown;
+	public enum AuthenticationStatus {
+		success, wrong_password, not_found, locked, system_failure, unknown;
 	}
 
-	public enum RegistrationFailureStatus {
-		login_already_registered, system_failure, unknown;
+	public enum RegistrationStatus {
+		success, login_already_registered, system_failure, unknown;
 	}
 
 	@Value
@@ -27,15 +27,15 @@ public interface IAuthenticationServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class AuthenticationSuccessResponse extends FrameworkResponseEvent{
-		long requestId;
-		IUser user;
+		Long requestId;
+		Session session;
 	}
 
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class AuthenticationFailureResponse extends FrameworkResponseEvent{
-		long requestId;
-		AuthenticationFailureStatus status;
+		Long requestId;
+		AuthenticationStatus status;
 	}
 
 	@Value
@@ -48,15 +48,15 @@ public interface IAuthenticationServiceEvents {
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class RegisterUserSuccessResponse extends FrameworkResponseEvent{
-		long requestId;
+		Long requestId;
 		IUser user;
 	}
 
 	@Value
 	@EqualsAndHashCode(callSuper = true)
 	public class RegisterUserFailureResponse extends FrameworkResponseEvent{
-		long requestId;
-		RegistrationFailureStatus status;
+		Long requestId;
+		RegistrationStatus status;
 	}
 	
 	@Value

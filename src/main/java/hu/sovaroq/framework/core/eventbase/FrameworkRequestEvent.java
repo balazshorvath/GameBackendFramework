@@ -14,5 +14,5 @@ public abstract class FrameworkRequestEvent implements IFrameworkEvent {
      */
     private final static AtomicLong gen = new AtomicLong();
     @Getter
-    private final long requestId = gen.addAndGet(1);
+    private final Long requestId = gen.addAndGet(1);
 }

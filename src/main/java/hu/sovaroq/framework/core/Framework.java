@@ -19,7 +19,7 @@ public class Framework implements IFramework {
 
     @Override
 	public void start(List<Class<? extends AbstractController>> features) {
-		manager = new ServiceManager(20, 100, 100);
+		manager = new ServiceManager(5, 10, 10);
 		features.forEach(this::registerController);
 		manager.start();
 	}

@@ -3,14 +3,21 @@ package hu.sovaroq.framework.data.session;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-import hu.sovaroq.framework.core.network.INetworkServiceEvents;
+import hu.sovaroq.framework.core.bus.EventListener;
+import hu.sovaroq.framework.data.user.IUser;
 import hu.sovaroq.framework.service.base.AbstractService;
+import hu.sovaroq.framework.service.base.Service;
 
+@Service
+@EventListener
 public class SessionService extends AbstractService<SessionService.SessionManagerConfig>{
 
-	private Map<UUID, Session> currentSessions;
+	private Map<UUID, Session> currentSessions = new ConcurrentHashMap<>();
 	
+	private Map<IUser, UUID> userToSessionID = new ConcurrentHashMap<>();
+		
 	public SessionService() {
 		super();
 	}
@@ -19,18 +26,28 @@ public class SessionService extends AbstractService<SessionService.SessionManage
 		
 	}
 	
-	public void onEvent(INetworkServiceEvents.NewClientConnectionRequest request){
-		if(currentSessions.containsKey(request.getSessionID())){
-			Session oldSession = currentSessions.get(request.getSessionID());
-			Session newSession = Session.builder().clientConnection(request.getConnection()).player(oldSession.getPlayer()).sessionID(oldSession.getSessionID()).user(oldSession.getUser()).build();
-			currentSessions.put(oldSession.getSessionID(), newSession);
-
-		}else{
-			UUID sessionUUID = UUID.randomUUID();
-			Session newSession = Session.builder().clientConnection(request.getConnection()).sessionID(sessionUUID).build();
-			currentSessions.put(sessionUUID, newSession);
+	public void onEvent(ISessionServiceEvents.CreateOrGetSession request){
+		log.debug("received: " + request);
+		UUID sessionID = request.getSessionID();
+		IUser user = request.getUser();
+		if(sessionID == null && user != null){
+			if(userToSessionID.containsKey(user)){
+				post(new ISessionServiceEvents.CreateOrGetSessionResponse(request.getRequestId(), currentSessions.get(userToSessionID.get(user))));
+			}else{
+				UUID sessionUUID = UUID.randomUUID();
+				Session newSession = Session.builder().sessionID(sessionUUID).user(request.getUser()).build();
+				currentSessions.put(sessionUUID, newSession);
+				userToSessionID.put(request.getUser(), sessionUUID);
+				post(new ISessionServiceEvents.CreateOrGetSessionResponse(request.getRequestId(), currentSessions.get(sessionUUID)));
+			}
+		}else if(sessionID != null){
+			if(currentSessions.containsKey(sessionID)){
+				post(new ISessionServiceEvents.CreateOrGetSessionResponse(request.getRequestId(), currentSessions.get(sessionID)));
+			}else{
+				Session newSession = Session.builder().sessionID(sessionID).build();
+				currentSessions.put(sessionID, newSession);
+			}
 		}
-		post(new INetworkServiceEvents.NewClientConnectionResponse(currentSessions.get(request.getSessionID())));
 	}
 
 	@Override

@@ -21,6 +21,6 @@ public interface IAsyncSerlvet {
 	 * After processing requests from poll()
 	 * @param context
 	 */
-	public void respond(AsyncContext context);
+	public void respond(AsyncContext context, IWebResponse response);
 	
 }

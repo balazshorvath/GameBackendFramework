@@ -16,9 +16,6 @@ public class AbstractService<Config> implements IService<Config>  {
     protected Logger log = LogProvider.createLogger(getClass());
     private IEventBus bus;
     
-    @AutoSetService
-    protected HibernateDatabaseService databaseService;
-
     protected void post(Object o){
     	this.bus.pushEvent(o);
     }

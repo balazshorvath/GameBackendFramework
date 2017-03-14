@@ -4,6 +4,8 @@ import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
 import hu.sovaroq.framework.core.command.FrameworkCommand;
 import hu.sovaroq.framework.core.command.ServiceCommand;
+import hu.sovaroq.framework.core.network.webservices.CoreWebService;
+import hu.sovaroq.framework.data.session.SessionService;
 import hu.sovaroq.framework.service.authentication.AuthenticationService;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.database.HibernateDatabaseService;
@@ -25,6 +27,9 @@ public class FrameworkController extends AbstractController<Context> {
 
 		register(HibernateDatabaseService.class);
 		register(CompletelyUselessService.class);
+		register(AuthenticationService.class);
+		register(CoreWebService.class);
+		register(SessionService.class);
         log.info("<FrameworkController - start()");
     }
 

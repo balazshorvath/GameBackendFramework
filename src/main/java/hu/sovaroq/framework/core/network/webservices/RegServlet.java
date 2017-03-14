@@ -14,19 +14,21 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hu.sovaroq.framework.core.network.webservices.AuthServlet.Request;
+import hu.sovaroq.framework.core.network.webservices.AuthServlet.Response;
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents;
 import lombok.Data;
 
 @WebServlet(asyncSupported = true)
-public class AuthServlet extends HttpServlet implements IAsyncSerlvet
-{	
-	private static final long serialVersionUID = 6715948539238549394L;
-	
+public class RegServlet extends HttpServlet implements IAsyncSerlvet {
+
+	private static final long serialVersionUID = -5122656355322069145L;
+
 	ObjectMapper objectMapper = new ObjectMapper();
 	
 	BlockingQueue<AsyncContext> webMessageQueue = new ArrayBlockingQueue<>(20000);
 	
-    public AuthServlet(){}
+    public RegServlet(){}
     
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {    	
@@ -55,13 +57,12 @@ public class AuthServlet extends HttpServlet implements IAsyncSerlvet
 	
 	@Data
 	public static class Response implements IWebResponse{
-		private IAuthenticationServiceEvents.AuthenticationStatus status;
-		private UUID sessionID;
+		private IAuthenticationServiceEvents.RegistrationStatus status;
 	}
 	
 	@Data
 	public static class Request implements IWebRequest{
 		private String username;
 		private String password;
-	}    
+	}
 }
