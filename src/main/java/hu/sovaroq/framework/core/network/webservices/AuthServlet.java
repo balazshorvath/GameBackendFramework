@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hu.sovaroq.framework.core.network.webservices.servlet.IAsyncSerlvet;
+import hu.sovaroq.framework.core.network.webservices.servlet.IWebRequest;
+import hu.sovaroq.framework.core.network.webservices.servlet.IWebResponse;
 import hu.sovaroq.framework.service.authentication.IAuthenticationServiceEvents;
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package hu.sovaroq.framework.core.network.webservices;
+package hu.sovaroq.framework.core.network.webservices.servlet;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;

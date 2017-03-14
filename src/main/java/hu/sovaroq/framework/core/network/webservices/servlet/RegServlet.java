@@ -1,4 +1,4 @@
-package hu.sovaroq.framework.core.network.webservices;
+package hu.sovaroq.framework.core.network.webservices.servlet;
 
 import java.io.IOException;
 import java.util.UUID;
