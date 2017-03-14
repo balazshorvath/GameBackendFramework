@@ -2,8 +2,6 @@ package hu.sovaroq.framework.core;
 
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
-import hu.sovaroq.framework.core.command.FrameworkCommand;
-import hu.sovaroq.framework.core.command.ServiceCommand;
 import hu.sovaroq.framework.core.logger.LogProvider;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +17,7 @@ public class Framework implements IFramework {
 
     @Override
 	public void start(List<Class<? extends AbstractController>> features) {
-		manager = new ServiceManager(20, 100, 100);
+		manager = new ServiceManager(5, 10, 10);
 		features.forEach(this::registerController);
 		manager.start();
 	}
@@ -30,14 +28,6 @@ public class Framework implements IFramework {
 		controllers.clear();
 		manager.stop();
 	}
-
-    @Override
-    public Object execute(FrameworkCommand command) {
-        if(command instanceof ServiceCommand){
-
-        }
-        return null;
-    }
 
     private void registerController(Class<? extends AbstractController> c) {
         try {
