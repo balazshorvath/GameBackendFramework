@@ -1,18 +1,16 @@
 package hu.sovaroq.framework.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hu.sovaroq.framework.controller.base.AbstractController;
 import hu.sovaroq.framework.controller.base.Context;
-import hu.sovaroq.framework.core.command.FrameworkCommand;
-import hu.sovaroq.framework.core.command.ServiceCommand;
 import hu.sovaroq.framework.core.network.webservices.CoreWebService;
 import hu.sovaroq.framework.data.session.SessionService;
 import hu.sovaroq.framework.service.authentication.AuthenticationService;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.database.HibernateDatabaseService;
 import hu.sovaroq.framework.service.useless.CompletelyUselessService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Oryk on 2017. 01. 27..

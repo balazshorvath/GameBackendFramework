@@ -1,10 +1,8 @@
 package hu.sovaroq.framework.controller.base;
 
-import java.util.List;
-
-import hu.sovaroq.framework.core.command.FrameworkCommand;
 import hu.sovaroq.framework.service.base.AbstractService;
-import hu.sovaroq.framework.service.base.IService;
+
+import java.util.List;
 
 /**
  * A Controller is a container, a collection of services separated from the framework.
@@ -23,8 +21,6 @@ import hu.sovaroq.framework.service.base.IService;
 public interface IController<Ctxt extends Context>{
     void start(Ctxt context);
     void stop();
-
-    Object execute(FrameworkCommand command);
 
     List<AbstractService> getServices();
     String getStatusDescription();

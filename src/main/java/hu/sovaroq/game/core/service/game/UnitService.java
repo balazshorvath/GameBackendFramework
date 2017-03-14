@@ -44,7 +44,8 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         LuaValue script = globals.loadfile(spawn.getLuaScript());
         UnitParameters params = new UnitParameters(
                 spawn.getTargetX(), spawn.getTargetY(),
-                new LuaUnit(currentUnitId.incrementAndGet(), spawn.getX(), spawn.getY(), 10.0, 100, 10)
+                new LuaUnit(currentUnitId.incrementAndGet(), spawn.getX(), spawn.getY(), 10.0, 100, 10),
+                0
         );
         units.put(
                 currentUnitId.incrementAndGet(),
@@ -61,7 +62,10 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         last100Tick = now;
 
         //TODO remove nil
-        units.values().forEach(unit -> unit.script.get("update").call(LuaValue.valueOf(dt), LuaValue.NIL));
+        units.values().forEach(unit -> {
+            unit.params.dt = dt;
+            unit.script.call(CoerceJavaToLua.coerce(unit.params));
+        });
     }
 
     @AllArgsConstructor
@@ -74,7 +78,8 @@ public class UnitService extends AbstractService<Object> implements IUnitService
     @AllArgsConstructor
     @Data
     public static class UnitParameters {
-        public double targetX, targetY;
-        public LuaUnit self;
+        double targetX, targetY;
+        LuaUnit self;
+        long dt;
     }
 }
