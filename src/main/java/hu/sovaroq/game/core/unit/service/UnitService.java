@@ -1,19 +1,21 @@
-package hu.sovaroq.game.core.service.game;
+package hu.sovaroq.game.core.unit.service;
 
 import hu.sovaroq.framework.core.bus.EventListener;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.Service;
 import hu.sovaroq.framework.service.features.Tick;
 import hu.sovaroq.game.core.unit.model.LuaUnit;
+import hu.sovaroq.game.core.unit.model.UnitState;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.ToString;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,8 +25,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @EventListener
 public class UnitService extends AbstractService<Object> implements IUnitService {
-    private AtomicInteger currentUnitId = new AtomicInteger(0);
     private Globals globals;
+    private UnitAPI unitAPI = new UnitAPI();
+
+    private AtomicInteger currentUnitId = new AtomicInteger(0);
     private Map<Integer, UnitScript> units = new ConcurrentHashMap<>();
     private long last100Tick = System.currentTimeMillis();
 
@@ -34,6 +38,7 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         super.start(o);
 
         globals = JsePlatform.standardGlobals();
+        globals.set("api", CoerceJavaToLua.coerce(unitAPI));
         LuaValue helpers = globals.loadfile("game/global/helpers.lua");
         helpers.call();
         log.debug("<UnitService.start()");
@@ -54,7 +59,6 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         script.call(CoerceJavaToLua.coerce(params));
     }
 
-
     @Tick(100)
     public void tick100(){
         long now = System.currentTimeMillis();
@@ -65,12 +69,19 @@ public class UnitService extends AbstractService<Object> implements IUnitService
             unit.params.dt = dt;
             unit.script.call(CoerceJavaToLua.coerce(unit.params));
         });
+
+        unitAPI.flush();
     }
 
     public class UnitAPI {
-        public void state(){
-            // pending changes
-            // finalize -> create event and send
+        Set<UnitState> changes = new HashSet<>();
+
+        public void state(int unitId){
+            changes.add(new UnitState(units.get(unitId).params.self));
+        }
+
+        void flush(){
+            post(new IUnitService.UnitUpdates(changes));
         }
     }
 
