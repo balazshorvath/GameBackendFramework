@@ -30,16 +30,17 @@ helpers = {
     --
     moveMe = function(entity, dt)
         if entity.path[1] == nil then
-            return
+            return nil
         end
         local time = helpers.calcTime(entity.x, entity.y, entity.path[1].x, entity.path[1].y, entity.speed)
         if time <= 1 then
-            entity.x(entity.path[1].x)
-            entity.y(entity.path[1].y)
+            entity.x, entity.y = entity.path[1].x, entity.path[1].y
+
             table.remove(entity.path, 1)
+            return entity.path[1]
         end
-        -- return nil, or the next waypoint, indicating if the
-        return entity.path[1]
+
+        return nil
     end,
 
     --

@@ -23,9 +23,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @EventListener
 public class UnitService extends AbstractService<Object> implements IUnitService {
-    AtomicInteger currentUnitId = new AtomicInteger(0);
-    Globals globals;
-    Map<Integer, UnitScript> units = new ConcurrentHashMap<>();
+    private AtomicInteger currentUnitId = new AtomicInteger(0);
+    private Globals globals;
+    private Map<Integer, UnitScript> units = new ConcurrentHashMap<>();
     private long last100Tick = System.currentTimeMillis();
 
     @Override
@@ -61,11 +61,17 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         final long dt = now - last100Tick;
         last100Tick = now;
 
-        //TODO remove nil
         units.values().forEach(unit -> {
             unit.params.dt = dt;
             unit.script.call(CoerceJavaToLua.coerce(unit.params));
         });
+    }
+
+    public class UnitAPI {
+        public void state(){
+            // pending changes
+            // finalize -> create event and send
+        }
     }
 
     @AllArgsConstructor
@@ -76,10 +82,9 @@ public class UnitService extends AbstractService<Object> implements IUnitService
 
     @ToString
     @AllArgsConstructor
-    @Data
     public static class UnitParameters {
-        double targetX, targetY;
-        LuaUnit self;
-        long dt;
+        public double targetX, targetY;
+        public LuaUnit self;
+        public long dt;
     }
 }
