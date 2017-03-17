@@ -30,7 +30,9 @@ public class ServiceManagerTest {
 		
 		manager.manage(TestService1.class);
 		manager.manage(TestService2.class);
-		
+
+		manager.start();
+
 		Thread.sleep(100);
 
 		manager.stop();
@@ -44,7 +46,7 @@ public class ServiceManagerTest {
 	
 
 
-	@Service(configNeedsRestart = false, configurationClass = Object.class, configurationFile = "")
+	@Service
 	public static class TestService1 extends AbstractService<Object>{
 		boolean runnable1 = false;
 		boolean running = false;
@@ -75,7 +77,7 @@ public class ServiceManagerTest {
 		}
 		
 	}
-	@Service(configNeedsRestart = false, configurationClass = Object.class, configurationFile = "")
+	@Service
 	public static class TestService2 extends AbstractService<Object>{
 		boolean runnable1 = false, runnable2 = false;
 		boolean running = false;

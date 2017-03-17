@@ -40,7 +40,13 @@ public class FrameworkApplication {
         framework.start(features);
         FrameworkConsole console = new FrameworkConsole(framework, System.in, System.out);
 
-        console.open();
+        try {
+            console.open();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            framework.stop();
+        }
     }
 
 }
