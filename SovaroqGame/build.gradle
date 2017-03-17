@@ -1,0 +1,50 @@
+version '0.1'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+task fullJar(type: Jar) {
+    manifest {
+        // Not really, but for now, it's ok
+        attributes 'Implementation-Title': 'Sovaroq Full Jar Build',
+                'Implementation-Version': version,
+                'Main-Class': 'hu.sovaroq.framework.FrameworkApplication'
+    }
+    baseName = project.name + '-full'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile project(':SovaroqCore')
+
+    // For getting type parameters
+    compile group: 'net.jodah', name: 'typetools', version: '0.4.0'
+
+    //database:
+    compile group: 'org.hsqldb', name: 'hsqldb', version: '2.2.8'
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager
+    compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.8.Final'
+
+    // BCrypt
+    compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
+
+
+    // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
+    compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.2.v20170220'
+    // IDK WHY
+    // OH NOW I KNOW LOG4J DEPENDS ON THIS, WHEN ITS IN A FKIN JAR
+    compile 'com.fasterxml.jackson.core:jackson-core:2.8.7'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.7'
+}
