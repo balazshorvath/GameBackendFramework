@@ -3,7 +3,9 @@ package hu.sovaroq.game.core.unit.service;
 import hu.sovaroq.framework.core.bus.EventListener;
 import hu.sovaroq.framework.service.base.AbstractService;
 import hu.sovaroq.framework.service.base.Service;
+import hu.sovaroq.framework.service.features.AutoSetService;
 import hu.sovaroq.framework.service.features.Tick;
+import hu.sovaroq.framework.service.scripting.LuaGlobalsProvider;
 import hu.sovaroq.game.core.unit.model.LuaUnit;
 import hu.sovaroq.game.core.unit.model.UnitState;
 import lombok.AllArgsConstructor;
@@ -25,8 +27,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 @EventListener
 public class UnitService extends AbstractService<Object> implements IUnitService {
-    private Globals globals;
+
+    @AutoSetService
+    private LuaGlobalsProvider provider;
     private UnitAPI unitAPI = new UnitAPI();
+    private Globals globals;
 
     private AtomicInteger currentUnitId = new AtomicInteger(0);
     private Map<Integer, UnitScript> units = new ConcurrentHashMap<>();
@@ -37,7 +42,7 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         log.debug(">UnitService.start()");
         super.start(o);
 
-        globals = JsePlatform.standardGlobals();
+        globals = provider.getGlobals();
         globals.set("api", CoerceJavaToLua.coerce(unitAPI));
         LuaValue helpers = globals.loadfile("game/global/helpers.lua");
         helpers.call();
