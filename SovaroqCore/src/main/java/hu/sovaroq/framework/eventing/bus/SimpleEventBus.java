@@ -26,6 +26,8 @@ public class SimpleEventBus implements IEventBus, Runnable {
     private final ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
     private final ThreadPoolExecutor threadPool;
 
+    private IEventBusDebugPort debugPort;
+
     private Thread consumer;
     private ConsumerState consumerState = ConsumerState.UNINITIALIZED;
     private boolean running = false;
@@ -117,12 +119,6 @@ public class SimpleEventBus implements IEventBus, Runnable {
     }
 
     @Override
-    public void pushEvent(Object event) {
-        if(running)
-            messageQueue.add(event);
-    }
-
-    @Override
     public void run() {
         Object event;
         consumerState = ConsumerState.RUNNING;
@@ -138,6 +134,9 @@ public class SimpleEventBus implements IEventBus, Runnable {
 
             try {
                 listenersLock.readLock().lock();
+                if(debugPort != null){
+                    debugPort.newEvent(event);
+                }
                 boolean found = false;
                 for (ListenerConfig listener : listeners) {
                     Method m = listener.events.get(event.getClass());
@@ -157,6 +156,27 @@ public class SimpleEventBus implements IEventBus, Runnable {
 
         }
         consumerState = ConsumerState.STOPPED;
+    }
+
+    @Override
+    public void pushEvent(Object event) {
+        if(running)
+            messageQueue.add(event);
+    }
+
+    @Override
+    public void registerDebugPort(IEventBusDebugPort port) {
+        try {
+            listenersLock.writeLock().lock();
+            this.debugPort = port;
+        }finally {
+            listenersLock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void unregisterDebugPort() {
+        this.debugPort = null;
     }
 
     private Runnable createInvokingThread(final Method m, final Object instance, final Object event){

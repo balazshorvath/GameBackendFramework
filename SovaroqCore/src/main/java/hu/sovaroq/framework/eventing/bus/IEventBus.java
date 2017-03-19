@@ -8,7 +8,12 @@ public interface IEventBus {
     void stop(long forceTimeout);
 
     void subscribe(Object instance);
-
     void pushEvent(Object event);
+    void registerDebugPort(IEventBusDebugPort port);
+    void unregisterDebugPort();
+
+    interface IEventBusDebugPort{
+        void newEvent(Object event);
+    }
 
 }
