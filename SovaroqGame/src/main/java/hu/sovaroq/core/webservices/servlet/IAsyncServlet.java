@@ -6,6 +6,7 @@ import javax.servlet.AsyncContext;
  * This interface helps to manage async http servlets.
  *
  * @author Horvath_Gergo
+ *
  */
 public interface IAsyncServlet {
 
