@@ -9,11 +9,12 @@ public enum ListenerPriority {
     LOW((short) 2);
 
     private final short priority;
+
     ListenerPriority(short i) {
         priority = i;
     }
 
-    public short getValue(){
+    public short getValue() {
         return priority;
     }
 }

@@ -1,6 +1,5 @@
 package hu.sovaroq.framework;
 
-
 import hu.sovaroq.framework.controller.AbstractController;
 
 import java.util.List;
@@ -10,11 +9,14 @@ import java.util.List;
  */
 public interface IFramework {
     void start(List<Class<? extends AbstractController>> features);
-    void stop();
 
+    void stop();
 
     List<AbstractController> getControllers();
 
+    void setDebug(boolean debug);
+
     String getStatusDescription();
+
     Double getWorkload();
 }

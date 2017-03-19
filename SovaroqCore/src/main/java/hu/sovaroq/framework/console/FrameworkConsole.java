@@ -30,16 +30,16 @@ public class FrameworkConsole {
         String command;
         running = true;
         LuaGlobalsProvider lua = (LuaGlobalsProvider) framework.getManager().getService(LuaGlobalsProvider.class);
-        if(lua == null){
+        if (lua == null) {
             writer.write("No lua provider found.");
             return;
         }
         Globals globals = lua.getGlobals();
         globals.set("framework", CoerceJavaToLua.coerce(framework));
 
-        while (running){
+        while (running) {
             try {
-                if((command = reader.readLine()) == null){
+                if ((command = reader.readLine()) == null) {
                     Thread.sleep(50);
                     continue;
                 }
@@ -48,7 +48,7 @@ public class FrameworkConsole {
                 running = false;
                 continue;
             }
-            if("exit".equals(command)){
+            if ("exit".equals(command)) {
                 running = false;
                 continue;
             }
@@ -62,7 +62,6 @@ public class FrameworkConsole {
             }
         }
     }
-
 
 
 }

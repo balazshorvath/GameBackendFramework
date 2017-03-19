@@ -15,23 +15,23 @@ import static javax.persistence.GenerationType.AUTO;
 @ToString
 @EqualsAndHashCode
 public class User implements IUser {
-	public static final String USERID = "userId";
-	public static final String LOGIN = "login";
+    public static final String USERID = "userId";
+    public static final String LOGIN = "login";
 
-	@Id
-	@GeneratedValue(strategy = AUTO)
-	@Column(name = USERID)
-	Long userId;
-	
-	@NaturalId
-	@Column(name = LOGIN)
-	String login;
-	
-	@Column(length = 255, nullable = false)
-	String password;
-	
-	@Column
-	boolean locked = false;
-	
-	
+    @Id
+    @GeneratedValue(strategy = AUTO)
+    @Column(name = USERID)
+    Long userId;
+
+    @NaturalId
+    @Column(name = LOGIN)
+    String login;
+
+    @Column(length = 255, nullable = false)
+    String password;
+
+    @Column
+    boolean locked = false;
+
+
 }

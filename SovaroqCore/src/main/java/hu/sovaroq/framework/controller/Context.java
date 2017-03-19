@@ -1,16 +1,15 @@
 package hu.sovaroq.framework.controller;
 
 import hu.sovaroq.framework.service.manager.ServiceManager;
+import lombok.Getter;
 
+@Getter
 public class Context {
-	private final ServiceManager manager;
-	
-	public Context(ServiceManager manager){
-		this.manager = manager;
-	}
+    private final ServiceManager manager;
+    private final boolean debug;
 
-	public ServiceManager getManager() {
-		return manager;
-	}
-	
+    public Context(ServiceManager manager, boolean debug) {
+        this.manager = manager;
+        this.debug = debug;
+    }
 }

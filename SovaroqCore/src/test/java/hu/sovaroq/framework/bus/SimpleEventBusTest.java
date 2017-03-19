@@ -5,7 +5,6 @@ import hu.sovaroq.framework.eventing.bus.IEventBus;
 import hu.sovaroq.framework.eventing.bus.SimpleEventBus;
 import hu.sovaroq.framework.eventing.events.IFrameworkEvent;
 import hu.sovaroq.framework.service.IService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class SimpleEventBusTest {
 
     @Before
     @SuppressWarnings("unchecked")
-    public void setup(){
+    public void setup() {
         bus = new SimpleEventBus(10, 30, 60, TimeUnit.SECONDS);
 
         service1 = mock(TestEventReceiver1.class);
@@ -50,7 +49,7 @@ public class SimpleEventBusTest {
         bus.stop(50);
     }
 
-    public void testDebugPort(){
+    public void testDebugPort() {
         DebugPort port = new DebugPort();
         bus.start();
 
@@ -69,22 +68,29 @@ public class SimpleEventBusTest {
     @EventListener
     public interface TestEventReceiver1 extends IService<Object> {
         void onEvent(TestEvent1 event);
+
         void onEvent(TestEvent2 event);
     }
+
     @EventListener
     public interface TestEventReceiver2 extends IService<Object> {
         void onEvent(TestEvent3 event);
+
         void onEvent(TestEvent2 event);
     }
 
     public class TestEvent1 implements IFrameworkEvent {
     }
+
     public class TestEvent2 implements IFrameworkEvent {
     }
+
     public class TestEvent3 implements IFrameworkEvent {
     }
-    public class DebugPort implements IEventBus.IEventBusDebugPort{
+
+    public class DebugPort implements IEventBus.IEventBusDebugPort {
         AtomicInteger integer = new AtomicInteger(0);
+
         @Override
         public void newEvent(Object event) {
             integer.incrementAndGet();

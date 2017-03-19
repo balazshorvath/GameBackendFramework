@@ -1,4 +1,4 @@
-package hu.sovaroq.core.database;
+package hu.sovaroq.core.database.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -8,5 +8,6 @@ import javax.persistence.criteria.CriteriaBuilder;
  */
 public interface IHibernateSessionProvider {
     EntityManager getEntityManager();
-    CriteriaBuilder getCriteriaBuilder(); 
+
+    CriteriaBuilder getCriteriaBuilder();
 }

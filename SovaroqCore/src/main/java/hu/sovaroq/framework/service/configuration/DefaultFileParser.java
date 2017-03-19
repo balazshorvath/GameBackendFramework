@@ -25,11 +25,11 @@ public class DefaultFileParser extends FileParser {
     public Map<String, Object> getConfig(String file) throws IOException {
         final Path path = Paths.get(file);
         final Map<String, Object> props = new HashMap<>();
-        if(path.toFile().exists()){
+        if (path.toFile().exists()) {
             Properties properties = new Properties();
 
             properties.load(Files.newInputStream(path));
-            properties.entrySet().forEach(entry -> props.put((String)entry.getKey(), entry.getValue()));
+            properties.entrySet().forEach(entry -> props.put((String) entry.getKey(), entry.getValue()));
         }
         return props;
     }
@@ -38,6 +38,6 @@ public class DefaultFileParser extends FileParser {
     public void saveConfig(String file, Map<String, Object> config) throws IOException {
         Properties properties = new Properties();
         properties.putAll(config);
-        properties.store(new BufferedWriter(new FileWriter(file)),"NOCOMMENT");
+        properties.store(new BufferedWriter(new FileWriter(file)), "NOCOMMENT");
     }
 }

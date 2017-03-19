@@ -1,8 +1,8 @@
 package hu.sovaroq.framework.service.configuration;
 
+import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.configuration.annotation.ConfigFileParser;
 import hu.sovaroq.framework.service.configuration.annotation.ConfigValue;
-import hu.sovaroq.framework.logger.LogProvider;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
 
@@ -16,73 +16,74 @@ import java.util.stream.Collectors;
 /**
  * Configuration property keys can be separated with dots.
  * For example:
- *     database.name
- *     database.host
+ * database.name
+ * database.host
  * If the property "database" is present (field marked as @ConfigValue),
  * and the "database" property is also a type with @Config,
  * the database.name property key means context.getDatabase().setName(asdasd);
- *
- *
+ * <p>
+ * <p>
  * Created by Oryk on 2017. 01. 28..
  */
 @SuppressWarnings("unchecked")
 public class ConfigurationCreator {
     private static final Logger log = LogProvider.createLogger(ConfigurationCreator.class);
     private static final Map<String, List<Class<? extends FileParser>>> fileParsers;
+
     /**
      * Static initializer for context loader.
      * find file parsers based on annotation.
      */
     static {
-    	fileParsers = new HashMap<>();
-    	Reflections reflections = new Reflections();
-    	Set<Class<?>> parsers = reflections.getTypesAnnotatedWith(ConfigFileParser.class);
-    	for (Class<?> parser : parsers) {
-			ConfigFileParser annot = parser.getAnnotation(ConfigFileParser.class);
-			if(!FileParser.class.isAssignableFrom(parser)){
-				log.warn(parser.getName() + " is annotated annotated with @ConfigFileParser, but does not implement FileParser.");
-				continue;
-			}
-			for (String type : annot.value()) {
-				if(!fileParsers.containsKey(type)){
-					fileParsers.put(type, new ArrayList<>());
-				}
-				fileParsers.get(type).add((Class<? extends FileParser>) parser);
-				log.debug("Added file association '" + type + "' with parser " + parser.getName() + ".");
-			}
-		}
+        fileParsers = new HashMap<>();
+        Reflections reflections = new Reflections();
+        Set<Class<?>> parsers = reflections.getTypesAnnotatedWith(ConfigFileParser.class);
+        for (Class<?> parser : parsers) {
+            ConfigFileParser annot = parser.getAnnotation(ConfigFileParser.class);
+            if (!FileParser.class.isAssignableFrom(parser)) {
+                log.warn(parser.getName() + " is annotated annotated with @ConfigFileParser, but does not implement FileParser.");
+                continue;
+            }
+            for (String type : annot.value()) {
+                if (!fileParsers.containsKey(type)) {
+                    fileParsers.put(type, new ArrayList<>());
+                }
+                fileParsers.get(type).add((Class<? extends FileParser>) parser);
+                log.debug("Added file association '" + type + "' with parser " + parser.getName() + ".");
+            }
+        }
     }
-    
+
 
     public <C> C createConfig(Class<C> configType, String configFile) {
-    	if(configFile == null || configFile.isEmpty() || Object.class.equals(configType)){
-        	log.error("No context file specified.");
-    		return null;
-    	}
-    	
-        Map<String, Object> values = null;
-        String type = configFile.substring(configFile.lastIndexOf('.'));
-        if(!fileParsers.containsKey(type)){
-        	log.error("No file association.");
-        	return null;
-        }
-        for(Class<? extends FileParser> parser : fileParsers.get(type)){
-	        try {
-	            values = parser.newInstance().getConfig(configFile);
-	            break;
-	        } catch (InstantiationException | IllegalAccessException | IOException e) {
-	            log.error(e);
-	        }
+        if (configFile == null || configFile.isEmpty() || Object.class.equals(configType)) {
+            log.error("No context file specified.");
+            return null;
         }
 
-        if(values == null){
-        	log.error("Could not parse context file. Config type: " + configType.getName());
+        Map<String, Object> values = null;
+        String type = configFile.substring(configFile.lastIndexOf('.'));
+        if (!fileParsers.containsKey(type)) {
+            log.error("No file association.");
+            return null;
+        }
+        for (Class<? extends FileParser> parser : fileParsers.get(type)) {
+            try {
+                values = parser.newInstance().getConfig(configFile);
+                break;
+            } catch (InstantiationException | IllegalAccessException | IOException e) {
+                log.error(e);
+            }
+        }
+
+        if (values == null) {
+            log.error("Could not parse context file. Config type: " + configType.getName());
         }
 
         return createObject(configType, values);
     }
 
-    private <C> C createObject(Class<C> configType, Map<String, Object> values){
+    private <C> C createObject(Class<C> configType, Map<String, Object> values) {
         C result;
         try {
             result = configType.newInstance();
@@ -94,19 +95,19 @@ public class ConfigurationCreator {
 
         ConfigValue configValue;
         for (Field field : configType.getDeclaredFields()) {
-            if((configValue = field.getAnnotation(ConfigValue.class)) != null){
+            if ((configValue = field.getAnnotation(ConfigValue.class)) != null) {
                 String key = configValue.key();
-                if(key.isEmpty()){
+                if (key.isEmpty()) {
                     key = field.getName();
                 }
-                if(values.containsKey(key)){
+                if (values.containsKey(key)) {
                     Object value = values.get(key);
                     Object parsedValue = null;
                     try {
                         Method m;
-                        if(value instanceof String){
+                        if (value instanceof String) {
                             parsedValue = parseKnownTypes(field.getType(), (String) value);
-                        }else if (value.getClass().equals(field.getType())){
+                        } else if (value.getClass().equals(field.getType())) {
                             parsedValue = value;
                         }
                         m = setter(field);
@@ -120,15 +121,15 @@ public class ConfigurationCreator {
                     try {
                         Method getter = getter(field);
                         Object fieldValue = getter.invoke(result);
-                        if(fieldValue == null){
+                        if (fieldValue == null) {
                             fieldValue = field.getType().newInstance();
                         }
                         final String finalKey = key;
                         Map<String, Object> sublist = values.entrySet().stream().filter(entry ->
-                                        entry.getKey().startsWith(finalKey + ".")
+                                entry.getKey().startsWith(finalKey + ".")
                         ).collect(Collectors.toMap(entry ->
-                                                entry.getKey().substring(entry.getKey().indexOf(".")),
-                                        Map.Entry::getValue)
+                                        entry.getKey().substring(entry.getKey().indexOf(".")),
+                                Map.Entry::getValue)
                         );
                         fieldValue = createObject(field.getType(), sublist);
 
@@ -150,33 +151,33 @@ public class ConfigurationCreator {
     private Object parseKnownTypes(Class<?> type, String value) throws NumberFormatException {
         Object o = null;
 
-        if(type.isPrimitive() || Number.class.isAssignableFrom(type) || type.equals(Boolean.class) || type.equals(Character.class)){
-            if(type.equals(float.class) || type.equals(Float.class)){
+        if (type.isPrimitive() || Number.class.isAssignableFrom(type) || type.equals(Boolean.class) || type.equals(Character.class)) {
+            if (type.equals(float.class) || type.equals(Float.class)) {
                 o = Float.parseFloat(value);
-            }else if(type.equals(double.class) || type.equals(Double.class)){
+            } else if (type.equals(double.class) || type.equals(Double.class)) {
                 o = Double.parseDouble(value);
-            }else if(type.equals(byte.class) || type.equals(Byte.class)){
+            } else if (type.equals(byte.class) || type.equals(Byte.class)) {
                 o = Byte.parseByte(value);
-            }else if(type.equals(char.class) || type.equals(Character.class)){
-                if(value.length() > 1){
+            } else if (type.equals(char.class) || type.equals(Character.class)) {
+                if (value.length() > 1) {
                     log.warn("parseKnownTypes: Field type is char, but the value is longer, than 1. Using the first character.");
                 }
-                if(value.length() < 1){
+                if (value.length() < 1) {
                     o = '\u0000';
-                }else {
+                } else {
                     o = value.charAt(0);
                 }
-            }else if(type.equals(short.class) || type.equals(Short.class)){
+            } else if (type.equals(short.class) || type.equals(Short.class)) {
                 o = Short.parseShort(value);
-            }else if(type.equals(int.class) || type.equals(Integer.class)){
+            } else if (type.equals(int.class) || type.equals(Integer.class)) {
                 o = Integer.parseInt(value);
-            }else if(type.equals(long.class) || type.equals(Long.class)){
+            } else if (type.equals(long.class) || type.equals(Long.class)) {
                 o = Long.parseLong(value);
-            }else {
+            } else {
                 // Every other possible type are checked.
                 o = Boolean.parseBoolean(value);
             }
-        }else if(type.equals(String.class) || type.equals(Object.class)){
+        } else if (type.equals(String.class) || type.equals(Object.class)) {
             o = value;
         }
 
@@ -188,17 +189,19 @@ public class ConfigurationCreator {
         //
         // Lombok generates Boolean as getBoolean
         //
-        if (field.getType().equals(boolean.class)){
+        if (field.getType().equals(boolean.class)) {
             base = "is";
-        }else {
+        } else {
             base = "get";
         }
         return field.getDeclaringClass().getMethod(base + getFieldNameUpper(field), field.getType());
     }
+
     private Method setter(Field field) throws NoSuchMethodException {
         return field.getDeclaringClass().getMethod("set" + getFieldNameUpper(field), field.getType());
     }
-    private String getFieldNameUpper(Field field){
+
+    private String getFieldNameUpper(Field field) {
         return field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
     }
 }

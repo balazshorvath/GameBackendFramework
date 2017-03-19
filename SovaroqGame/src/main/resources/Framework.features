@@ -1,2 +1,2 @@
 hu.sovaroq.core.controller.FrameworkController
-hu.sovaroq.core.controller.GameController
+hu.sovaroq.game.GameController
