@@ -7,6 +7,7 @@ import hu.sovaroq.framework.eventing.bus.IEventBus;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.manager.ServiceManager;
 import hu.sovaroq.game.unit.service.UnitService;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by Oryk on 2017. 02. 27..
@@ -33,6 +33,7 @@ public class GameController extends AbstractController<Context> {
         super.manager = new ServiceManager(3, 5, 5);
 
         if (context.isDebug()) {
+            ServletContextHandler coreContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
             super.manager.getBus().registerDebugPort(new DebugServlet());
         }
 
@@ -51,16 +52,30 @@ public class GameController extends AbstractController<Context> {
 
     @WebServlet
     public static class DebugServlet extends HttpServlet implements IEventBus.IEventBusDebugPort {
-        private Queue<Object> queue = new ConcurrentLinkedQueue<>();
+        private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+
+        private List<Object> buffer = new ArrayList<>();
         private ObjectMapper mapper = new ObjectMapper();
 
         @Override
         protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            try {
+                lock.writeLock().lock();
+                resp.getOutputStream().println(mapper.writeValueAsString(buffer));
+                buffer.clear();
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
 
         @Override
         public void newEvent(Object event) {
-            queue.add(event);
+            try {
+                lock.writeLock().lock();
+                buffer.add(event);
+            } finally {
+                lock.writeLock().unlock();
+            }
         }
     }
 }
