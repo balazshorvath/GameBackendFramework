@@ -1,7 +1,19 @@
 package hu.sovaroq.core.webservices;
 
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.Servlet;
+
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
+import hu.sovaroq.core.webservices.servlet.AuthServlet;
 import hu.sovaroq.core.webservices.servlet.IAsyncServlet;
 import hu.sovaroq.core.webservices.servlet.RegServlet;
 import hu.sovaroq.core.webservices.servlet.WebServer;
@@ -9,14 +21,6 @@ import hu.sovaroq.framework.eventing.bus.EventListener;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.Service;
 import hu.sovaroq.framework.service.features.Run;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.Servlet;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Responsible for handling all web servlets serving the core functionality

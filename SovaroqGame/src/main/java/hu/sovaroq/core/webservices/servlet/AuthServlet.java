@@ -1,11 +1,9 @@
-package hu.sovaroq.core.webservices;
+package hu.sovaroq.core.webservices.servlet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
-import hu.sovaroq.core.webservices.servlet.IAsyncServlet;
-import hu.sovaroq.core.webservices.servlet.IWebRequest;
-import hu.sovaroq.core.webservices.servlet.IWebResponse;
-import lombok.Data;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -13,10 +11,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
+import lombok.Data;
 
 @WebServlet(asyncSupported = true)
 public class AuthServlet extends HttpServlet implements IAsyncServlet {
