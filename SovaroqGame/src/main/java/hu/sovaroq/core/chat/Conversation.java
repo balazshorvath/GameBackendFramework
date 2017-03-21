@@ -15,16 +15,16 @@ import static javax.persistence.GenerationType.AUTO;
 @ToString
 public class Conversation {
 
-	@Id
-	@GeneratedValue(strategy = AUTO)
-	@Column
-	int conversationid;
-	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_conversation", joinColumns = { @JoinColumn(name = "conversationid") }, inverseJoinColumns = { @JoinColumn(name = "userid") })
-	Set<User> participants;
-	
-	@Column(length = 255, nullable = false)
-	String name;
-	
+    @Id
+    @GeneratedValue(strategy = AUTO)
+    @Column
+    int conversationid;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_conversation", joinColumns = {@JoinColumn(name = "conversationid")}, inverseJoinColumns = {@JoinColumn(name = "userid")})
+    Set<User> participants;
+
+    @Column(length = 255, nullable = false)
+    String name;
+
 }

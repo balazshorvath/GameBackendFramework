@@ -26,7 +26,7 @@ public interface IUnitService {
     @Value
     @ToString
     @EqualsAndHashCode(callSuper = true)
-    class UnitUpdates extends FrameworkInformEvent{
+    class UnitUpdates extends FrameworkInformEvent {
         private Set<UnitState> updates;
     }
 }

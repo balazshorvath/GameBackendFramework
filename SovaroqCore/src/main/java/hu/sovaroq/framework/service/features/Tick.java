@@ -9,9 +9,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface Tick {
-	/**
-	 * 
-	 * @return time between calls in milliseconds
-	 */
-	long value();
+    /**
+     * @return time between calls in milliseconds
+     */
+    long value();
 }

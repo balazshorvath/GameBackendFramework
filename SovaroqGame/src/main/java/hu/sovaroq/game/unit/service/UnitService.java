@@ -1,11 +1,11 @@
 package hu.sovaroq.game.unit.service;
 
 import hu.sovaroq.framework.eventing.bus.EventListener;
+import hu.sovaroq.framework.scripting.LuaGlobalsProvider;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.Service;
 import hu.sovaroq.framework.service.features.AutoSetService;
 import hu.sovaroq.framework.service.features.Tick;
-import hu.sovaroq.framework.scripting.LuaGlobalsProvider;
 import hu.sovaroq.game.unit.model.LuaUnit;
 import hu.sovaroq.game.unit.model.UnitState;
 import lombok.AllArgsConstructor;
@@ -21,6 +21,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * Some notes, since this is the first service running lua:
+ * - The lua provider automatically overrides the class loader, so any class can be used in lua.
+ * - There's a helper.lua, which is called, to provide some basic calculation functions for the logic.
+ * - To communicate with the framework, there's an api class, which is added to the globals.
+ * - There are parameters, which is passed when calling the file.
+ * <p>
+ * <p>
  * Created by balazs_horvath on 3/13/2017.
  */
 @Service
@@ -43,12 +50,12 @@ public class UnitService extends AbstractService<Object> implements IUnitService
 
         globals = provider.getGlobals();
         globals.set("api", CoerceJavaToLua.coerce(unitAPI));
-        LuaValue helpers = globals.loadfile("game/global/helpers.lua");
+        LuaValue helpers = globals.loadfile("game/lua/global/helpers.lua");
         helpers.call();
         log.debug("<UnitService.start()");
     }
 
-    public void onEvent(IUnitService.SpawnUnit spawn){
+    public void onEvent(IUnitService.SpawnUnit spawn) {
         log.debug("Got new Message: " + spawn);
         LuaValue script = globals.loadfile(spawn.getLuaScript());
         UnitParameters params = new UnitParameters(
@@ -58,13 +65,13 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         );
         units.put(
                 currentUnitId.incrementAndGet(),
-                new UnitScript(params,script)
+                new UnitScript(params, script)
         );
         script.call(CoerceJavaToLua.coerce(params));
     }
 
     @Tick(100)
-    public void tick100(){
+    public void tick100() {
         long now = System.currentTimeMillis();
         final long dt = now - last100Tick;
         last100Tick = now;
@@ -75,18 +82,6 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         });
 
         unitAPI.flush();
-    }
-
-    public class UnitAPI {
-        Set<UnitState> changes = new HashSet<>();
-
-        public void state(int unitId){
-            changes.add(new UnitState(units.get(unitId).params.self));
-        }
-
-        void flush(){
-            post(new IUnitService.UnitUpdates(changes));
-        }
     }
 
     @AllArgsConstructor
@@ -101,5 +96,17 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         public double targetX, targetY;
         public LuaUnit self;
         public long dt;
+    }
+
+    public class UnitAPI {
+        Set<UnitState> changes = new HashSet<>();
+
+        public void state(int unitId) {
+            changes.add(new UnitState(units.get(unitId).params.self));
+        }
+
+        void flush() {
+            post(new IUnitService.UnitUpdates(changes));
+        }
     }
 }

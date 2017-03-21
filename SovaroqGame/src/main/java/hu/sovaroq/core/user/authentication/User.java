@@ -42,6 +42,5 @@ public class User implements IUser {
 	
 	@Column
 	@OneToOne
-	UserAccount account;
-	
+	UserAccount account;	
 }

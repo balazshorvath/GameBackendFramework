@@ -1,7 +1,8 @@
-package hu.sovaroq.core.database;
+package hu.sovaroq.core.database.repository;
 
-import hu.sovaroq.framework.logger.LogProvider;
+import hu.sovaroq.core.database.service.IHibernateSessionProvider;
 import hu.sovaroq.framework.exception.FrameworkException;
+import hu.sovaroq.framework.logger.LogProvider;
 import net.jodah.typetools.TypeResolver;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Transaction;
@@ -17,22 +18,23 @@ import java.util.List;
  * In case you want to initialize this class on it's own (not a subclass of this),
  * use the <code>HibernateRepository(IHibernateSessionProvider provider, Class<T> entityType)<code/>
  * constructor, otherwise the type parameter will be incorrect
- *
+ * <p>
  * Created by Oryk on 2017. 02. 14..
  */
 @SuppressWarnings("unchecked")
 public class HibernateRepository<T> implements CRUDRepository<T, Long> {
     protected final Class<T> entityType;
     protected final IHibernateSessionProvider provider;
-    
+
     protected Logger log = LogProvider.createLogger(this.getClass());
 
-    public HibernateRepository(IHibernateSessionProvider provider){
+    public HibernateRepository(IHibernateSessionProvider provider) {
         this.provider = provider;
         Class<?>[] typeArguments = TypeResolver.resolveRawArguments(HibernateRepository.class, getClass());
         this.entityType = (Class<T>) typeArguments[0];
     }
-    public HibernateRepository(IHibernateSessionProvider provider, Class<T> entityType){
+
+    public HibernateRepository(IHibernateSessionProvider provider, Class<T> entityType) {
         this.provider = provider;
         this.entityType = entityType;
     }
@@ -40,7 +42,7 @@ public class HibernateRepository<T> implements CRUDRepository<T, Long> {
     @Override
     public T findById(Long id) throws FrameworkException {
         T entity = null;
-        
+
         EntityManager entityManager = provider.getEntityManager();
         entity = entityManager.find(entityType, id);
 
@@ -57,45 +59,45 @@ public class HibernateRepository<T> implements CRUDRepository<T, Long> {
 
     @Override
     public List<T> findAll() throws FrameworkException {
-    	EntityManager entityManager = provider.getEntityManager();
-    	CriteriaBuilder criteriaBuilder = provider.getCriteriaBuilder();
-        List<T> entities = null;        
+        EntityManager entityManager = provider.getEntityManager();
+        CriteriaBuilder criteriaBuilder = provider.getCriteriaBuilder();
+        List<T> entities = null;
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(entityType);
         Root<T> rootElement = criteriaQuery.from(entityType);
         criteriaQuery.select(rootElement);
 
         entities = entityManager.createQuery(criteriaQuery).getResultList();
-        
+
         return entities;
     }
 
     @Override
     public void save(T t) throws FrameworkException {
-    	EntityManager entityManager = provider.getEntityManager();
-    	EntityTransaction transaction = entityManager.getTransaction();
-    	transaction.begin();
-        if(t != null){
-        	entityManager.persist(t);
+        EntityManager entityManager = provider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        if (t != null) {
+            entityManager.persist(t);
         }
         transaction.commit();
     }
 
     @Override
     public void delete(Long id) throws FrameworkException {
-    	T entity = null;
-    	EntityManager entityManager = provider.getEntityManager();
-    	EntityTransaction transaction = entityManager.getTransaction();
-    	transaction.begin();
+        T entity = null;
+        EntityManager entityManager = provider.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         entity = entityManager.find(entityType, id);
-        if(entity != null){
-        	entityManager.remove(entity);
+        if (entity != null) {
+            entityManager.remove(entity);
         }
         transaction.commit();
     }
 
     protected EntityManager getEntityManager() throws FrameworkException {
         EntityManager em = provider.getEntityManager();
-        if(em == null){
+        if (em == null) {
             throw new FrameworkException("Database is not present.");
         }
         return em;

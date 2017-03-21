@@ -26,6 +26,8 @@ public class SimpleEventBus implements IEventBus, Runnable {
     private final ReentrantReadWriteLock listenersLock = new ReentrantReadWriteLock();
     private final ThreadPoolExecutor threadPool;
 
+    private IEventBusDebugPort debugPort;
+
     private Thread consumer;
     private ConsumerState consumerState = ConsumerState.UNINITIALIZED;
     private boolean running = false;
@@ -48,7 +50,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
         threadPool.shutdown();
 
         final long startTime = System.currentTimeMillis();
-        while (consumerState != ConsumerState.STOPPED && (System.currentTimeMillis() - startTime) < forceTimeout){
+        while (consumerState != ConsumerState.STOPPED && (System.currentTimeMillis() - startTime) < forceTimeout) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -56,12 +58,12 @@ public class SimpleEventBus implements IEventBus, Runnable {
                 break;
             }
         }
-        if(consumerState != ConsumerState.STOPPED){
+        if (consumerState != ConsumerState.STOPPED) {
             logger.info("The consumer did not stop, calling stop().");
             consumer.interrupt();
         }
         try {
-            if(!threadPool.awaitTermination(forceTimeout, TimeUnit.MILLISECONDS)) {
+            if (!threadPool.awaitTermination(forceTimeout, TimeUnit.MILLISECONDS)) {
                 logger.info("ThreadPool did not terminate, calling shutdownNow().");
                 threadPool.shutdownNow();
             }
@@ -77,7 +79,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
         // Is it configured?
         Class<?> type = instance.getClass();
         EventListener conf = type.getAnnotation(EventListener.class);
-        if(conf == null){
+        if (conf == null) {
             logger.warn("Could not add instance of class '" + type.getName() + "' to listeners, since it's not annotated with @EventListener.");
             return;
         }
@@ -87,7 +89,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
             Optional<ListenerConfig> listener = listeners.stream().filter(listenerConfig -> listenerConfig.listenerType.equals(type)).findFirst();
             ListenerConfig config;
 
-            if(!listener.isPresent()){
+            if (!listener.isPresent()) {
                 config = new ListenerConfig(type, conf.priority());
                 for (Method method : type.getMethods()) {
                     if (method.getName().equals(LISTENER_METHOD_NAME)) {
@@ -105,43 +107,40 @@ public class SimpleEventBus implements IEventBus, Runnable {
                     return;
                 }
                 listeners.add(config);
-            }else {
+            } else {
                 config = listener.get();
             }
             config.instances.add(instance);
 
             Collections.sort(listeners);
-        }finally {
+        } finally {
             listenersLock.writeLock().unlock();
         }
-    }
-
-    @Override
-    public void pushEvent(Object event) {
-        if(running)
-            messageQueue.add(event);
     }
 
     @Override
     public void run() {
         Object event;
         consumerState = ConsumerState.RUNNING;
-        while (running){
+        while (running) {
             try {
                 event = messageQueue.poll(1, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
-				running = false;
+                running = false;
                 continue;
             }
-            if(event == null)
+            if (event == null)
                 continue;
 
             try {
                 listenersLock.readLock().lock();
+                if (debugPort != null) {
+                    debugPort.newEvent(event);
+                }
                 boolean found = false;
                 for (ListenerConfig listener : listeners) {
                     Method m = listener.events.get(event.getClass());
-                    if(m != null){
+                    if (m != null) {
                         final Object e = event;
                         listener.instances.forEach(o ->
                                 threadPool.execute(createInvokingThread(m, o, e))
@@ -149,7 +148,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
                         found = true;
                     }
                 }
-                if(!found)
+                if (!found)
                     logger.debug("No listener for this event: " + event);
             } finally {
                 listenersLock.readLock().unlock();
@@ -159,7 +158,28 @@ public class SimpleEventBus implements IEventBus, Runnable {
         consumerState = ConsumerState.STOPPED;
     }
 
-    private Runnable createInvokingThread(final Method m, final Object instance, final Object event){
+    @Override
+    public void pushEvent(Object event) {
+        if (running)
+            messageQueue.add(event);
+    }
+
+    @Override
+    public void registerDebugPort(IEventBusDebugPort port) {
+        try {
+            listenersLock.writeLock().lock();
+            this.debugPort = port;
+        } finally {
+            listenersLock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public void unregisterDebugPort() {
+        this.debugPort = null;
+    }
+
+    private Runnable createInvokingThread(final Method m, final Object instance, final Object event) {
         return () -> {
             try {
                 m.invoke(instance, event);
@@ -170,7 +190,13 @@ public class SimpleEventBus implements IEventBus, Runnable {
         };
     }
 
-    class ListenerConfig implements Comparable<ListenerConfig>{
+    enum ConsumerState {
+        UNINITIALIZED,
+        RUNNING,
+        STOPPED
+    }
+
+    class ListenerConfig implements Comparable<ListenerConfig> {
         final Map<Class<?>, Method> events = new HashMap<>();
         final Class<?> listenerType;
         final List<Object> instances = new ArrayList<>();
@@ -186,10 +212,5 @@ public class SimpleEventBus implements IEventBus, Runnable {
         public int compareTo(ListenerConfig o) {
             return this.priority.getValue() - o.priority.getValue();
         }
-    }
-    enum ConsumerState{
-        UNINITIALIZED,
-        RUNNING,
-        STOPPED
     }
 }

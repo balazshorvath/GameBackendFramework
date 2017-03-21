@@ -15,30 +15,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by Oryk on 2017. 03. 15..
  */
 @Service
-public class LuaGlobalsProvider extends AbstractService<Object>{
+public class LuaGlobalsProvider extends AbstractService<Object> {
     private Map<String, Globals> globals = new ConcurrentHashMap<>();
 
 
-    public Globals getGlobals(){
+    public Globals getGlobals() {
         return getGlobals(null);
     }
 
     /**
      * Creates a new lua globals instance if:
-     *      - the param is null, or empty string,
-     *      - there's no globals with the param saved.
-     *
+     * - the param is null, or empty string,
+     * - there's no globals with the param saved.
+     * <p>
      * Returns the global, if the global with the name is already present.
      *
      * @param globalsName
      * @return
      */
-    public Globals getGlobals(String globalsName){
-        if(globalsName == null ||globalsName.isEmpty()){
+    public Globals getGlobals(String globalsName) {
+        if (globalsName == null || globalsName.isEmpty()) {
             return createGlobals();
         }
 
-        if(globals.containsKey(globalsName)){
+        if (globals.containsKey(globalsName)) {
             return globals.get(globalsName);
         }
         Globals g = createGlobals();
@@ -46,11 +46,11 @@ public class LuaGlobalsProvider extends AbstractService<Object>{
         return g;
     }
 
-    public void removeGlobals(String globalsName){
+    public void removeGlobals(String globalsName) {
         globals.remove(globalsName);
     }
 
-    private Globals createGlobals(){
+    private Globals createGlobals() {
         Globals globals = new Globals();
         globals.load(new JseBaseLib());
         globals.load(new PackageLib());
@@ -70,7 +70,9 @@ public class LuaGlobalsProvider extends AbstractService<Object>{
     }
 
     public static final class SovaroqLuaJavaLib extends LuajavaLib {
-        public SovaroqLuaJavaLib() {}
+        public SovaroqLuaJavaLib() {
+        }
+
         protected Class classForName(String name) throws ClassNotFoundException {
             // Use plain class loader in applets.
             return Class.forName(name);

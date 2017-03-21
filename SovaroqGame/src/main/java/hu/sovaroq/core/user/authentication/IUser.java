@@ -5,7 +5,10 @@ package hu.sovaroq.core.user.authentication;
  */
 public interface IUser {
     Long getUserId();
+
     String getLogin();
+
     String getPassword();
+
     boolean isLocked();
 }

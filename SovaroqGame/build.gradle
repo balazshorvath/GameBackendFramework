@@ -40,7 +40,6 @@ dependencies {
     // BCrypt
     compile group: 'org.mindrot', name: 'jbcrypt', version: '0.3m'
 
-
     // https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server
     compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.2.v20170220'
     // IDK WHY

@@ -27,10 +27,6 @@ local action = {
 --      entities    - Ordered list of entities closest is the first
 --
 
-print("doObjective")
-print(self)
-doObjective(dt, nil)
-print(self)
 
 
  --action[self.state](dt, entities)
@@ -51,10 +47,10 @@ doObjective = function(dt, entities)
     -- integer keys.
 
 
---    if entities and entities[1] then
---        self.state = 2
---        self.attacking = entities[1]
---    else
+    if entities and entities[1] then
+        self.state = 2
+        self.attacking = entities[1]
+    else
 
 
         -- moveMe will assume, that 'self' has:
@@ -74,8 +70,7 @@ doObjective = function(dt, entities)
         --
         --
         helpers:moveMe(self, dt)
-
---    end
+    end
 
 end
 

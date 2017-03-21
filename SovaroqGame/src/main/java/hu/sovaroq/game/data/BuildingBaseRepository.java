@@ -1,6 +1,8 @@
-package hu.sovaroq.core.database;
+package hu.sovaroq.game.data;
 
-import hu.sovaroq.game.data.BuildingBase;
+import hu.sovaroq.core.database.repository.HibernateRepository;
+import hu.sovaroq.core.database.repository.Repository;
+import hu.sovaroq.core.database.service.IHibernateSessionProvider;
 
 @Repository
 public class BuildingBaseRepository extends HibernateRepository<BuildingBase> {

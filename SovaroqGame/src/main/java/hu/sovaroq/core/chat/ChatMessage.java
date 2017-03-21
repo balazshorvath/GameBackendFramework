@@ -13,22 +13,22 @@ import static javax.persistence.GenerationType.AUTO;
 @Data
 @ToString
 public class ChatMessage {
-	
-	@Id
-	@GeneratedValue(strategy = AUTO)
-	@Column
-	int messageid;
 
-	@Column
-	long timestamp;
-	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	Conversation conversation;
-	
-	@Column(length = 255, nullable = false)
-	String message;
-	
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Id
+    @GeneratedValue(strategy = AUTO)
+    @Column
+    int messageid;
+
+    @Column
+    long timestamp;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    Conversation conversation;
+
+    @Column(length = 255, nullable = false)
+    String message;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     User user;
-	
+
 }
