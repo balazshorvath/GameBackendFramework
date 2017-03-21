@@ -1,10 +1,7 @@
-package hu.sovaroq.core.webservices;
+package hu.sovaroq.core.webservices.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
-import hu.sovaroq.core.webservices.servlet.IAsyncSerlvet;
-import hu.sovaroq.core.webservices.servlet.IWebRequest;
-import hu.sovaroq.core.webservices.servlet.IWebResponse;
 import lombok.Data;
 
 import javax.servlet.AsyncContext;

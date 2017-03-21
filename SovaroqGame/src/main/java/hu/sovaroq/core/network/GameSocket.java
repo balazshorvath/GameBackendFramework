@@ -1,15 +1,18 @@
 package hu.sovaroq.core.network;
 
-import lombok.Data;
-
-import javax.crypto.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-@Data
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+
 public class GameSocket {
 
 	private Socket socket;

@@ -6,6 +6,7 @@ import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.Service;
 import hu.sovaroq.framework.service.features.Run;
 import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
+import hu.sovaroq.core.webservices.servlet.AuthServlet;
 import hu.sovaroq.core.webservices.servlet.IAsyncSerlvet;
 import hu.sovaroq.core.webservices.servlet.RegServlet;
 import hu.sovaroq.core.webservices.servlet.WebServer;
