@@ -12,11 +12,13 @@ public interface IFramework {
 
     void stop();
 
+    void registerController(Class<? extends AbstractController> c);
+
+    void unregisterController(Class<? extends AbstractController> c);
+
+    AbstractController getController(Class<? extends AbstractController> c);
     List<AbstractController> getControllers();
-
     void setDebug(boolean debug);
-
     String getStatusDescription();
-
     Double getWorkload();
 }

@@ -1,5 +1,6 @@
 package hu.sovaroq.framework.controller;
 
+import hu.sovaroq.framework.eventing.bus.IEventBus;
 import hu.sovaroq.framework.logger.LogProvider;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.manager.ServiceManager;
@@ -20,6 +21,10 @@ public abstract class AbstractController<Ctxt extends Context> implements IContr
     @Override
     public void stop() {
         getServices().forEach(AbstractService::stop);
+    }
+
+    public IEventBus getBus() {
+        return context.getManager().getBus();
     }
 
     @Override

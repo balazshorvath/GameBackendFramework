@@ -4,8 +4,10 @@ import hu.sovaroq.core.database.service.HibernateDatabaseService;
 import hu.sovaroq.core.user.authentication.AuthenticationService;
 import hu.sovaroq.core.user.session.SessionService;
 import hu.sovaroq.core.webservices.CoreWebService;
+import hu.sovaroq.core.webservices.WebServer;
 import hu.sovaroq.framework.controller.AbstractController;
 import hu.sovaroq.framework.controller.Context;
+import hu.sovaroq.framework.scripting.LuaGlobalsProvider;
 import hu.sovaroq.framework.service.AbstractService;
 
 import java.util.ArrayList;
@@ -25,7 +27,10 @@ public class FrameworkController extends AbstractController<Context> {
         register(HibernateDatabaseService.class);
         register(AuthenticationService.class);
         register(CoreWebService.class);
+        register(WebServer.class);
         register(SessionService.class);
+        register(LuaGlobalsProvider.class);
+
         log.info("<FrameworkController - start()");
     }
 

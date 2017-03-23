@@ -31,7 +31,8 @@ public class Framework implements IFramework {
         manager.stop();
     }
 
-    private void registerController(Class<? extends AbstractController> c) {
+    @Override
+    public void registerController(Class<? extends AbstractController> c) {
         try {
             AbstractController controller = c.newInstance();
             // TODO should fine for the most part, but this is crap. Somehow need to create a proper context.
@@ -43,10 +44,16 @@ public class Framework implements IFramework {
         }
     }
 
-    private void unregisterController(Class<? extends AbstractController> c) {
+    @Override
+    public void unregisterController(Class<? extends AbstractController> c) {
         AbstractController controller = controllers.get(c);
         controller.stop();
         controllers.remove(c);
+    }
+
+    @Override
+    public AbstractController getController(Class<? extends AbstractController> c) {
+        return controllers.get(c);
     }
 
     @Override

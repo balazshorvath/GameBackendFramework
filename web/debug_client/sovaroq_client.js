@@ -46,16 +46,16 @@ var DebugPort = {
 	stop: function(){
 		this.stopInterval();
 	},
-	startInterval(){
+    startInterval: function () {
 		this.interval = setInterval(this.queryMessages, 1000);
 	},
-	stopInterval(){
+    stopInterval: function () {
 		if(this.interval != null){
 			this.stopInterval(this.interval);
 			this.interval = null;
 		}
 	},
-	queryMessages(){
+    queryMessages: function () {
 		var self = this;
 		$.get(this.url, function(data, status){
 			if(status == "success"){

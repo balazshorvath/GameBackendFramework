@@ -1,5 +1,6 @@
 package hu.sovaroq.framework.controller;
 
+import hu.sovaroq.framework.eventing.bus.IEventBus;
 import hu.sovaroq.framework.service.AbstractService;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public interface IController<Ctxt extends Context> {
     void start(Ctxt context);
 
     void stop();
+
+    IEventBus getBus();
 
     List<AbstractService> getServices();
 

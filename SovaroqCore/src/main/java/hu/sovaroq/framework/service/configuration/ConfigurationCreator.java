@@ -57,7 +57,7 @@ public class ConfigurationCreator {
 
     public <C> C createConfig(Class<C> configType, String configFile) {
         if (configFile == null || configFile.isEmpty() || Object.class.equals(configType)) {
-            log.error("No context file specified.");
+            log.info("No configuration file specified.");
             return null;
         }
 

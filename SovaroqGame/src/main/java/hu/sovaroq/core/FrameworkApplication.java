@@ -3,6 +3,7 @@ package hu.sovaroq.core;
 import hu.sovaroq.framework.Framework;
 import hu.sovaroq.framework.console.FrameworkConsole;
 import hu.sovaroq.framework.controller.AbstractController;
+import hu.sovaroq.game.GameController;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -45,6 +46,7 @@ public class FrameworkApplication {
 
         framework.setDebug(true);
         framework.start(features);
+        framework.registerController(GameController.class);
         System.out.println("Framework started.\nLua console:");
         FrameworkConsole console = new FrameworkConsole(framework, System.in, System.out);
 
