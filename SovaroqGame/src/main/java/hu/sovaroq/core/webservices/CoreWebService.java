@@ -16,7 +16,6 @@ import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
 import hu.sovaroq.core.webservices.servlet.AuthServlet;
 import hu.sovaroq.core.webservices.servlet.IAsyncServlet;
 import hu.sovaroq.core.webservices.servlet.RegServlet;
-import hu.sovaroq.core.webservices.servlet.WebServer;
 import hu.sovaroq.framework.eventing.bus.EventListener;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.Service;
@@ -47,7 +46,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 		coreContext.setContextPath("/auth");
 		coreContext.addServlet(new ServletHolder((Servlet) authServlet), "/login");
 		coreContext.addServlet(new ServletHolder((Servlet) regServlet), "/register");
-		WebServer.setHandler(coreContext);
+		post(new IWebServerEvents.RegisterHandlerRequest(coreContext));
 
         enabled = true;
     }
@@ -141,9 +140,6 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 	}
 
 	public class WebServiceConfig {
-		String keyStorePath;
-		boolean useSSL;
-		boolean debugServletEnabled;
 	}
 
 }
