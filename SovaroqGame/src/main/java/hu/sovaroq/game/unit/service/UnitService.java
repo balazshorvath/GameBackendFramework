@@ -72,10 +72,15 @@ public class UnitService extends AbstractService<Object> implements IUnitService
 
     @Tick(100)
     public void tick100() {
+        // Let the timer go, this was dt will never be invalid
         long now = System.currentTimeMillis();
         final long dt = now - last100Tick;
         last100Tick = now;
 
+        // If no units, just pass
+        if(units.isEmpty()) {
+            return;
+        }
         units.values().forEach(unit -> {
             unit.params.dt = dt;
             unit.script.call(CoerceJavaToLua.coerce(unit.params));
@@ -106,7 +111,9 @@ public class UnitService extends AbstractService<Object> implements IUnitService
         }
 
         void flush() {
-            post(new IUnitService.UnitUpdates(changes));
+            if(!changes.isEmpty()) {
+                post(new IUnitService.UnitUpdates(changes));
+            }
         }
     }
 }
