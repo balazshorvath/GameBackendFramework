@@ -160,8 +160,7 @@ public class SimpleEventBus implements IEventBus, Runnable {
 
     @Override
     public void pushEvent(Object event) {
-        if (running)
-            messageQueue.add(event);
+        messageQueue.add(event);
     }
 
     @Override

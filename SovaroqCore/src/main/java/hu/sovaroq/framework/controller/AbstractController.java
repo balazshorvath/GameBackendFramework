@@ -24,7 +24,7 @@ public abstract class AbstractController<Ctxt extends Context> implements IContr
     }
 
     public IEventBus getBus() {
-        return context.getManager().getBus();
+        return manager.getBus();
     }
 
     @Override

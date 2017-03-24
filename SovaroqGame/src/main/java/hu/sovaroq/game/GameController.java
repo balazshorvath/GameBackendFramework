@@ -35,7 +35,7 @@ public class GameController extends AbstractController<Context> {
     @Override
     public void start(Context context) {
         log.info(">GameController - start()");
-        super.context = context;
+//        super.context = context;
 
         super.manager = new ServiceManager(3, 5, 5);
 
