@@ -138,8 +138,8 @@ public class ServiceManager {
      * Calls in this order:
      * <p>
      * {@link #autoSetFields(AbstractService)}
-     * {@link #startMethodFeatures(AbstractService)}
      * {@link #startService(AbstractService)}
+     * {@link #startMethodFeatures(AbstractService)}
      *
      * @param service
      * @param <T>
