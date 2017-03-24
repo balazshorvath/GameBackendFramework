@@ -146,8 +146,8 @@ public class ServiceManager {
      */
     private <T extends AbstractService> void manageService(T service) {
         autoSetFields(service);
-        startMethodFeatures(service);
         startService(service);
+        startMethodFeatures(service);
     }
 
     /**

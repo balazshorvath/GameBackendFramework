@@ -51,7 +51,6 @@ public class GameController extends AbstractController<Context> {
             webContext.setContextPath(url);
             webContext.addServlet(new ServletHolder(debugPort), "/debug");
 
-            webContext.destroy();
             context.getManager().getBus().pushEvent(request);
             super.manager.getBus().registerDebugPort(debugPort);
         }

@@ -46,6 +46,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 		coreContext.setContextPath("/auth");
 		coreContext.addServlet(new ServletHolder((Servlet) authServlet), "/login");
 		coreContext.addServlet(new ServletHolder((Servlet) regServlet), "/register");
+
 		post(new IWebServerEvents.RegisterHandlerRequest(coreContext));
 
         enabled = true;
