@@ -31,6 +31,9 @@ public class User implements IUser {
 	@Column(name = LOGIN, length = 255, nullable = false, unique = true)
 	String login;
 	
+	@Column
+	UserRole role;
+	
 	@Column(length = 255, nullable = false, unique = true)
 	String email;
 	

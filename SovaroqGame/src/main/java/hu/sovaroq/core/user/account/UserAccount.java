@@ -12,9 +12,13 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode
-public class UserAccount {
+public class UserAccount implements IUserAccount{
 	
+	long experiencePoints;
 	
+	long money;
+	
+	byte[] profileImage;
 	
 	
 }

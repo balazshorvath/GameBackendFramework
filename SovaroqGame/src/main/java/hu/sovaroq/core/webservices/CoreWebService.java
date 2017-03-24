@@ -137,6 +137,11 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
     public void stop() {
 		enabled = false;
 		log.debug("Stopping CoreWebService");
+		try {
+			coreContext.stop();
+		} catch (Exception e) {
+			log.error("Failed to stop coreContext" + e);
+		}
 	}
 
 	public class WebServiceConfig {
