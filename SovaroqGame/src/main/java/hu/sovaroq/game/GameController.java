@@ -5,6 +5,7 @@ import hu.sovaroq.core.webservices.IWebServerEvents;
 import hu.sovaroq.framework.controller.AbstractController;
 import hu.sovaroq.framework.controller.Context;
 import hu.sovaroq.framework.eventing.bus.IEventBus;
+import hu.sovaroq.framework.scripting.LuaGlobalsProvider;
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.manager.ServiceManager;
 import hu.sovaroq.game.unit.service.UnitService;
@@ -55,8 +56,10 @@ public class GameController extends AbstractController<Context> {
             super.manager.getBus().registerDebugPort(debugPort);
         }
 
+        services.add(manager.manage(LuaGlobalsProvider.class));
         services.add(manager.manage(UnitService.class));
 
+        super.manager.start();
         log.info("<GameController - start()");
     }
 
