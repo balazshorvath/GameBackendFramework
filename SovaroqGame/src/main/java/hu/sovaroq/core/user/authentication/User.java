@@ -43,7 +43,6 @@ public class User implements IUser {
 	@Column
 	boolean locked = false;
 	
-	@Column
 	@OneToOne
 	UserAccount account;	
 }
