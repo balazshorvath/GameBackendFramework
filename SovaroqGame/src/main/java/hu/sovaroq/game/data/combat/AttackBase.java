@@ -1,15 +1,11 @@
 package hu.sovaroq.game.data.combat;
 
-import static javax.persistence.GenerationType.AUTO;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import lombok.Data;
 import lombok.ToString;
+
+import javax.persistence.*;
+
+import static javax.persistence.GenerationType.AUTO;
 
 @Entity
 @Table(name = "AttackBase")
@@ -22,6 +18,7 @@ public class AttackBase {
     @Column
     private Long attackid;
 
+    // TODO replace this with Modifier/Type. Easier to match.
     @Column
     private DamageType damageType;
 	
