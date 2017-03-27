@@ -57,17 +57,17 @@ public class UnitService extends AbstractService<Object> implements IUnitService
 
     public void onEvent(IUnitService.SpawnUnit spawn) {
         log.debug("Got new Message: " + spawn);
-        LuaValue script = globals.loadfile(spawn.getLuaScript());
-        UnitParameters params = new UnitParameters(
-                spawn.getTargetX(), spawn.getTargetY(),
-                new LuaUnit(currentUnitId.incrementAndGet(), spawn.getX(), spawn.getY(), 10.0, 100, 10),
-                0
-        );
-        units.put(
-                currentUnitId.incrementAndGet(),
-                new UnitScript(params, script)
-        );
-        script.call(CoerceJavaToLua.coerce(params));
+//        LuaValue script = globals.loadfile(spawn.getLuaScript());
+//        UnitParameters params = new UnitParameters(
+//                spawn.getTargetX(), spawn.getTargetY(),
+//                new LuaUnit(currentUnitId.incrementAndGet(), spawn.getX(), spawn.getY()),
+//                0
+//        );
+//        units.put(
+//                currentUnitId.incrementAndGet(),
+//                new UnitScript(params, script)
+//        );
+//        script.call(CoerceJavaToLua.coerce(params));
     }
 
     @Tick(100)
