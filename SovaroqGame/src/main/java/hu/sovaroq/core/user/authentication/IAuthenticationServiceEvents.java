@@ -41,6 +41,7 @@ public interface IAuthenticationServiceEvents {
     @EqualsAndHashCode(callSuper = true)
     public class RegisterUserRequest extends FrameworkRequestEvent {
         String logon;
+        String email;
         String password;
     }
 

@@ -17,6 +17,7 @@ public class RegServlet extends AbstractAsyncServlet {
     @Data
     public static class Request implements IWebRequest {
         private String username;
+        private String email;
         private String password;
     }
 }

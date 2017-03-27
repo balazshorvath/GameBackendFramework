@@ -13,6 +13,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hu.sovaroq.core.user.authentication.IAuthenticationServiceEvents;
+import hu.sovaroq.core.webservices.servlet.AccountDetailsServlet;
 import hu.sovaroq.core.webservices.servlet.AuthServlet;
 import hu.sovaroq.core.webservices.servlet.IAsyncServlet;
 import hu.sovaroq.core.webservices.servlet.RegServlet;
@@ -35,6 +36,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 
 	private IAsyncServlet authServlet = new AuthServlet();
 	private IAsyncServlet regServlet = new RegServlet();
+	private IAsyncServlet accDetailsServlet = new AccountDetailsServlet();
 
 	private boolean enabled;
 
@@ -46,6 +48,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 		coreContext.setContextPath("/auth");
 		coreContext.addServlet(new ServletHolder((Servlet) authServlet), "/login");
 		coreContext.addServlet(new ServletHolder((Servlet) regServlet), "/register");
+		coreContext.addServlet(new ServletHolder((Servlet) accDetailsServlet), "/account");
 
 		post(new IWebServerEvents.RegisterHandlerRequest(coreContext));
 
@@ -67,6 +70,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 					frameworkRequestToContext.put(authenticationRequest.getRequestId(), context);
 					post(authenticationRequest);
 				} catch (IOException e) {
+					
 					log.error("Failed to parse auth package: ", e);
 				}
 			}
@@ -75,7 +79,7 @@ public class CoreWebService extends AbstractService<CoreWebService.WebServiceCon
 				try {
 					log.debug("Received http request: " + context.toString());
 					RegServlet.Request request = objectMapper.readValue(context.getRequest().getReader(), RegServlet.Request.class);
-					IAuthenticationServiceEvents.RegisterUserRequest regRequest = new IAuthenticationServiceEvents.RegisterUserRequest(request.getUsername(), request.getPassword());
+					IAuthenticationServiceEvents.RegisterUserRequest regRequest = new IAuthenticationServiceEvents.RegisterUserRequest(request.getUsername(), request.getEmail(), request.getPassword());
 					frameworkRequestToContext.put(regRequest.getRequestId(), context);
 					post(regRequest);
 				} catch (IOException e) {

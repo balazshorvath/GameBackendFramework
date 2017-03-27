@@ -1,6 +1,7 @@
 package hu.sovaroq.core.network.messages;
 
-import java.io.OutputStream;
+import hu.sovaroq.core.network.stream.GameInputStream;
+import hu.sovaroq.core.network.stream.GameOutputStream;
 
 public class HandshakeResponseMessage extends NetworkMessage {
 
@@ -9,13 +10,13 @@ public class HandshakeResponseMessage extends NetworkMessage {
     }
 
     @Override
-    public void writeMessage(OutputStream outputStream) {
+    public void writeMessage(GameOutputStream outputStream) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void parseMessage(byte[] input) {
+    public void parseMessage(GameInputStream input) {
         // TODO Auto-generated method stub
 
     }

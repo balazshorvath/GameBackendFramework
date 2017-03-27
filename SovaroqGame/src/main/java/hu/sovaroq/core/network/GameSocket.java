@@ -7,23 +7,26 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+
+import hu.sovaroq.core.network.stream.GameInputStream;
+import hu.sovaroq.core.network.stream.GameOutputStream;
+import lombok.Getter;
 
 public class GameSocket {
 
     private Socket socket;
 
-    private CipherOutputStream outputStream;
+    private GameOutputStream outputStream;
 
-    private CipherInputStream inputStream;
+    private GameInputStream inputStream;
 
+    @Getter
     private SecretKey secretKey;
 
-    public void generateKey() {
+    private void generateKey() {
         try {
             KeyGenerator keyGen;
             keyGen = KeyGenerator.getInstance("AES");
@@ -46,8 +49,8 @@ public class GameSocket {
 
         this.socket = socket;
         if (socket != null && socket.isBound()) {
-            this.outputStream = new CipherOutputStream(socket.getOutputStream(), cipherEncode);
-            this.inputStream = new CipherInputStream(socket.getInputStream(), cipherDecode);
+            this.outputStream = new GameOutputStream(socket.getOutputStream(), cipherEncode);
+            this.inputStream = new GameInputStream(socket.getInputStream(), cipherDecode);
         }
     }
 

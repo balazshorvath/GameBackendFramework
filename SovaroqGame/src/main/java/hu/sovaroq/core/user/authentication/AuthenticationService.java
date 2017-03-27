@@ -44,6 +44,7 @@ public class AuthenticationService extends AbstractService<AuthenticationService
             user = new User();
             user.setLogin(request.getLogon());
             user.setPassword(hashedPW);
+            user.setEmail(request.getEmail());
             try {
                 repository.save(user);
                 post(new IAuthenticationServiceEvents.RegisterUserSuccessResponse(request.getRequestId(), user));
