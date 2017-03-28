@@ -18,7 +18,7 @@ public class CommanderBase {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column
-    private Long commanderid;
+    private Long commanderId;
 
     @Column(length = 50, nullable = false, unique = true)
     private String name;

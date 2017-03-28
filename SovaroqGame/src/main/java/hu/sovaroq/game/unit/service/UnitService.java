@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Service
 @EventListener
-public class UnitService extends AbstractService<Object> implements IUnitService {
+public class UnitService extends AbstractService<UnitService.Config> implements IUnitService {
 
     @AutoSetService
     private LuaGlobalsProvider provider;
@@ -44,13 +44,13 @@ public class UnitService extends AbstractService<Object> implements IUnitService
     private long last100Tick = System.currentTimeMillis();
 
     @Override
-    public void start(Object o) {
+    public void start(UnitService.Config c) {
         log.debug(">UnitService.start()");
-        super.start(o);
+        super.start(c);
 
         globals = provider.getGlobals();
         globals.set("api", CoerceJavaToLua.coerce(unitAPI));
-        LuaValue helpers = globals.loadfile("game/lua/global/helpers.lua");
+        LuaValue helpers = globals.loadfile(c.helperScript);
         helpers.call();
         log.debug("<UnitService.start()");
     }
@@ -115,5 +115,9 @@ public class UnitService extends AbstractService<Object> implements IUnitService
                 post(new IUnitService.UnitUpdates(changes));
             }
         }
+    }
+
+    public static class Config {
+        private String helperScript;
     }
 }

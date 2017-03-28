@@ -22,7 +22,7 @@ public class TalentBase {
 	
 	@Id
 	@GeneratedValue(strategy = AUTO)
-	Long accountId;
+	Long talentId;
 	
 	@Column(length = 255, nullable = false)
 	String name;

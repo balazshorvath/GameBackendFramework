@@ -31,7 +31,7 @@ public class UnitBase {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column
-    private Long unitid;
+    private Long unitId;
 
     @Column(length = 50, nullable = false)
     private String name;
@@ -46,7 +46,7 @@ public class UnitBase {
     private double baseDamageModifier;
     
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "attackbase_unitbase", joinColumns = {@JoinColumn(name = "unitid")}, inverseJoinColumns = {@JoinColumn(name = "attackid")})
+    @JoinTable(name = "attackbase_unitbase", joinColumns = {@JoinColumn(name = "unitId")}, inverseJoinColumns = {@JoinColumn(name = "attackId")})
     private Set<AttackBase> baseAttacks;
     
     @MapKeyClass(value = DefenseType.class)

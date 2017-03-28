@@ -16,7 +16,7 @@ public class AttackBase {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column
-    private Long attackid;
+    private Long attackId;
 
     // TODO replace this with Modifier/Type. Easier to match.
     @Column

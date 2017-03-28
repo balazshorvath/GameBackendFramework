@@ -20,7 +20,7 @@ public class BuildingBase {
     @Id
     @GeneratedValue(strategy = AUTO)
     @Column
-    private Long buildingid;
+    private Long buildingId;
     @Column(length = 50, nullable = false)
     private String name;
     @Column(length = 50, nullable = false)
