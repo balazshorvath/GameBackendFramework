@@ -1,17 +1,14 @@
 package hu.sovaroq.core.network;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hu.sovaroq.framework.service.AbstractService;
 import hu.sovaroq.framework.service.features.Run;
 
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import java.io.IOException;
-
 public class NetworkService extends AbstractService<NetworkService.NetworkConfig> {
 
-    private boolean enabled;
-    private int listenerPort;
+	List<ClientConnection> clientConnection = new ArrayList<>();
 
     public NetworkService() {
         super();
@@ -21,30 +18,8 @@ public class NetworkService extends AbstractService<NetworkService.NetworkConfig
     @Run
     public void start(NetworkConfig config) {
         log.debug("start");
-        SSLServerSocket serverSocket = null;
-        try {
-            serverSocket = (SSLServerSocket) SSLServerSocketFactory.getDefault().createServerSocket(listenerPort);
-            log.info("SSLServerSocket opened on port: " + listenerPort);
-        } catch (IOException e1) {
-            enabled = false;
-            log.error("Could not open SSLServerSocket!" + e1);
-        }
+        //poll client connection for messages. 
 
-        SSLSocket socket = null;
-
-        while (enabled) {
-            try {
-                socket = (SSLSocket) serverSocket.accept();
-                log.info("Connection received from " + socket.getRemoteSocketAddress().toString());
-//				ClientConnection connection = new ClientConnection();
-//				connection.start(socket);
-//				post(new INetworkServiceEvents.NewClientConnectionRequest(null, connection));
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     @Override
@@ -73,7 +48,7 @@ public class NetworkService extends AbstractService<NetworkService.NetworkConfig
 
     @Override
     public void stop() {
-        enabled = false;
+        
     }
 
     public class NetworkConfig {
