@@ -1,6 +1,7 @@
 package hu.sovaroq.game;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.sovaroq.core.network.GameSocket;
 import hu.sovaroq.core.webservices.IWebServerEvents;
 import hu.sovaroq.framework.controller.AbstractController;
 import hu.sovaroq.framework.controller.Context;
@@ -75,6 +76,14 @@ public class GameController extends AbstractController<Context> {
     @Override
     public List<AbstractService> getServices() {
         return services;
+    }
+
+    public Integer getGameId(){
+        return gameId;
+    }
+
+    public void newConnection(GameSocket gs) {
+//        super.manager.getBus().pushEvent();
     }
 
     @WebServlet

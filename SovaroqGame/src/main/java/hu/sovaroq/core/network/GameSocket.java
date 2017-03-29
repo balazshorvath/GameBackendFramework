@@ -16,7 +16,7 @@ import hu.sovaroq.framework.exception.FrameworkException;
 import lombok.Getter;
 
 public class GameSocket extends Socket{
-	
+
     private GameOutputStream outputStream;
 
     private GameInputStream inputStream;
