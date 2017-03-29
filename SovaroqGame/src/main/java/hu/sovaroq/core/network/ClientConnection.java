@@ -13,4 +13,5 @@ public class ClientConnection {
 	
 	UUID sessionId;
 	
+	
 }
