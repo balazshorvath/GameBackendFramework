@@ -95,55 +95,55 @@ public class ConfigurationCreator {
 
         ConfigValue configValue;
         for (Field field : configType.getDeclaredFields()) {
+            String key = field.getName();
             if ((configValue = field.getAnnotation(ConfigValue.class)) != null) {
-                String key = configValue.key();
-                if (key.isEmpty()) {
-                    key = field.getName();
-                }
-                if (values.containsKey(key)) {
-                    Object value = values.get(key);
-                    Object parsedValue = null;
-                    try {
-                        Method m;
-                        if (value instanceof String) {
-                            parsedValue = parseKnownTypes(field.getType(), (String) value);
-                        } else if (value.getClass().equals(field.getType())) {
-                            parsedValue = value;
-                        }
-                        m = setter(field);
-                        m.invoke(result, parsedValue);
-
-                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                        log.warn("No setter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
-                    }
-
-                } else {
-                    try {
-                        Method getter = getter(field);
-                        Object fieldValue = getter.invoke(result);
-                        if (fieldValue == null) {
-                            fieldValue = field.getType().newInstance();
-                        }
-                        final String finalKey = key;
-                        Map<String, Object> sublist = values.entrySet().stream().filter(entry ->
-                                entry.getKey().startsWith(finalKey + ".")
-                        ).collect(Collectors.toMap(entry ->
-                                        entry.getKey().substring(entry.getKey().indexOf(".")),
-                                Map.Entry::getValue)
-                        );
-                        fieldValue = createObject(field.getType(), sublist);
-
-                        Method setter = setter(field);
-                        setter.invoke(result, fieldValue);
-                    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                        log.warn("No getter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
-                    } catch (InstantiationException e) {
-                        log.warn("Could not create instance of field '" + field.getName() + "'" +
-                                " (" + field.getType().getName() + ") in class '" + configType.getName() + "'.");
-                    }
-                }
-
+                key = configValue.key();
             }
+
+            if (values.containsKey(key)) {
+                Object value = values.get(key);
+                Object parsedValue = null;
+                try {
+                    Method m;
+                    if (value instanceof String) {
+                        parsedValue = parseKnownTypes(field.getType(), (String) value);
+                    } else if (value.getClass().equals(field.getType())) {
+                        parsedValue = value;
+                    }
+                    m = setter(field);
+                    m.invoke(result, parsedValue);
+
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    log.warn("No setter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
+                }
+
+            } else {
+                try {
+                    Method getter = getter(field);
+                    Object fieldValue = getter.invoke(result);
+                    if (fieldValue == null) {
+                        fieldValue = field.getType().newInstance();
+                    }
+                    final String finalKey = key;
+                    Map<String, Object> sublist = values.entrySet().stream().filter(entry ->
+                            entry.getKey().startsWith(finalKey + ".")
+                    ).collect(Collectors.toMap(entry ->
+                                    entry.getKey().substring(entry.getKey().indexOf(".")),
+                            Map.Entry::getValue)
+                    );
+                    fieldValue = createObject(field.getType(), sublist);
+
+                    Method setter = setter(field);
+                    setter.invoke(result, fieldValue);
+                } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                    log.warn("No getter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
+                } catch (InstantiationException e) {
+                    log.warn("Could not create instance of field '" + field.getName() + "'" +
+                            " (" + field.getType().getName() + ") in class '" + configType.getName() + "'.");
+                }
+            }
+
+
         }
         return result;
     }

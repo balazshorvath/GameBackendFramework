@@ -69,50 +69,33 @@ public class ConfigurationCreatorTest {
     @Data
     @NoArgsConstructor
     public static class TestConfig {
-        @ConfigValue
         private byte aByte;
         @ConfigValue(key = "objectByte")
         private Byte oByte;
 
-        @ConfigValue
         private char aChar;
-        @ConfigValue
         private Character character;
 
-        @ConfigValue
         private short aShort;
-        @ConfigValue
         private Short oShort;
 
-        @ConfigValue
         private int anInt;
-        @ConfigValue
         private Integer integer;
 
-        @ConfigValue
         private long aLong;
-        @ConfigValue
         private Long oLong;
 
-        @ConfigValue
         private double aDouble;
-        @ConfigValue
         private Double oDouble;
 
-        @ConfigValue
         private float aFloat;
-        @ConfigValue
         private Float oFloat;
 
-        @ConfigValue
         private boolean aBoolean;
-        @ConfigValue
         private Boolean oBoolean;
 
-        @ConfigValue
         private String string;
 
-        @ConfigValue
         private Object object;
 
         private Integer notConfigured;
