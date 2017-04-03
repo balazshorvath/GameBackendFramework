@@ -15,7 +15,7 @@ import static javax.persistence.GenerationType.AUTO;
 public class BuildingBase {
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "unitbase_buildingbase", joinColumns = {@JoinColumn(name = "buildingid")}, inverseJoinColumns = {@JoinColumn(name = "unitid")})
+    @JoinTable(name = "unitbase_buildingbase", joinColumns = {@JoinColumn(name = "buildingId")}, inverseJoinColumns = {@JoinColumn(name = "unitId")})
     Set<UnitBase> availableUnits;
     @Id
     @GeneratedValue(strategy = AUTO)
@@ -30,4 +30,14 @@ public class BuildingBase {
     @Column(nullable = false)
     private long baseAttackDamage;
 
+    public BuildingBase(Set<UnitBase> availableUnits, String name, String description, long baseHP, long baseAttackDamage) {
+        this.availableUnits = availableUnits;
+        this.name = name;
+        this.description = description;
+        this.baseHP = baseHP;
+        this.baseAttackDamage = baseAttackDamage;
+    }
+
+    public BuildingBase() {
+    }
 }

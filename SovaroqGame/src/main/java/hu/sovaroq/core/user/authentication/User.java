@@ -10,6 +10,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import hu.sovaroq.core.user.account.UserAccount;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -23,7 +24,19 @@ public class User implements IUser {
 	public static final String USERID = "userId";
 	public static final String LOGIN = "login";
 
-	@Id
+    public User() {
+    }
+
+    public User(String login, UserRole role, String email, String password, boolean locked, UserAccount account) {
+        this.login = login;
+        this.role = role;
+        this.email = email;
+        this.password = password;
+        this.locked = locked;
+        this.account = account;
+    }
+
+    @Id
 	@GeneratedValue(strategy = AUTO)
 	@Column(name = USERID)
 	Long userId;
