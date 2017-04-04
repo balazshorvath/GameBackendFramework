@@ -13,6 +13,7 @@ import hu.sovaroq.game.data.BuildingBase;
 import hu.sovaroq.game.data.CommanderBase;
 import hu.sovaroq.game.data.CommanderBaseRepository;
 import hu.sovaroq.game.data.UnitBase;
+import hu.sovaroq.game.data.combat.ModifierType;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.HashSet;
@@ -36,13 +37,50 @@ public class DatabaseSetup extends AbstractService<Object> {
     private void doCommanders(){
         CommanderBaseRepository commanderBaseRepository = (CommanderBaseRepository) database.getRepository(CommanderBase.class);
 
-        Set<BuildingBase> buildings = new HashSet<>(2);
-        Set<UnitBase> units = new HashSet<>(2);
+        Set<BuildingBase> buildings;
+        Set<UnitBase> units;
+        CommanderBase commander;
 
-        CommanderBase commander = new CommanderBase("Soilder Nation", "Soilders, blah-blah-blah, modern guns an shit.", buildings);
+        buildings = new HashSet<>(2);
 
-        buildings.add(new BuildingBase(units, "Building One", "Desc 01.", 500, 20));
+        units = new HashSet<>(2);
+        units.add(new UnitBase("Soilder Unit 01", "Soilder Unit 01 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        units.add(new UnitBase("Soilder Unit 02", "Soilder Unit 02 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        buildings.add(new BuildingBase(units, "Soilder Building One", "Soilder Desc 01.", 500, 20));
 
+        units = new HashSet<>(2);
+        units.add(new UnitBase("Soilder Unit 03", "Soilder Unit 03 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        units.add(new UnitBase("Soilder Unit 04", "Soilder Unit 04 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        buildings.add(new BuildingBase(units, "Soilder Building Two", "Soilder Desc 02.", 1000, 20));
+
+        commander = new CommanderBase("Soilder Nation", "Soilders, blah-blah-blah, modern guns an shit.", buildings);
+
+        try {
+            commanderBaseRepository.save(commander);
+        } catch (FrameworkException e) {
+            e.printStackTrace();
+        }
+
+        //TODO
+        buildings = new HashSet<>(2);
+
+        units = new HashSet<>(2);
+        units.add(new UnitBase("Barbarian Unit 01", "Barbarian Unit 01 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        units.add(new UnitBase("Barbarian Unit 02", "Barbarian Unit 02 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        buildings.add(new BuildingBase(units, "Barbarian Building One", "Barbarian Desc 01.", 500, 20));
+
+        units = new HashSet<>(2);
+        units.add(new UnitBase("Barbarian Unit 03", "Barbarian Unit 03 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        units.add(new UnitBase("Barbarian Unit 04", "Barbarian Unit 04 Desc",null, ModifierType.createEmptyStats(),"game/soilder01.lua"));
+        buildings.add(new BuildingBase(units, "Barbarian Building Two", "Barbarian Desc 02.", 1000, 20));
+
+        commander = new CommanderBase("Soilder Nation", "Soilders, blah-blah-blah, modern guns an shit.", buildings);
+
+        try {
+            commanderBaseRepository.save(commander);
+        } catch (FrameworkException e) {
+            e.printStackTrace();
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package hu.sovaroq.game.data.combat;
 
+import hu.sovaroq.game.data.modifiers.Modifier;
 import lombok.Data;
 import lombok.ToString;
 
@@ -18,19 +19,18 @@ public class AttackBase {
     @Column
     private Long attackId;
 
-    // TODO replace this with Modifier/Type. Easier to match.
     @Column
-    private DamageType damageType;
-	
+    private Double area;
     @Column
-    private Integer range;
-	
+    private Double range;
     @Column
-    private Integer cooldown;
-	
+    private Double cooldown;
+
     @Column
-    private Integer baseDamage;
-    
+    private ModifierType type;
+    @Column
+    private Double value;
+
     @Column(length = 50, nullable = false)
     private String name;
 

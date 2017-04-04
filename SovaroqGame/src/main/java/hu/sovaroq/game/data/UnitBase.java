@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import hu.sovaroq.game.data.combat.AttackBase;
 import hu.sovaroq.game.data.combat.DefenseType;
+import hu.sovaroq.game.data.combat.ModifierType;
 import lombok.Data;
 import lombok.ToString;
 
@@ -38,20 +39,14 @@ public class UnitBase {
 
     @Column(length = 50, nullable = false)
     private String description;
-    @Column(nullable = false)
-    private long baseHP;
-    @Column(nullable = false)
-    private double baseMovementSpeed;
-    @Column
-    private double baseDamageModifier;
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "attackbase_unitbase", joinColumns = {@JoinColumn(name = "unitId")}, inverseJoinColumns = {@JoinColumn(name = "attackId")})
     private Set<AttackBase> baseAttacks;
     
-    @MapKeyClass(value = DefenseType.class)
-    @ElementCollection(targetClass = Integer.class)
-    private Map<DefenseType, Integer> defenseStats;
+    @MapKeyClass(value = ModifierType.class)
+    @ElementCollection(targetClass = Double.class)
+    private Map<ModifierType, Double> stats;
     
     @Column(length = 50, nullable = false)
     private String scriptFile;
@@ -59,5 +54,12 @@ public class UnitBase {
     public UnitBase() {
     }
 
+    public UnitBase(String name, String description, Set<AttackBase> baseAttacks, Map<ModifierType, Double> stats, String scriptFile) {
+        this.name = name;
+        this.description = description;
+        this.baseAttacks = baseAttacks;
+        this.stats = stats;
+        this.scriptFile = scriptFile;
+    }
 }
 
