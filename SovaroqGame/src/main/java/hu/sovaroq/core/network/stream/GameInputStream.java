@@ -19,7 +19,7 @@ public class GameInputStream extends CipherInputStream {
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < lenght; i++) {
 			int read = read();
-			if (read == -1 || read == 0) {
+			if (read == -1) {
 				throw new DataReadException("Unexpected end of stream");
 			} else if (Character.isAlphabetic(read)) {
 				throw new DataReadException("Unexpected character");
@@ -39,19 +39,12 @@ public class GameInputStream extends CipherInputStream {
 	 * @throws IOException
 	 */
 	public byte startNextMessageRead() throws IOException {
-		StringBuffer buffer = new StringBuffer();
 		if (this.available() != 0) {
 			do {
 				int read = read();
-				if (read == -1 || read == 0) {
-					break;
-				} else {
-					buffer.append(Character.toString((char) read));
-				}
-				if (buffer.length() > NetworkMessage.MESSAGE_START.length()) {
-					buffer.deleteCharAt(0);
-				}
-				if (buffer.toString().equals(NetworkMessage.MESSAGE_START)) {
+				if (read == -1) {
+					throw new DataReadException("Unexpected end of stream");
+				} else if(read == NetworkMessage.MESSAGE_START) {
 					break;
 				}
 			} while (true);
@@ -59,16 +52,39 @@ public class GameInputStream extends CipherInputStream {
 			return (byte) read();
 		}else{
 			return 0x00;
+		}		
+	}
+
+	public Double readDouble() throws IOException {
+		StringBuffer buffer = new StringBuffer();
+		if (this.available() != 0) {
+			do {
+				int read = read();
+				if((byte)read == NetworkMessage.DATA_DELIMITER){
+					break;
+				}
+				
+			} while (true);
+		}else{
+			return null;
 		}
-
-		
+		return Double.parseDouble(buffer.toString());		
 	}
 
-	public Double readDouble() {
-		return 0d;
+	public Integer readInt() throws IOException {
+		StringBuffer buffer = new StringBuffer();
+		if (this.available() != 0) {
+			do {
+				int read = read();
+				if((byte)read == NetworkMessage.DATA_DELIMITER){
+					break;
+				}
+				
+			} while (true);
+		}else{
+			return null;
+		}
+		return Integer.parseInt(buffer.toString());	
 	}
-
-	public Integer readInt() {
-		return 0;
-	}
+	
 }

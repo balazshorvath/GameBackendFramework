@@ -5,13 +5,15 @@ import hu.sovaroq.core.network.stream.GameOutputStream;
 
 public abstract class NetworkMessage {
 	
-	public static String MESSAGE_START = "###";
+	public static byte MESSAGE_START = 0x02; //start of text
 	
-	public static String DATA_DELIMITER = ";";	
+	public static byte MESSAGE_END = 0x03; //end of text
+	
+	public static byte DATA_DELIMITER = 0x00; //that
 
     protected static NetworkMessageType messageType;
 
     public abstract void writeMessage(GameOutputStream outputStream);
 
-    public abstract void parseMessage(GameInputStream input);
+    public abstract void readMessage(GameInputStream input);
 }
