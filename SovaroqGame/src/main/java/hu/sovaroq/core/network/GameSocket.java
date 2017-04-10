@@ -15,7 +15,7 @@ import hu.sovaroq.core.network.stream.GameOutputStream;
 import hu.sovaroq.framework.exception.FrameworkException;
 import lombok.Getter;
 
-public class GameSocket extends Socket{
+public class GameSocket{
 
     private GameOutputStream outputStream;
 
@@ -23,6 +23,8 @@ public class GameSocket extends Socket{
 
     @Getter
     private SecretKey secretKey;
+    
+    private Socket clientSocket;
 
     public void generateKey() {
         try {
@@ -35,9 +37,15 @@ public class GameSocket extends Socket{
             e.printStackTrace();
         }
     }
+    
+    public GameSocket(){
+    	generateKey();
+    }
 
-    public void start() throws Exception {
+    public void start(Socket socket) throws Exception {
     	if(secretKey == null) throw new FrameworkException("Key must be generated first!");
+    	
+    	this.clientSocket = socket;
     	
         Cipher cipherEncode = Cipher.getInstance("AES/ECB/PKCS5PADDING");
         cipherEncode.init(Cipher.ENCRYPT_MODE, secretKey);
@@ -45,9 +53,9 @@ public class GameSocket extends Socket{
         Cipher cipherDecode = Cipher.getInstance("AES/ECB/PKCS5PADDING");
         cipherDecode.init(Cipher.DECRYPT_MODE, secretKey);
 
-        if (this.isBound()) {
-            this.outputStream = new GameOutputStream(this.getOutputStream(), cipherEncode);
-            this.inputStream = new GameInputStream(this.getInputStream(), cipherDecode);
+        if (clientSocket.isBound()) {
+            this.outputStream = new GameOutputStream(clientSocket.getOutputStream(), cipherEncode);
+            this.inputStream = new GameInputStream(clientSocket.getInputStream(), cipherDecode);
         }
     }
     
@@ -61,7 +69,12 @@ public class GameSocket extends Socket{
     }
     
     public void send(NetworkMessage message){
-    	message.writeMessage(outputStream);
+    	try {
+			message.writeMessage(outputStream);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void disconnect(){
@@ -77,7 +90,7 @@ public class GameSocket extends Socket{
 		}
     	
     	try {
-			this.close();
+    		clientSocket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
