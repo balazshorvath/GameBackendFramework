@@ -9,7 +9,10 @@ public enum NetworkMessageType {
     AES_KEY_EXCHANGE_RES(3),
 
     AUTHENTICATE_REQ(4),
-    AUTHENTICATE_RES(5);
+    AUTHENTICATE_RES(5),
+	
+	TESTER_REQ(1000),
+	TESTER_RES(1001);
 
     private int id;
 
@@ -17,7 +20,7 @@ public enum NetworkMessageType {
         this.id = messageID;
     }
 
-    int id() {
+    public int id() {
         return this.id;
     }
 
