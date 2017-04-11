@@ -66,8 +66,8 @@ public class HibernateDatabaseService extends AbstractService<HibernateDatabaseS
         this.config = config;
     }
 
-    public HibernateRepository<?> getRepository(Class<?> clazz) {
-        return repositories.get(clazz);
+    public <T> HibernateRepository<T> getRepository(Class<T> clazz) {
+        return (HibernateRepository<T>) repositories.get(clazz);
     }
 
     @Override

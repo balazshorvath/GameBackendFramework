@@ -44,7 +44,7 @@ public class FrameworkApplication {
         }
         Framework framework = new Framework();
 
-        framework.setDebug(true);
+        framework.setDebug(debug);
         framework.start(features);
         framework.registerController(GameController.class);
         System.out.println("Framework started.\nLua console:");

@@ -1,0 +1,108 @@
+[
+  {
+    "name": "Soilder Nation",
+    "description": "Soilders, blah-blah-blah, modern guns an shit.",
+    "availableBuildings": [
+      {
+        "availableUnits": [
+          {
+            "name": "Soilder Unit 03",
+            "description": "Soilder Unit 03 Desc",
+            "baseAttacks": null,
+            "stats": {
+              "POISON_DAMAGE": 0.0,
+              "ELECTRICAL_DAMAGE": 0.0,
+              "ARMOR": 0.0,
+              "FROST_RESISTANCE": 0.0,
+              "PHYSICAL_DAMAGE": 0.0,
+              "FROST_DAMAGE": 0.0,
+              "ELECTRICAL_RESISTANCE": 0.0,
+              "POISON_RESISTANCE": 0.0,
+              "MOVEMENT_SPEED": 0.0,
+              "FIRE_DAMAGE": 0.0,
+              "HP": 0.0,
+              "ATTACK_SPEED": 0.0,
+              "FIRE_RESISTANCE": 0.0
+            },
+            "scriptFile": "game/soilder01.lua"
+          },
+          {
+            "name": "Soilder Unit 04",
+            "description": "Soilder Unit 04 Desc",
+            "baseAttacks": null,
+            "stats": {
+              "POISON_DAMAGE": 0.0,
+              "ELECTRICAL_DAMAGE": 0.0,
+              "ARMOR": 0.0,
+              "FROST_RESISTANCE": 0.0,
+              "PHYSICAL_DAMAGE": 0.0,
+              "FROST_DAMAGE": 0.0,
+              "ELECTRICAL_RESISTANCE": 0.0,
+              "POISON_RESISTANCE": 0.0,
+              "MOVEMENT_SPEED": 0.0,
+              "FIRE_DAMAGE": 0.0,
+              "HP": 0.0,
+              "ATTACK_SPEED": 0.0,
+              "FIRE_RESISTANCE": 0.0
+            },
+            "scriptFile": "game/soilder01.lua"
+          }
+        ],
+        "name": "Soilder Building Two",
+        "description": "Soilder Desc 02.",
+        "baseHP": 1000,
+        "baseAttackDamage": 20
+      },
+      {
+        "availableUnits": [
+          {
+            "name": "Soilder Unit 01",
+            "description": "Soilder Unit 01 Desc",
+            "baseAttacks": null,
+            "stats": {
+              "POISON_DAMAGE": 0.0,
+              "ELECTRICAL_DAMAGE": 0.0,
+              "ARMOR": 0.0,
+              "FROST_RESISTANCE": 0.0,
+              "PHYSICAL_DAMAGE": 0.0,
+              "FROST_DAMAGE": 0.0,
+              "ELECTRICAL_RESISTANCE": 0.0,
+              "POISON_RESISTANCE": 0.0,
+              "MOVEMENT_SPEED": 0.0,
+              "FIRE_DAMAGE": 0.0,
+              "HP": 0.0,
+              "ATTACK_SPEED": 0.0,
+              "FIRE_RESISTANCE": 0.0
+            },
+            "scriptFile": "game/soilder01.lua"
+          },
+          {
+            "name": "Soilder Unit 02",
+            "description": "Soilder Unit 02 Desc",
+            "baseAttacks": null,
+            "stats": {
+              "POISON_DAMAGE": 0.0,
+              "ELECTRICAL_DAMAGE": 0.0,
+              "ARMOR": 0.0,
+              "FROST_RESISTANCE": 0.0,
+              "PHYSICAL_DAMAGE": 0.0,
+              "FROST_DAMAGE": 0.0,
+              "ELECTRICAL_RESISTANCE": 0.0,
+              "POISON_RESISTANCE": 0.0,
+              "MOVEMENT_SPEED": 0.0,
+              "FIRE_DAMAGE": 0.0,
+              "HP": 0.0,
+              "ATTACK_SPEED": 0.0,
+              "FIRE_RESISTANCE": 0.0
+            },
+            "scriptFile": "game/soilder01.lua"
+          }
+        ],
+        "name": "Soilder Building One",
+        "description": "Soilder Desc 01.",
+        "baseHP": 500,
+        "baseAttackDamage": 20
+      }
+    ]
+  }
+]
