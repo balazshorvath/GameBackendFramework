@@ -42,21 +42,9 @@ public enum ModifierType {
 
     public static Map<ModifierType, Double> createEmptyStats(){
         Map<ModifierType, Double> stats = new HashMap<>();
-
-        stats.put(PHYSICAL_DAMAGE, 0.0);
-        stats.put(FIRE_DAMAGE, 0.0);
-        stats.put(FROST_DAMAGE, 0.0);
-        stats.put(POISON_DAMAGE, 0.0);
-        stats.put(ELECTRICAL_DAMAGE, 0.0);
-        stats.put(HP, 0.0);
-        stats.put(MOVEMENT_SPEED, 0.0);
-        stats.put(ATTACK_SPEED, 0.0);
-        stats.put(ARMOR, 0.0);
-        stats.put(FIRE_RESISTANCE, 0.0);
-        stats.put(FROST_RESISTANCE, 0.0);
-        stats.put(POISON_RESISTANCE, 0.0);
-        stats.put(ELECTRICAL_RESISTANCE, 0.0);
-
+        for(ModifierType t : ModifierType.values()){
+            stats.put(t, 0.0);
+        }
         return stats;
     }
 }
