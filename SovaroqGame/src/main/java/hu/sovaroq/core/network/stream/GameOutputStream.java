@@ -9,34 +9,40 @@ import javax.crypto.CipherOutputStream;
 import hu.sovaroq.core.network.messages.NetworkMessage;
 import hu.sovaroq.core.network.messages.NetworkMessageType;
 
-public class GameOutputStream extends CipherOutputStream{
+public class GameOutputStream {
+	
+	OutputStream outputs;
 
-	public GameOutputStream(OutputStream os, Cipher c) {
-		super(os, c);
+	public GameOutputStream(OutputStream os) {
+		outputs = os;
 	}
 	
 	public void writeString(String string) throws IOException {
-		write(string.getBytes(NetworkMessage.defaultCharset));
-		write(NetworkMessage.DATA_DELIMITER);
+		outputs.write(string.getBytes(NetworkMessage.defaultCharset));
+		outputs.write(NetworkMessage.DATA_DELIMITER);
 	}
 
 	public void writeStartNextMessage(NetworkMessageType messageType) throws IOException {
-		write(NetworkMessage.MESSAGE_START);
-		write(messageType.id());
+		outputs.write(NetworkMessage.MESSAGE_START);
+		outputs.write(messageType.id());
 	}
 	
 	public void writeFinishMessage() throws IOException{
-		write(NetworkMessage.MESSAGE_END);
+		outputs.write(NetworkMessage.MESSAGE_END);
 	}
 
 	public void writeDouble(Double number) throws IOException {
-		write(number.toString().getBytes(NetworkMessage.defaultCharset));
-		write(NetworkMessage.DATA_DELIMITER);
+		outputs.write(number.toString().getBytes(NetworkMessage.defaultCharset));
+		outputs.write(NetworkMessage.DATA_DELIMITER);
 	}
 
 	public void writeInt(Integer number) throws IOException {
-		write(number.toString().getBytes(NetworkMessage.defaultCharset));
-		write(NetworkMessage.DATA_DELIMITER);
+		outputs.write(number.toString().getBytes(NetworkMessage.defaultCharset));
+		outputs.write(NetworkMessage.DATA_DELIMITER);
+	}
+	
+	public void close() throws IOException{
+		outputs.close();
 	}
 
 }

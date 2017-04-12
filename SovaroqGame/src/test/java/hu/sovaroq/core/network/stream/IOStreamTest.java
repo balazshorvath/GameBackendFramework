@@ -21,57 +21,19 @@ public class IOStreamTest {
 
 	private GameInputStream inputStream;
 
-	private SecretKey secretKey;
-
-	public void generateKey() {
-		try {
-			KeyGenerator keyGen;
-			keyGen = KeyGenerator.getInstance("AES");
-			SecureRandom random = new SecureRandom(); // cryptograph. secure
-														// random
-			keyGen.init(random);
-			secretKey = keyGen.generateKey();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-	}
-
 	@Before
 	public void setup() {
-		
-		generateKey();
 
-		try {
-			Cipher cipherEncode = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-			cipherEncode.init(Cipher.ENCRYPT_MODE, secretKey);
-
-			Cipher cipherDecode = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-			cipherDecode.init(Cipher.DECRYPT_MODE, secretKey);
-			
-			InputStream is;
-			OutputStream os;
-
-			this.outputStream = new GameOutputStream(System.out, cipherEncode);
-			this.inputStream = new GameInputStream(System.in, cipherDecode);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		this.outputStream = new GameOutputStream(System.out);
+		this.inputStream = new GameInputStream(System.in);
 
 	}
 
 	@Test
 	public void testStreams() throws IOException {
-		
+
 		Thread writer = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -80,12 +42,12 @@ public class IOStreamTest {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
-		
+
 		Thread reader = new Thread(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				try {
@@ -94,13 +56,13 @@ public class IOStreamTest {
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}	
+				}
 			}
 		});
-		
+
 		writer.start();
 		reader.start();
 
 	}
-	
+
 }

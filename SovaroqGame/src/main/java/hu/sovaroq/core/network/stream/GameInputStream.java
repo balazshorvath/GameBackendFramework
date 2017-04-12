@@ -9,16 +9,18 @@ import javax.crypto.CipherInputStream;
 import hu.sovaroq.core.network.exception.DataReadException;
 import hu.sovaroq.core.network.messages.NetworkMessage;
 
-public class GameInputStream extends CipherInputStream {
+public class GameInputStream {
+	
+	InputStream inputs;
 
-	public GameInputStream(InputStream is, Cipher c) {
-		super(is, c);
+	public GameInputStream(InputStream is) {
+		inputs = is;
 	}
 
 	public String readString(int lenght) throws IOException {
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < lenght; i++) {
-			int read = read();
+			int read = inputs.read();
 			ret.append(checkread(read));
 		}
 		return ret.toString();
@@ -26,18 +28,14 @@ public class GameInputStream extends CipherInputStream {
 	
 	public String readString() throws IOException {
 		StringBuffer buffer = new StringBuffer();
-		if (this.available() != 0) {
 			do {
-				int read = read();
+				int read = inputs.read();
 				String character = checkread(read);
 				if ((byte) read == NetworkMessage.DATA_DELIMITER) {
 					break;
 				}
 				buffer.append(character);
 			} while (true);
-		} else {
-			return null;
-		}
 		return buffer.toString();
 	}
 
@@ -51,9 +49,8 @@ public class GameInputStream extends CipherInputStream {
 	 * @throws IOException
 	 */
 	public byte startNextMessageRead() throws IOException {
-		if (this.available() != 0) {
 			do {
-				int read = read();
+				int read = inputs.read();
 				if (read == -1) {
 					throw new DataReadException("Unexpected end of stream");
 				} else if (read == NetworkMessage.MESSAGE_START) {
@@ -61,15 +58,12 @@ public class GameInputStream extends CipherInputStream {
 				}
 			} while (true);
 
-			return (byte) read();
-		} else {
-			return 0x00;
-		}
+			return (byte) inputs.read();
 	}
 	
 	public void checkFinishMessage() throws IOException{
 		do {
-			int read = read();
+			int read = inputs.read();
 			if (read == -1) {
 				throw new DataReadException("Unexpected end of stream");
 			} else if (read == NetworkMessage.MESSAGE_END) {
@@ -80,35 +74,27 @@ public class GameInputStream extends CipherInputStream {
 
 	public Double readDouble() throws IOException {
 		StringBuffer buffer = new StringBuffer();
-		if (this.available() != 0) {
 			do {
-				int read = read();
+				int read = inputs.read();
 				String character = checkread(read);
 				if ((byte) read == NetworkMessage.DATA_DELIMITER) {
 					break;
 				}
 				buffer.append(character);
 			} while (true);
-		} else {
-			return null;
-		}
 		return Double.parseDouble(buffer.toString());
 	}
 
 	public Integer readInt() throws IOException {
 		StringBuffer buffer = new StringBuffer();
-		if (this.available() != 0) {
 			do {
-				int read = read();
+				int read = inputs.read();
 				String character = checkread(read);
 				if ((byte) read == NetworkMessage.DATA_DELIMITER) {
 					break;
 				}
 				buffer.append(character);
 			} while (true);
-		} else {
-			return null;
-		}
 		return Integer.parseInt(buffer.toString());
 	}
 
@@ -120,5 +106,9 @@ public class GameInputStream extends CipherInputStream {
 		} else {
 			return Character.toString((char) read);
 		}
+	}
+	
+	public void close() throws IOException{
+		inputs.close();
 	}
 }
