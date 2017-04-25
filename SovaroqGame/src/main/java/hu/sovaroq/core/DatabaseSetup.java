@@ -35,6 +35,7 @@ public class DatabaseSetup {
         for (User u : users) {
             userRepo.save(u);
         }
+
         CommanderBase[] commanders = new ObjectMapper().readValue(Files.readAllBytes(Paths.get(args[1])), CommanderBase[].class);
 
         for (CommanderBase c : commanders) {
