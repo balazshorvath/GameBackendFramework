@@ -29,6 +29,9 @@ public class BuildingBase {
     private long baseHP;
     @Column(nullable = false)
     private long baseAttackDamage;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private BuildingAreaType type;
 
     public BuildingBase(Set<UnitBase> availableUnits, String name, String description, long baseHP, long baseAttackDamage) {
         this.availableUnits = availableUnits;
@@ -39,5 +42,12 @@ public class BuildingBase {
     }
 
     public BuildingBase() {
+    }
+
+    public enum BuildingAreaType {
+        SMALL,
+        MEDIUM,
+        LARGE
+        // RESOURCE_MINE
     }
 }

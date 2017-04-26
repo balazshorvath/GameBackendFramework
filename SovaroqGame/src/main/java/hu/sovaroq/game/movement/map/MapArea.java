@@ -42,7 +42,7 @@ public class MapArea {
      * If the number is > 100, nothing can step on that "pixel".
      * The resolution:
      *      x: {@link #width}.
-     *      y: {@link #heightMap}.length/{@link #width}.
+     *      y: heightMap.length/{@link #width}.
      */
     @Getter
     private final byte[] heightMap;
