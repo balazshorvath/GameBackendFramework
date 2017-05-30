@@ -117,29 +117,21 @@ public class ConfigurationCreator {
                     log.warn("No setter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
                 }
 
-            } else {
+            } else if(configValue != null) {
                 try {
-                    Method getter = getter(field);
-                    Object fieldValue = getter.invoke(result);
-                    if (fieldValue == null) {
-                        fieldValue = field.getType().newInstance();
-                    }
                     final String finalKey = key;
                     Map<String, Object> sublist = values.entrySet().stream().filter(entry ->
                             entry.getKey().startsWith(finalKey + ".")
                     ).collect(Collectors.toMap(entry ->
-                                    entry.getKey().substring(entry.getKey().indexOf(".")),
+                                    entry.getKey().substring(entry.getKey().indexOf(".") + 1),
                             Map.Entry::getValue)
                     );
-                    fieldValue = createObject(field.getType(), sublist);
+                    Object fieldValue = createObject(field.getType(), sublist);
 
                     Method setter = setter(field);
                     setter.invoke(result, fieldValue);
                 } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                     log.warn("No getter for field '" + field.getName() + "' in class '" + configType.getName() + "'.");
-                } catch (InstantiationException e) {
-                    log.warn("Could not create instance of field '" + field.getName() + "'" +
-                            " (" + field.getType().getName() + ") in class '" + configType.getName() + "'.");
                 }
             }
 
@@ -189,12 +181,12 @@ public class ConfigurationCreator {
         //
         // Lombok generates Boolean as getBoolean
         //
-        if (field.getType().equals(boolean.class)) {
+        if (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)) {
             base = "is";
         } else {
             base = "get";
         }
-        return field.getDeclaringClass().getMethod(base + getFieldNameUpper(field), field.getType());
+        return field.getDeclaringClass().getMethod(base + getFieldNameUpper(field));
     }
 
     private Method setter(Field field) throws NoSuchMethodException {

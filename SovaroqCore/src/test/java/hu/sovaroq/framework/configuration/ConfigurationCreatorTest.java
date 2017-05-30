@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
@@ -62,6 +63,10 @@ public class ConfigurationCreatorTest {
 
         assertEquals(properties.get("object"), config.getObject());
 
+        assertNotNull(config.subConfig);
+        assertEquals(Integer.valueOf((String) properties.get("subConfig.key")), config.subConfig.key);
+        assertEquals(properties.get("subConfig.value"), config.subConfig.value);
+
         assertNull(config.getNotConfigured());
     }
 
@@ -98,6 +103,16 @@ public class ConfigurationCreatorTest {
 
         private Object object;
 
+        @ConfigValue(key = "subConfig")
+        private TestSubConfig subConfig;
+
         private Integer notConfigured;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class TestSubConfig {
+        private Integer key;
+        private String value;
     }
 }
