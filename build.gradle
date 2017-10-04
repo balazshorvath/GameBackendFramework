@@ -11,4 +11,5 @@ repositories {
 dependencies {
     compile project(':SovaroqCore')
     compile project(':SovaroqGame')
+    compile project(':EntityFramework')
 }

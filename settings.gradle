@@ -1,4 +1,5 @@
 rootProject.name = 'GameBackendFramework'
 include 'SovaroqCore'
 include 'SovaroqGame'
+include 'EntityFramework'
 project(':SovaroqCore').projectDir = new File('SovaroqCore')
